@@ -1,0 +1,138 @@
+<html>
+   <head>
+      <meta HTTP-EQUIV='Pragma' CONTENT='no-cache'>
+      <link rel="stylesheet" href='stylemain.css' type='text/css'>
+         <link rel="stylesheet" href='colors.css' type='text/css'>
+            <script language="javascript" src="util.js"></script>
+            <script language="javascript">
+<!-- hide
+var sessionKey='<%ejGetOther(sessionKey)%>';
+var state = '<%ejGet(lanRefresh)%>';
+if ( state == '1' ) {
+   var loc = 'lancfg2.cgi?lanRefresh=0';
+   loc += '&sessionKey=' + sessionKey;
+   var code = 'location="' + loc + '"';
+   eval(code);
+}
+
+function frmLoad() {
+   with ( document.forms[0] ) {
+      ethIpAddress.value = '<%ejGet(ethIpAddress)%>';
+      ethSubnetMask.value = '<%ejGet(ethSubnetMask)%>';
+   }
+}
+
+function btnSave(reboot) {
+   var loc = 'lancfg2.cgi?';
+
+   if (reboot)
+      loc = 'lancfg2Reset.cgi?';
+
+   with ( document.forms[0] ) {
+      if ( isValidIpAddress(ethIpAddress.value) == false ) {
+         alert('Address "' + ethIpAddress.value + '" is invalid IP address.');
+         return;
+      }
+      if ( isValidIpAddress(ethSubnetMask.value) == false ) {
+         alert('Subnet mask "' + ethSubnetMask.value + '" has invalid IP address.');
+         return;
+      }
+      loc += 'ethIpAddress=' + ethIpAddress.value;
+      loc += '&ethSubnetMask=' + ethSubnetMask.value;
+   }
+   loc += '&sessionKey=' + sessionKey;
+   var code = 'location="' + loc + '"';
+   eval(code);
+}
+
+function setDhcpAddresses() {
+   var ipArr = [0, 0, 0, 0],  maskArr = [0, 0, 0, 0], startArr = [0, 0, 0, 0],  endArr = [0, 0, 0, 0];
+   
+   with ( document.forms[0] ) {
+      lanIp = ethIpAddress.value;
+      subnetMask = ethSubnetMask.value;
+      if ( isValidIpAddress(lanIp) == false ) {
+         alert('Address "' + lanIp + '" is invalid IP address.');
+         return;
+      }
+      if ( isValidIpAddress(subnetMask) == false ) {
+         alert('Address "' + subnetMask + '" is invalid IP address.');
+         return;
+      }      
+      addrParts = lanIp.split('.');
+      maskParts = subnetMask.split('.');       
+      if ( addrParts.length != 4 || maskParts.length != 4) {
+         alert('Invalid ip/subnetMask');
+         return;
+      }         
+      for (i = 0; i < 4; i++) {
+        ipArr[i] = parseInt(addrParts[i]);
+        startArr[i] = parseInt(addrParts[i]);
+        endArr[i] = parseInt(addrParts[i]);
+        maskArr[i] = parseInt(maskParts[i]);
+      }
+      m3 = maskArr[3];
+      bcast = 255;
+      n3 = 0;
+      if (maskArr[0] == 255 && maskArr[1] == 0 &&  maskArr[2] == 0 && maskArr[3] == 0) {
+        /* 255.0.0.0 is only class A supported */
+        endArr[1] = 255;
+        endArr[2] = 255;
+      }
+      else if (maskArr[0] == 255 && maskArr[1] == 255 &&  maskArr[2] == 0 && maskArr[3] == 0) 
+        /* 255.255.0.0 is only class B supported */
+        endArr[2] = 255;
+      else if ((maskArr[0] == 255 && maskArr[1] == 255 &&  maskArr[2] == 255 ) &&
+               (m3 == 0 || m3 == 128 || m3 == 192 || m3 == 224 || m3== 240 || m3 == 248 ||  m3 == 252)) {
+        /* 255.255.255.0/128/192... class C supported */
+        n3 = ipArr[3] & m3;
+        hosts = 255 - m3;
+        bcast = n3 + hosts;
+      }
+      else {
+        alert("Only support subnet mask: Class A: 255.0.0.0; Class B: 255.255.0.0 and Class C: 255.255.255.0/255.255.255.128/255.255.255.192/255.255.255.224/255.255.255.240/255.255.255.248/255.255.255.252.");
+        return;         
+      }
+      if (ipArr[3] == bcast) {
+        alert('Ip address cannot be same as the broadcast ip address.');
+        return;
+      }
+      if (ipArr[3] == (bcast-1)) {
+        startArr[3] = n3 + 1;
+        endArr[3] = bcast -2;
+      }
+      else {
+        startArr[3] = ipArr[3] + 1;
+        endArr[3] = bcast -1;
+      }      
+   }
+}
+
+// done hiding -->
+</script>
+</head>
+   <body onLoad='frmLoad()'>
+      <blockquote>
+         <form>
+            <b>Local Area Network (LAN)&nbsp;Setup</b><br>
+            <br>Configure the static IP Address and Subnet Mask.<br>
+            <br>
+            <table border="0" cellpadding="0" cellspacing="0">
+               <tr>
+                  <td width="150">IP Address:</td>
+                  <td><input type='text' name='ethIpAddress' onChange='setDhcpAddresses()'></td>
+               </tr>
+               <tr>
+                  <td>Subnet Mask:</td>
+                  <td><input type='text' name='ethSubnetMask' onChange='setDhcpAddresses()'></td>
+               </tr>
+            </table>
+            <br>
+            <center>
+               <p align="center">
+                  <input type='button' onClick='btnSave(0)' value='Apply/Save'>
+            </center>
+         </form>
+      </blockquote>
+   </body>
+</html>

@@ -1,0 +1,12 @@
+#!/bin/sh
+
+[ "$NAME" = "sfp" ] || exit
+is_ipget="/var/run/ip.get"
+is_sfpconnected="/var/run/sfp.connect"
+
+if [ "$CONNECT" = "1" ]; then
+	echo 1 > $is_sfpconnected
+else
+	[ ! -s $is_sfpconnected ] || rm $is_sfpconnected
+	[ ! -s $is_ipget ] || rm $is_ipget
+fi

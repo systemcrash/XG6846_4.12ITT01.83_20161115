@@ -1,0 +1,118 @@
+#!/bin/bash
+
+TMPFN=/tmp/.tmp.portstat
+COUNTER=/proc/driver/mvsw/counter
+SPEED=/proc/driver/mvsw/speed
+TAB="Interface,Unicast,Broadcast,Multicast,FCS,Pause,Speed,Duplex"
+
+is_tab_visible=1
+target=$1
+target_no=0
+
+if [ "$target" = "-h" -o "$target" = "help" ]; then
+	echo "$0 [-h] [-i]"
+	echo "\t-h Help usage, -i Hide information"
+	echo "\t$0 # Show All interfaces"
+	echo "\t$0 INTERFACE # Show single interfaces"
+	exit
+fi
+if [ "$target" = "-i" ]; then
+	is_tab_visible=0
+	target=$2
+fi
+case "$target" in
+	lan1|lan2|lan3|lan4|lan5)
+		target_no=${target:3}
+		;;
+	ext1)
+		target_no=5
+		;;
+	wan)
+		target_no=6
+		;;
+	cpu)
+		target_no=7
+		;;
+	"")
+		target_no=0 # 0 For all
+		;;
+	*)
+		echo "Invalid interface"
+		;;
+esac
+
+show_interface() {
+	[ -f $SPEED ] || return
+	[ -f $COUNTER ] || return
+
+	awk '(NR == '$target_no') { printf("%s\n", substr($0,9)); }' $SPEED > $TMPFN
+	awk '(NR == '$target_no') { print; }' $COUNTER >> $TMPFN
+	awk 'BEGIN{
+		no='$target_no'; lbl="LAN";
+		st="Link is down";
+		if (no == 6)
+			st="1000 Mbps, Full-duplex";
+	};
+	(NR == 1) {
+		if ($0 != "")
+			st=$0;
+	};
+	(NR == 2) {
+		if (no <= 4) lbl="LAN"no
+		if (no == 5) lbl="EXT1";
+		if (no == 6) lbl="WAN";
+		if (no == 7) lbl="CPU";
+		in_unicast=$1; in_broadcast=$2;
+		in_multicast=$3; in_fcs_err=$4; in_pause=$5;
+		in_googd_octets_lo=$6; in_googd_octets_hi=$7;
+		out_unicast=$8; out_broadcast=$9;
+		out_multicast=$10; out_fcs_err=$11; out_pause=$12;
+		out_octets_lo=$13; out_octets_hi=$14;
+		printf("%s-RX,%d,%d,%d,", lbl, in_unicast, in_broadcast, in_multicast);
+		printf("%d,%d,%s\n",  in_fcs_err, in_pause, st);
+		printf("%s-TX,%d,%d,%d,", lbl, out_unicast, out_broadcast, out_multicast);
+		printf("%d,%d,%s\n", out_fcs_err, out_pause, st);
+	};' $TMPFN
+}
+
+if [ "$target_no" != "0" ]; then
+	[ "$is_tab_visible" != "1" ] || echo $TAB
+	show_interface
+	exit
+fi
+
+[ "$is_tab_visible" != "1" ] || echo $TAB
+[ ! -f $SPEED ] || {
+	awk '{ printf("%s\n", substr($0,9)); }' $SPEED > $TMPFN
+}
+[ ! -f $COUNTER ] || {
+	cat $COUNTER >> $TMPFN
+	awk 'BEGIN{
+		no=1; lbl="LAN";
+		st[0]=""; st[1]=""; st[2]="";
+		st[3]=""; st[4]=""; st[5]="";
+		st[6]="1000 Mbps, Full-duplex";
+	};
+	(NR >= 1 && NR <= 6) {
+		st[NR - 1]="Link is down";
+		if ($0 != "")
+			st[NR - 1]=$0;
+	};
+	(NR > 7 && NR <= 14) {
+		if (no <= 4) lbl="LAN"no
+		if (no == 5) lbl="EXT1";
+		if (no == 6) lbl="WAN";
+		if (no == 7) lbl="CPU";
+		in_unicast=$1; in_broadcast=$2;
+		in_multicast=$3; in_fcs_err=$4; in_pause=$5;
+		in_googd_octets_lo=$6; in_googd_octets_hi=$7;
+		out_unicast=$8; out_broadcast=$9;
+		out_multicast=$10; out_fcs_err=$11; out_pause=$12;
+		out_octets_lo=$13; out_octets_hi=$14;
+		printf("%s-RX,%d,%d,%d,", lbl, in_unicast, in_broadcast, in_multicast);
+		printf("%d,%d,%s\n",  in_fcs_err, in_pause, st[no - 1]);
+		printf("%s-TX,%d,%d,%d,", lbl, out_unicast, out_broadcast, out_multicast);
+		printf("%d,%d,%s\n", out_fcs_err, out_pause, st[no - 1]);
+		no ++;
+	};' $TMPFN
+}

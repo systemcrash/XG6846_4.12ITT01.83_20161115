@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv='pragma' content='no-cache'>
+<style type="text/css">
+span.title {
+	font-size:1.2em;
+}
+table.pos {
+	margin:0;
+	width:100%;
+}
+table.real {
+	margin-top:20px;
+	margin-left:auto;
+	margin-right:auto;
+	width:380px;
+	height:144px;
+	border:2px solid #666;
+}
+td.td_header {
+	text-align:right;
+	width:80px;
+}
+td.td_input {
+	text-align:left;
+}
+td.button {
+	text-align:right;
+}
+td#pos_td {
+	text-align:center;
+	padding-top:40px;
+}
+input#username, input#password { width:90%; }
+</style>
+<script>
+if (top.location.href != self.location.href) {
+	top.location.href = self.location.href;
+	window.open(self.location.href, "_top");
+}
+var url = location.href;
+var i = url.lastIndexOf("/");
+if (!(i == -1 ||
+	url.substr(i) == "" ||
+	url.substr(i + 1) == "" ||
+	url.substr(i + 1) == "index.html")
+)
+	window.open("/", "_top");
+
+function on_submit() {
+	var user = document.getElementById("username");
+	var pass = document.getElementById("password");
+	var tf0 = document.forms[0];
+
+	if (user.value == '') {
+		alert('Inavlid username');
+		return false;
+	}
+	if (user.value != "admin" &&
+		user.value != "support" &&
+		user.value != "user") {
+		alert('Invalid username, please try again.');
+		return false;
+	}
+	tf0.submit();
+	return true;
+}
+
+function init() {
+	document.getElementById("username").focus();
+	document.getElementById("username").select();
+}
+</script>
+</head>
+<body onload="init()">
+<table class="pos">
+    <tr>
+        <td id="pos_td">
+			<span class="title">Inteno XG6846</span>
+			<form name="login" action="/main.html" method="post"
+				target="_self">
+			<table class="real">
+				<tr><td>&nbsp;</td></tr>
+				<tr>
+					<td class="td_header">Username:</td>
+					<td class="td_input">
+						<input type="text" id="username" name="j_username"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="td_header">Password:</td>
+					<td class="td_input">
+						<input type="password" id="password" name="j_password"/>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" class="button">
+						<input type='submit' value="Login"
+							onsubmit='return on_submit();' />
+					</td>
+				</tr>
+			</table>
+			</form>
+		</td>
+	</tr>
+</table>
+</body>
+</html>
+

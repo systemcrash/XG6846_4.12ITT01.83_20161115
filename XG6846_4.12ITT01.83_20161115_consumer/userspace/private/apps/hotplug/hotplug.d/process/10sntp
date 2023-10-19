@@ -1,0 +1,21 @@
+#!/bin/sh
+
+[ "$NAME" = "sntp" ] || exit
+
+conf=/var/run/timer2restart.conf
+[ ! -s $conf ] || . $conf
+
+[ "$FORCE2RESTART" != "0" -o "$FORCE2REBOOT" != "0" ] || exit
+
+case "$STATUS" in
+	"2") # Successfully
+		if [ ! -s /var/run/sntp.setup.ok ]; then
+			[ ! -s /etc/init.d/watchdog ] || /etc/init.d/watchdog restart
+			echo > /var/run/sntp.setup.ok
+		fi
+		;;
+	*)
+		rm -f /var/run/sntp.setup.ok > /dev/null 2>&1
+		;;
+esac
+

@@ -1,0 +1,263 @@
+<html>
+<head>
+<meta http-equiv='pragma' content='no-cache'>
+<link rel="stylesheet" href='stylemain.css' type='text/css'>
+<link rel="stylesheet" href='colors.css' type='text/css'>
+<style type='text/css'>
+.match { background-color:#f0f; }
+</style>
+<script type="text/javascript" src="portName.js"></script>
+<script type="text/javascript" src="jquery.min.js"></script>
+<script type="text/javascript">
+<!--
+function on_reset() {
+   $.get("statsifcreset.html", function(result) {
+		refresh();
+   });
+}
+
+function show_stat(json) {
+	var j = $.parseJSON(json);
+	var i, d, line, port;
+	var no = 0;
+
+	if (null == j || typeof(j) == "undefined")
+		return;
+
+	/* Statistics Information */
+	$("#sts > tbody:last tr:gt(1)").remove();
+	for (i in j) {
+		if (i.substr(0, 4) == "port") {
+			d = j[i];
+			line = "<tr>";
+			line += "<td>" + d["portname"] + "</td>";
+			line += "<td>" + d["rx"]["unicast"] + "</td>";
+			line += "<td>" + d["rx"]["broadcast"] + "</td>";
+			line += "<td>" + d["rx"]["multicast"] + "</td>";
+			line += "<td>" + d["rx"]["fcserr"] + "</td>";
+			line += "<td>" + d["rx"]["pause"] + "</td>";
+			line += "<td>" + d["tx"]["unicast"] + "</td>";
+			line += "<td>" + d["tx"]["broadcast"] + "</td>";
+			line += "<td>" + d["tx"]["multicast"] + "</td>";
+			line += "<td>" + d["tx"]["fcserr"] + "</td>";
+			line += "<td>" + d["tx"]["pause"] + "</td>";
+			line += "<td>" + d["speed"] + "</td>";
+			line += "</tr>";
+			$("#sts tbody").append(line);
+		}
+	}
+	$("#sts > td").addClass("hd");
+
+	if (typeof(j["mac"]) == "undefined")
+		return;
+}
+
+function show_mac_table(json) {
+	var j = $.parseJSON(json);
+	var i, d, line, port, mac;
+	var no = 0;
+
+	no = 0;
+	$("#mac_table > tbody:last tr:gt(0)").remove();
+	for (i in j["mac"]) {
+		d = i.indexOf("P-");
+		port = i.substr(d + 2);
+		if (port_filter != port && port_filter != "")
+			continue;
+
+		port = parseInt(port, 10);
+
+		if (is_sfplinked < 1 && port > 3)
+			continue;
+		if (is_sfplinked > 0 && port > 4)
+			continue;
+
+		mac = j["mac"][i];
+		line = "<tr>";
+		line += "<td> LAN" + (port + 1) + "</td>";
+		line += "<td>" + j["mac"][i] + "</td>";
+		line += "</tr>";
+		$("#mac_table tbody").append(line);
+	}
+}
+
+function show_find_table(json) {
+	var j = $.parseJSON(json);
+	var i, d, line, port, mac;
+	var no = 0;
+
+	no = 0;
+	$("#find_table > tbody:last tr:gt(0)").remove();
+	for (i in j["mac"]) {
+		d = i.indexOf("P-");
+		port = i.substr(d + 2);
+		port = parseInt(port, 10);
+
+		if (is_sfplinked < 1 && port > 3)
+			continue;
+		if (is_sfplinked > 0 && port > 4)
+			continue;
+
+		mac = j["mac"][i];
+		line = "<tr>";
+		if (mac_filter != "" && mac.indexOf(mac_filter) != -1) {
+			line += "<td class='match'>" + j["mac"][i] + "</td>";
+			line += "<td class='match'> LAN" + (port + 1) + "</td>";
+		} else {
+			line += "<td>" + j["mac"][i] + "</td>";
+			line += "<td> LAN" + (port + 1) + "</td>";
+		}
+		line += "</tr>";
+		$("#find_table tbody").append(line);
+	}
+}
+
+function on_data(json) {
+	data = json;
+	show_stat(data);
+	show_mac_table(data);
+	show_find_table(data);
+}
+
+function on_refresh() {
+	refresh();
+}
+
+function on_port_filter(v) {
+	port_filter = v;
+	show_mac_table(data);
+}
+
+function on_findmac(event) {
+	var key = event.which;
+
+	switch (key) {
+		case 13: /* enter */
+			mac_filter = $("#findmac").val();
+			if (mac_filter.indexOf('*') != -1)
+				mac_filter = mac_filter.replace(/\*/,"");
+			mac_filter = mac_filter.toUpperCase();
+			show_find_table(data);
+			break;
+	}
+}
+
+function refresh() {
+	if (is_locked)
+		return;
+	$.ajax({
+		url:"/statsifcjson.txt",
+		type:"GET",
+		timeout:10000, /* 10 secs */
+		tryCount:0,
+		retryLimit:10,
+		dataType:"text",
+		success:function(data) {
+		 	on_data(data);
+			is_locked = false;
+		},
+		error:function(xhr, textStatus, errorThrown) {
+			this.tryCount ++;
+			if (this.tryCount <= this.retryLimit) {
+				$.ajax(this);
+				return;
+			}
+		}
+	});
+	is_locked = true;
+}
+
+function frmLoad() {
+	if (is_table != "y")
+		$(".mac_table").hide();
+	if (is_sfplinked < 1)
+		$(".is_sfplinked").hide();
+	$("#port_filter").val("0"); port_filter = "0";
+
+	$("#findmac").val("");
+	$("#findmac").on("keydown keypress",
+		function(event) { on_findmac(event); });
+	refresh();
+	setInterval("refresh();", 5000);
+}
+
+var sessionKey='<%ejGetOther(sessionKey)%>';
+var is_table = '<%ejGetOther(sysInfo, XAVI_PORT_MAC_TABLE_DEF)%>';
+var is_sfplinked = parseInt('<%ejGetOther(checkWanFiber)%>', 10);
+var is_locked = false;
+var port_filter = "", mac_filter = "";
+var data = "";
+
+//-->
+</script>
+</head>
+<body onload='frmLoad()'>
+	<blockquote>
+	<b>Statistics -- LAN</b><br><br>
+	<table id="sts" border="1" cellpadding="2" cellspacing="0">
+		<tbody>
+			<tr>
+				<td>Interface</td>
+				<td colspan="5"><center>Received</center></td>
+				<td colspan="5"><center>Transmitted</center></td>
+				<td colspan="1"><center>Ethernet Speed</center>
+				</td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td>
+				<td>Unicasts</td>
+				<td>Broadcasts</td>
+				<td>Multicasts</td>
+				<td>FCSErr</td>
+				<td>Pause</td>
+				<td>Unicasts</td>
+				<td>Broadcasts</td>
+				<td>Multicasts</td>
+				<td>FCSErr</td>
+				<td>Pause</td>
+				<td>&nbsp;</td>
+			</tr>
+		</tbody>
+	</table>
+	<br><br>
+
+	<b class='find_table'>Find Mac</b><br class='find_table'>
+	<span class="find_table">Press Enter after input:
+		<input type="text" id="findmac" size="17"></span>
+	<table id="find_table" class='find_table' border="1" cellpadding="2"
+		cellspacing="0">
+		<tbody>
+			<tr>
+				<td style="width:160px">MAC</td>
+				<td style="width:40px">Port</td>
+			</tr>
+		</tbody>
+	</table><br><br>
+
+	<b class='mac_table'>Port MAC Table</b><br class='mac_table'>
+	<table id="mac_table" class='mac_table' border="1" cellpadding="2"
+		cellspacing="0">
+		<tbody>
+			<tr>
+				<td style="width:40px">Port</td>
+				<td style="width:160px">
+					<select name="port_filter" id="port_filter"
+						onchange="on_port_filter(this.value);">
+						<option value="">ALL</option>
+						<option value="0">LAN1</option>
+						<option value="1">LAN2</option>
+						<option value="2">LAN3</option>
+						<option value="3">LAN4</option>
+						<option class='is_sfplinked' value="4">LAN5</option>
+					</select>
+				</td>
+			</tr>
+		</tbody>
+	</table><br><br>
+	<input class='mac_table' type="button" onClick="on_refresh()"
+		value="Refresh">
+	<input type="button" onClick="on_reset()" value="Reset Statistics">
+	</blockquote>
+</body>
+</html>
+

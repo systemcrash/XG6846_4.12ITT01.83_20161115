@@ -1,0 +1,12 @@
+#!/bin/sh
+
+FW_IMG="$1"
+URL="$2"
+
+if [ ! -s "$FW_IMG" ]; then
+	echo "Failed to download '"$URL"'"
+	exit 1
+fi
+
+/bin/sw_upgrade -f $FW_IMG
+[ "$?" = "0" ] || echo "Failed to sw_upgrade"

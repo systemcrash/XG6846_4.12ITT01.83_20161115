@@ -1,0 +1,13 @@
+#!/bin/sh /etc/rc.common
+
+conf="/var/run/watchdog.conf"
+[ ! -s $conf ] || . $conf
+start() {
+	TR69C_LASTPERIODICINFORMTIME=$TR69C_LASTPERIODICINFORMTIME \
+		tr69c -m 0 &
+}
+
+stop() {
+	killall -9 tr69c > /dev/null 2>&1
+	sleep 5
+}

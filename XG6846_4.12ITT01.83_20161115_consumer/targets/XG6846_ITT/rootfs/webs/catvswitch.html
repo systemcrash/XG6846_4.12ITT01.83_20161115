@@ -1,0 +1,99 @@
+<html>
+<head>
+<meta HTTP-EQUIV='Pragma' CONTENT='no-cache'>
+<link rel="stylesheet" href='stylemain.css' type='text/css'>
+<link rel="stylesheet" href='colors.css' type='text/css'>
+<script type="text/javascript" src="jquery.min.js"></script>
+<script language="javascript">
+<!--
+function btnApply() {
+    var sessionKey='<%ejGetOther(sessionKey)%>';
+    var loc = 'catvswitch.cgi?';
+
+    with (document.forms[0]) {
+         if ( switchCATV[1].checked == true )
+            loc += 'enblCATV=1';
+         else
+            loc += 'enblCATV=0';
+    }
+    loc += '&sessionKey=' + sessionKey;
+
+	location.href = loc;
+}
+
+function loaddata(txt)
+{
+	var alarm = parseInt(txt, 10);
+	var msg = " Strong signal (>-8dbm)";
+
+	if (catv_enable == '0' || alarm == 0)
+		msg =  "No signal/CATV not connected (<-10dbm)"
+
+	document.getElementById("catv_alarm").innerHTML = msg;
+}
+
+function refresh() {
+	if (is_locked)
+		return;
+	$.ajax({
+		url:"/catvstatus.txt",
+		dataType:"text",
+		timeout:10000, /* 10 secs */
+		tryCount:0,
+		retryLimit:10,
+		success:function(txt) {
+			loaddata(txt);
+			is_locked = false;
+		},
+		error:function(xhr, textStatus, errorThrown) {
+			this.tryCount++;
+			if (this.tryCount <= this.retryLimit) {
+				$.ajax(this);
+				return;
+			}
+		}
+	});
+	is_locked = true;
+}
+
+function frmLoad() {
+	var no;
+
+	no = (catv_enable == '1') ? 1 : 0;
+	document.forms[0].switchCATV[no].checked = true;
+
+	refresh();
+	setInterval("refresh();", 5000);
+}
+
+var catv_enable = '<%ejGet(enblCATV)%>';
+var is_locked = false;
+// -->
+</script>
+</head>
+<body onLoad='frmLoad()'>
+	<blockquote>
+	<form>
+		<b>CATV Module</b><br/><br/>
+		<hr align="left" width="400" color="#CCCCCC"><br/>
+		<table>
+			<tr>
+				<td >CATV :</td>
+				<td>
+					<input name='switchCATV' type='radio'>Disable &nbsp;
+					<input name='switchCATV' type='radio'>Enable
+				</td>
+			</tr>
+			<tr>
+				<td>Alarm Status:</td>
+				<td id="catv_alarm"></td>
+			</tr>
+		</table><br/>
+		<p align="center">
+			<input type='button' onClick='btnApply()' value='Save/Apply'>
+		</p>
+	</form>
+	</blockquote>
+</body>
+</html>
+

@@ -1,0 +1,197 @@
+<html>
+   <head>
+      <meta HTTP-EQUIV='Pragma' CONTENT='no-cache'>
+      <link rel="stylesheet" href='stylemain.css' type='text/css'>
+         <link rel="stylesheet" href='colors.css' type='text/css'>
+            <script language="javascript" src="util.js"></script>
+            <script language="javascript">
+            
+var  PriorityNum = new Array(12);
+var  QueueNum = new Array(12);
+
+function frmLoad() {
+   with ( document.forms[0] ) {
+   	PriorityNum[0]='0';QueueNum[0]='<%ejGet(qos_0)%>';
+       PriorityNum[1]='1';QueueNum[1]='<%ejGet(qos_1)%>';
+       PriorityNum[2]='2';QueueNum[2]='<%ejGet(qos_2)%>';
+       PriorityNum[3]='3';QueueNum[3]='<%ejGet(qos_3)%>';
+       PriorityNum[4]='4';QueueNum[4]='<%ejGet(qos_4)%>';
+       PriorityNum[5]='5';QueueNum[5]='<%ejGet(qos_5)%>';
+       PriorityNum[6]='6';QueueNum[6]='<%ejGet(qos_6)%>';
+       PriorityNum[7]='7';QueueNum[7]='<%ejGet(qos_7)%>';
+       PriorityNum[8]='8';QueueNum[8]='<%ejGet(qos_8)%>';
+       PriorityNum[9]='9';QueueNum[9]='<%ejGet(qos_9)%>';
+       PriorityNum[10]='10';QueueNum[10]='<%ejGet(qos_10)%>';
+       PriorityNum[11]='11';QueueNum[11]='<%ejGet(qos_11)%>';
+       PriorityNum[12]='12';QueueNum[12]='<%ejGet(qos_12)%>';
+       PriorityNum[13]='13';QueueNum[13]='<%ejGet(qos_13)%>';
+       PriorityNum[14]='14';QueueNum[14]='<%ejGet(qos_14)%>';
+       PriorityNum[15]='15';QueueNum[15]='<%ejGet(qos_15)%>';
+       PriorityNum[16]='16';QueueNum[16]='<%ejGet(qos_16)%>';
+       PriorityNum[17]='17';QueueNum[17]='<%ejGet(qos_17)%>';
+       PriorityNum[18]='18';QueueNum[18]='<%ejGet(qos_18)%>';
+       PriorityNum[19]='19';QueueNum[19]='<%ejGet(qos_19)%>';
+       PriorityNum[20]='20';QueueNum[20]='<%ejGet(qos_20)%>';
+       PriorityNum[21]='21';QueueNum[21]='<%ejGet(qos_21)%>';
+       PriorityNum[22]='22';QueueNum[22]='<%ejGet(qos_22)%>';
+       PriorityNum[23]='23';QueueNum[23]='<%ejGet(qos_23)%>';
+       PriorityNum[24]='24';QueueNum[24]='<%ejGet(qos_24)%>';
+       PriorityNum[25]='25';QueueNum[25]='<%ejGet(qos_25)%>';
+       PriorityNum[26]='26';QueueNum[26]='<%ejGet(qos_26)%>';
+       PriorityNum[27]='27';QueueNum[27]='<%ejGet(qos_27)%>';
+       PriorityNum[28]='28';QueueNum[28]='<%ejGet(qos_28)%>';
+       PriorityNum[29]='29';QueueNum[29]='<%ejGet(qos_29)%>';
+       PriorityNum[30]='30';QueueNum[30]='<%ejGet(qos_30)%>';
+       PriorityNum[31]='31';QueueNum[31]='<%ejGet(qos_31)%>';
+       PriorityNum[32]='32';QueueNum[32]='<%ejGet(qos_32)%>';
+       PriorityNum[33]='33';QueueNum[33]='<%ejGet(qos_33)%>';
+       PriorityNum[34]='34';QueueNum[34]='<%ejGet(qos_34)%>';
+       PriorityNum[35]='35';QueueNum[35]='<%ejGet(qos_35)%>';
+       PriorityNum[36]='36';QueueNum[36]='<%ejGet(qos_36)%>';
+       PriorityNum[37]='37';QueueNum[37]='<%ejGet(qos_37)%>';
+       PriorityNum[38]='38';QueueNum[38]='<%ejGet(qos_38)%>';
+       PriorityNum[39]='39';QueueNum[39]='<%ejGet(qos_39)%>';
+       PriorityNum[40]='40';QueueNum[40]='<%ejGet(qos_40)%>';
+       PriorityNum[41]='41';QueueNum[41]='<%ejGet(qos_41)%>';
+       PriorityNum[42]='42';QueueNum[42]='<%ejGet(qos_42)%>';
+       PriorityNum[43]='43';QueueNum[43]='<%ejGet(qos_43)%>';
+       PriorityNum[44]='44';QueueNum[44]='<%ejGet(qos_44)%>';
+       PriorityNum[45]='45';QueueNum[45]='<%ejGet(qos_45)%>';
+       PriorityNum[46]='46';QueueNum[46]='<%ejGet(qos_46)%>';
+       PriorityNum[47]='47';QueueNum[47]='<%ejGet(qos_47)%>';
+       PriorityNum[48]='48';QueueNum[48]='<%ejGet(qos_48)%>';
+       PriorityNum[49]='49';QueueNum[49]='<%ejGet(qos_49)%>';
+       PriorityNum[50]='50';QueueNum[50]='<%ejGet(qos_50)%>';
+       PriorityNum[51]='51';QueueNum[51]='<%ejGet(qos_51)%>';
+       PriorityNum[52]='52';QueueNum[52]='<%ejGet(qos_52)%>';
+       PriorityNum[53]='53';QueueNum[53]='<%ejGet(qos_53)%>';
+       PriorityNum[54]='54';QueueNum[54]='<%ejGet(qos_54)%>';
+       PriorityNum[55]='55';QueueNum[55]='<%ejGet(qos_55)%>';
+       PriorityNum[56]='56';QueueNum[56]='<%ejGet(qos_56)%>';
+       PriorityNum[57]='57';QueueNum[57]='<%ejGet(qos_57)%>';
+       PriorityNum[58]='58';QueueNum[58]='<%ejGet(qos_58)%>';
+       PriorityNum[59]='59';QueueNum[59]='<%ejGet(qos_59)%>';
+       PriorityNum[60]='60';QueueNum[60]='<%ejGet(qos_60)%>';
+       PriorityNum[61]='61';QueueNum[61]='<%ejGet(qos_61)%>';
+       PriorityNum[62]='62';QueueNum[62]='<%ejGet(qos_62)%>';
+       PriorityNum[63]='63';QueueNum[63]='<%ejGet(qos_63)%>';
+   	}
+
+   var i;
+ for(i=0; i<64; i++)
+{ 		
+	var dscp;
+	
+	dscp = PriorityNum[i] * 4;
+	ientry = flist.addDataEntry ();
+	ientry.insertText ((i+1));	
+	ientry.insertText (PriorityNum[i] + " (0x" + dscp.toString(16) + ")");
+	ientry.insertText ("Priority " + QueueNum[i]);
+	
+}	
+
+flist.update ();
+   	}
+function btnApply() {
+   var sessionKey='<%ejGetOther(sessionKey)%>';
+   var loc = 'qoslist.cgi?';
+
+   with ( document.forms[0] ) {	
+   	  loc += 'priorityNum=' + PriorityNumD.value;
+	  loc += '&queueNum=' + QueueNumD.value;
+	 
+   	}
+   loc += '&sessionKey=' + sessionKey;
+   var code = 'location.assign("' + loc + '")';
+   eval(code);
+
+}
+
+
+
+
+
+</script>
+</head>
+<body onLoad='frmLoad()'>
+<blockquote>
+<form name="formname">
+ <b>QoS <br>
+  </b>
+    
+
+<P class=commentfield><strong>IPv4 TOS/DiffServ and IPv6 Traffic Class Frame Priority Mapping Table: </strong></P>
+<div id="seldiv">
+</div>
+
+<P class=commentfield>
+<table border="0">
+<tr>
+<td><INPUT class="buttonarea" type="reset" value="Refresh" name="submit5" onClick="javascript:window.location.reload()"></td>
+</tr>
+</table>
+</P>
+
+<hr align="left" width="400" color="#CCCCCC">
+
+<P class=commentfield>IP DiffServ/TC[7:2]:<INPUT class="textarea" name="PriorityNumD" value="" size="2" maxlength="2">&nbsp;&nbsp;
+Mapping Queue:<select name="QueueNumD" >
+          <OPTION value="0"> Priority 0
+          <OPTION value="1"> Priority 1
+          <OPTION value="2"> Priority 2
+          <OPTION value="3"> Priority 3
+        </select>
+&nbsp;
+<input type='button' onClick='btnApply()' value="Modified"></P>
+
+</FORM>
+
+
+<script type="text/javascript" language="JavaScript">
+
+var flist = new SelectTable ();
+
+flist.iSelectName = "wireless_sel";
+
+flist.FormName = "formname";
+
+flist.size = "200px";
+
+//flist.scrollbar = "disabled";
+
+flist.scrollSwitchButton = "enabled";
+
+flist.insertHeaderCell ("#",40);
+flist.insertHeaderCell ("IP DiffServ/TC[7:2] ",160);
+flist.insertHeaderCell ("Mapping Queue",160);
+
+
+//flist.appendOnElementName ("show_tbl");
+flist.appendOnElementId ("seldiv");
+
+flist.update ();
+
+</script>
+
+<script type="text/javascript" language="JavaScript">
+
+
+function Valid()
+{
+	return true;
+}
+function APPLY_QOS()
+{
+   if( document.formname.frmno.value == 76 )
+   {   
+	   if(Valid(this.form)!= true )
+	       return   false;
+	   else
+	       return   true;
+   }
+   else
+   return   true;
+}
+</script>
+
+</BODY></HTML>

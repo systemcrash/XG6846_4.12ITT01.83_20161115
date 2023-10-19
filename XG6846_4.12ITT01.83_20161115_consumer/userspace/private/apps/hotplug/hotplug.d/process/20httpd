@@ -1,0 +1,5 @@
+#!/bin/sh
+
+[ "$NAME" = "httpd" ] || exit
+
+[ ! -s /var/authip ] || rm -f /var/authip

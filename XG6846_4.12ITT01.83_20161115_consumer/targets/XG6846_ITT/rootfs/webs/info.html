@@ -1,0 +1,422 @@
+<html>
+<head>
+<link rel="stylesheet" href='stylemain.css' type='text/css'>
+<link rel="stylesheet" href='colors.css' type='text/css'>
+<meta http-equiv="Pragma" content="no-cache">
+<title></title>
+<script type="text/javascript" src="jquery.min.js"></script>
+<style type="text/css">
+#mmac_list {
+	border-collapse:collapse;
+	padding:0;
+}
+#mmac_list td,
+#mmac_list th {
+	padding:3px;
+	border:1px solid #000;
+}
+</style>
+</head>
+<body onload="init();">
+<script>
+/* Table 1 */
+var boardID = '<%ejGet(boardID)%>';
+var numCpuThreads = '<%ejGet(numCpuThreads)%>';
+var cmsBuildTimestamp = '<%ejGet(cmsBuildTimestamp)%>';
+var sysVersion = '<%ejGet(sysVersion)%>';
+var cfeVersion = '<%ejGet(cfeVersion)%>';
+var buildAtm = '<%ejGetOther(sysInfo, buildAtm)%>';
+var buildPtm = '<%ejGetOther(sysInfo, buildPtm)%>';
+var dslPhyDrvVersion = '<%ejGet(dslPhyDrvVersion)%>';
+var macaddr = '<%ejGetOther(macaddr)%>';
+var uptimeString = '<%ejGetOther(sysInfo, uptimeString)%>';
+var wlInterface = '<%ejGetWl(wlInterface)%>';
+var wlVersion = '<%ejGetWl(wlVersion)%>';
+var buildMoca = '<%ejGetOther(sysInfo, buildSupportMoca)%>';
+var mocaVersion = '<%ejGet(mocaVersion)%>';
+var voice = '<%ejGetVoice(voiceProtocol)%>';
+var voiceServiceVersion = '<%ejGet(voiceServiceVersion)%>';
+
+/* Table 2 */
+var VdslIncluded = '<%ejGetOther(isVdsl, VdslIncluded)%>';
+var DslBondingEnabled = '<%ejGetOther(isDslBondingEnabled)%>';
+var wanConnType = '<%ejGet(wanConnType)%>';
+var enblIPv6 = '<%ejGetOther(sysInfo, enblIPv6)%>';
+var buildSntp = '<%ejGetOther(sysInfo, buildSntp)%>';
+var enblSntp = '<%ejGet(ntp_enabled)%>';
+var proto = '<%ejGetOther(sysInfo, noBrPrtcl)%>';
+
+var XAVI_SFP_DDM_DEF = "<%ejGetOther(sysInfo, XAVI_SFP_DDM_DEF)%>";
+var ddm_vendor_sn = "<%ejGetOther(sysInfo, ddm_vendor_sn)%>";
+var ddm_vendor_name = "<%ejGetOther(sysInfo, ddm_vendor_name)%>";
+var ddm_vendor_oui = "<%ejGetOther(sysInfo, ddm_vendor_oui)%>";
+var ddm_vendor_pn = "<%ejGetOther(sysInfo, ddm_vendor_pn)%>";
+var ddm_vendor_rev = "<%ejGetOther(sysInfo, ddm_vendor_rev)%>";
+var ddm_temperature = "<%ejGetOther(sysInfo, ddm_temperature)%>";
+var ddm_voltage = "<%ejGetOther(sysInfo, ddm_voltage)%>";
+var ddm_bias = "<%ejGetOther(sysInfo, ddm_bias)%>";
+var ddm_tx_power = "<%ejGetOther(sysInfo, ddm_tx_power)%>";
+var ddm_rx_power = "<%ejGetOther(sysInfo, ddm_rx_power)%>";
+
+/* Table 3 (IGMP) */
+var mmac_list = "";
+var is_locked = false;
+function software_version() {
+	var builddate = cmsBuildTimestamp;
+	var cols;
+
+	if (builddate != "") {
+		cols = builddate.split("_");
+	}
+	$("#td_sysVersion").html(sysVersion + "_20" + cols[0]);
+}
+
+function on_data(data) {
+	var i, str, portlist, mac, txt = "";
+	var cols, x = 0;
+
+	if (data == "")
+		return;
+	mmac_list = $.parseJSON(data);
+	$("#mmac_list > tbody:last tr:gt(0)").remove();
+	for (i = 0; i < mmac_list.length; i ++) {
+		if (mmac_list[i] == "")
+			continue;
+		str = mmac_list[i];
+		str = str.replace(/ /g, "<br>");
+		txt += "<tr>";
+		txt += "<td>LAN" + (i + 1) + "</td>";
+		txt += "<td>" + str + "</td>";
+		txt += "</tr>";
+	}
+	$("#mmac_list tbody").append(txt)
+}
+
+function refresh() {
+	if (is_locked)
+		return;
+	$.ajax({
+		url:"/mmac.txt",
+		type:"GET",
+		timeout:10000, /* 10 secs */
+		tryCount:0,
+		retryLimit:10,
+		dataType:"text",
+		success:function(data) {
+			on_data(data);
+			is_locked = false;
+		},
+		error:function(xhr, textStatus, errorThrown) {
+			this.tryCount ++;
+			if (this.tryCount <= this.retryLimit) {
+				$.ajax(this);
+				return;
+			}
+		}
+	});
+	is_locked = true;
+}
+
+function init() {
+	if (typeof($) == "undefined") {
+		setTimeout(function(e){ init(); }, 1000);
+		return;
+	}
+	/* Table 1 */
+	$("#td_boardID").html(boardID);
+	if (numCpuThreads == '2') {
+		$("#td_numCpuThreads").html(numCpuThreads);
+		$(".tr_numCpuThreads").show();
+	} else {
+		$(".tr_numCpuThreads").hide();
+	}
+	$("#td_cmsBuildTimestamp").html(cmsBuildTimestamp);
+	software_version();
+	$("#td_cfeVersion").html(cfeVersion);
+	if (buildAtm == "1" || buildPtm == "1") {
+		$("#td_dslPhyDrvVersion").html(dslPhyDrvVersion);
+		$(".tr_dslPhyDrvVersion").show();
+	} else {
+		$(".tr_dslPhyDrvVersion").hide();
+	}
+	if (wlInterface == '1') {
+		$("#td_wlVersion").html(wlVersion);
+		$(".tr_wlVersion").show();
+	} else {
+		$(".tr_wlVersion").hide();
+	}
+	if (buildMoca == 1) {
+		$("#td_mocaVersion").html(mocaVersion);
+		$(".tr_mocaVersion").show();
+	} else {
+		$(".tr_mocaVersion").hide();
+	}
+	if (voice == 'SIP' || voice == 'MGCP') {
+		$("#td_voiceServiceVersion").html(voiceServiceVersion);
+		$(".tr_voiceServiceVersion").show();
+	} else {
+		$(".tr_voiceServiceVersion").hide();
+	}
+	$("#td_macaddr").html(macaddr);
+	$("#td_uptimeString").html(uptimeString);
+
+	/* Table 2 */
+	$(".tr_DslBondingEnabled").hide();
+	$(".tr_VdslIncluded").hide();
+	$(".tr_VdslVersion").hide();
+	if (DslBondingEnabled == "1") {
+		$("#td_trafficType").html("<%ejGetOther(trafficType, 0)%>");
+		$("#td_lineRate_0_0").html("<%ejGetOther(lineRate, 0, 0)%>");
+		$("#td_lineRate_1_0").html("<%ejGetOther(lineRate, 1, 0)%>");
+		$(".tr_DslBondingEnabled").show();
+	} else if (VdslIncluded == "1") {
+		$("#td_trafficType_0").html("<%ejGetOther(trafficType, 0)%>");
+		$("#td_lineRate_0_0").html("<%ejGetOther(lineRate, 0, 0)%>");
+		$("#td_lineRate_1_0").html("<%ejGetOther(lineRate, 1, 0)%>");
+		$("#td_trafficType_1").html("<%ejGetOther(trafficType, 1)%>");
+		$("#td_lineRate_0_1").html("<%ejGetOther(lineRate, 0, 1)%>");
+		$("#td_lineRate_1_1").html("<%ejGetOther(lineRate, 1, 1)%>");
+		$(".tr_VdslIncluded").show();
+	} else if (buildAtm == "1" || buildPtm == "1") {
+		$("#td_verlineRate_0_0").html("<%ejGetOther(lineRate, 0, 0)%>");
+		$("#td_verlineRate_1_0").html("<%ejGetOther(lineRate, 1, 0)%>");
+		$(".tr_VdslVersion").show();
+	}
+	if (wanConnType == '0') {
+		$("#td_wanConnType").html("Static IP");
+		$("#td_ipaddress").html("<%ejGet(staticIPAddress)%>");
+		$("#td_subnetmask").html("<%ejGet(staticIPMask)%>");
+		$("#td_gateway").html("<%ejGet(staticIPGateWay)%>");
+		$("#td_primarydns").html("<%ejGet(staticIPPrimaryDns)%>");
+		$("#td_secondarydns").html("<%ejGet(staticIPSecondaryDns)%>");
+	} else {
+		$("#td_wanConnType").html("DHCP");
+		$("#td_ipaddress").html("<%ejGetOther(sysInfo, ipaddr)%>");
+		$("#td_subnetmask").html("<%ejGetOther(sysInfo, netmask)%>");
+		$("#td_gateway").html("<%ejGetOther(sysInfo, gateway)%>");
+		$("#td_primarydns").html("<%ejGetOther(sysInfo, primarydns)%>");
+		$("#td_secondarydns").html("<%ejGetOther(sysInfo, secondarydns)%>");
+	}
+	if (enblIPv6 == '1') {
+		$("#td_lanULAAddr6").html("<%ejGetOther(sysInfo, lanULAAddr6)%>");
+		$("#td_ipv6gateway").html("<%ejGetOther(sysInfo, dfltGw6)%> <%ejGetOther(sysInfo, dfltGw6Ifc)%>");
+		$(".tr_enblIPv6").show();
+	} else {
+		$(".tr_enblIPv6").hide();
+	}
+	if (buildSntp == '1' && enblSntp == '1' && proto != 'Bridge') {
+		$("#td_datetime").html("<%ejGetOther(sysInfo, dateTime)%>");
+		$(".tr_bridge").show();
+	} else {
+		$(".tr_bridge").hide();
+	}
+
+	if (XAVI_SFP_DDM_DEF == 'y') {
+		$("#td_ddm_vendor_sn").html(ddm_vendor_sn);
+		$("#td_ddm_vendor_name").html(ddm_vendor_name);
+		$("#td_ddm_vendor_oui").html(ddm_vendor_oui);
+		$("#td_ddm_vendor_pn").html(ddm_vendor_pn);
+		$("#td_ddm_vendor_rev").html(ddm_vendor_rev);
+		$("#td_ddm_temperature").html(ddm_temperature);
+		$("#td_ddm_voltage").html(ddm_voltage);
+		$("#td_ddm_bias").html(ddm_bias);
+		$("#td_ddm_tx_power").html(ddm_tx_power);
+		$("#td_ddm_rx_power").html(ddm_rx_power);
+		$(".ddm_info").show();
+	} else {
+		$(".ddm_info").hide();
+	}
+	refresh();
+	setTimeout("location.href = 'info.html'", 10000);
+}
+</script>
+<blockquote>
+	<!-- Table 1 -->
+	<b>Device Info<br> <br>
+	<table border="1" cellpadding="3" cellspacing="0">
+		<tr>
+			<td class="hd">Board ID:</td>
+			<td id="td_boardID"></td>
+		</tr>
+		<tr class="tr_numCpuThreads">
+			<td class="hd">Symmetric CPU Threads:</td>
+			<td id="td_numCpuThreads"></td>
+		</tr>
+		<tr>
+			<td class='hd'>Build Timestamp:</td>
+			<td id="td_cmsBuildTimestamp"></td>
+		</tr>
+		<tr>
+			<td class='hd'>Software Version:</td>
+			<td id="td_sysVersion"></td>
+		</tr>
+		<tr>
+			<td class='hd'>Bootloader (CFE) Version:</td>
+			<td id="td_cfeVersion"></td>
+		</tr>
+		<tr class="tr_dslPhyDrvVersion">
+			<td class="hd">DSL PHY and Driver Version:</td>
+			<td id="td_dslPhyDrvVersion"></td>
+		</tr>
+		<tr class="tr_wlVersion">
+			<td class="hd">Wireless Driver Version:</td>
+			<td id="td_wlVersion"></td>
+		</tr>
+		<tr class="tr_mocaVersion">
+			<td class="hd">Moca Version:</td>
+			<td id="td_mocaVersion"></td>
+		</tr>
+		<tr class="tr_voiceServiceVersion">
+			<td class="hd">Voice Service Version:</td>
+			<td id="td_voiceServiceVersion"></td>
+		</tr>
+		<tr>
+			<td class='hd'>MAC Address:</td>
+			<td id="td_macaddr"></td>
+		</tr>
+		<tr>
+			<td class='hd'>Uptime:</td>
+			<td id="td_uptimeString"></td>
+		</tr>
+	</table><br>
+
+	<!-- Table 2 -->
+	This information reflects the current status of your WAN connection.<br><br>
+	<table border="1" cellpadding="3" cellspacing="0">
+		<tr class="tr_DslBondingEnabled">
+			<td class="hd">Traffic Type:</td>
+			<td id="td_trafficType"></td>
+		</tr>
+		<tr class="tr_DslBondingEnabled">
+			<td class="hd">Aggregate Line Rate - Upstream (Kbps):</td>
+			<td id="td_lineRate_0_0"></td>
+		</tr>
+		<tr class="tr_DslBondingEnabled">
+			<td class="hd">Aggregate Line Rate - Downstream (Kbps):</td>
+			<td id="td_lineRate_1_0"></td>
+		</tr>
+		<tr class="tr_VdslIncluded">
+			<td class="hd">B0 Traffic Type:</td>
+			<td id="td_trafficType_0"></td>
+		</tr>
+		<tr class="tr_VdslIncluded">
+			<td class="hd">B0 Line Rate - Upstream (Kbps):</td>
+			<td id="td_lineRate_0_0"></td>
+		</tr>
+		<tr class="tr_VdslIncluded">
+			<td class="hd">B0 Line Rate - Downstream (Kbps):</td>
+			<td id="td_lineRate_1_0"></td>
+		</tr>
+		<tr class="tr_VdslIncluded">
+			<td class="hd">B1 Traffic Type:</td>
+			<td id="td_trafficType_1"></td>
+		</tr>
+		<tr class="tr_VdslIncluded">
+			<td class="hd">B1 Line Rate - Upstream (Kbps):</td>
+			<td id="td_lineRate_0_1"></td>
+		</tr>
+		<tr class="tr_VdslIncluded">
+			<td class="hd">B1 Line Rate - Downstream (Kbps):</td>
+			<td id="td_lineRate_1_1"></td>
+		</tr>
+		<tr class="tr_VdslVersion">
+			<td class="hd">Line Rate - Upstream (Kbps):</td>
+			<td id="td_verlineRate_0_0"></td>
+		</tr>
+		<tr class="tr_VdslVersion">
+			<td class="hd">Line Rate - Downstream (Kbps):</td>
+			<td id="td_verlineRate_1_0"></td>
+		</tr>
+		<tr>
+			<td class='hd'>Protocol:</td>
+			<td id="td_wanConnType"></td>
+		</tr>
+		<tr>
+			<td class='hd'>IP Address:</td>
+			<td id="td_ipaddress"></td>
+		</tr>
+		<tr>
+			<td class='hd'>Subnet Mask:</td>
+			<td id="td_subnetmask"></td>
+		</tr>
+		<tr>
+			<td class='hd'>Gateway:</td>
+			<td id="td_gateway"></td>
+		</tr>
+		<tr>
+			<td class='hd'>Primary DNS:</td>
+			<td id="td_primarydns"></td>
+		</tr>
+		<tr>
+			<td class='hd'>Secondary DNS:</td>
+			<td id="td_secondarydns"></td>
+		</tr>
+		<tr class="tr_enblIPv6">
+			<td class="hd">LAN IPv6 ULA Address:</td>
+			<td id="td_lanULAAddr6"></td>
+		</tr>
+		<tr class="tr_enblIPv6">
+			<td class="hd">Default IPv6 Gateway:</td>
+			<td id="td_ipv6gateway"></td>
+		</tr>
+		<tr class="tr_bridge">
+			<td class="hd">Date/Time:</td>
+			<td id="td_datetime"></td>
+		</tr>
+	</table>
+	<span class="ddm_info">
+	<br><b>DDM Info<br><br>
+	</span>
+	<table class="ddm_info" border="1" cellpadding="3" cellspacing="0">
+		<tr>
+			<td class="hd">Vendor SN:</td>
+			<td id="td_ddm_vendor_sn"></td>
+		</td>
+		<tr>
+			<td class="hd">Vendor Name:</td>
+			<td id="td_ddm_vendor_name"></td>
+		</td>
+		<tr>
+			<td class="hd">Vendor OUI:</td>
+			<td id="td_ddm_vendor_oui"></td>
+		</td>
+		<tr>
+			<td class="hd">Vendor PN:</td>
+			<td id="td_ddm_vendor_pn"></td>
+		</td>
+		<tr>
+			<td class="hd">Vendor rev:</td>
+			<td id="td_ddm_vendor_rev"></td>
+		</td>
+		<tr>
+			<td class="hd">Temperature:</td>
+			<td id="td_ddm_temperature"></td>
+		</td>
+		<tr>
+			<td class="hd">Voltage:</td>
+			<td id="td_ddm_voltage"></td>
+		</td>
+		<tr>
+			<td class="hd">Bias:</td>
+			<td id="td_ddm_bias"></td>
+		</td>
+		<tr>
+			<td class="hd">Tx Power:</td>
+			<td id="td_ddm_tx_power"></td>
+		</td>
+		<tr>
+			<td class="hd">Rx Power:</td>
+			<td id="td_ddm_rx_power"></td>
+		</td>
+	</table>
+
+	<br><b>Port IGMP Snooping Flow</b><br><br>
+	<table id="mmac_list">
+		<tbody>
+			<td class="hd">Port</td>
+			<td class="hd">MAC Address</td>
+		</tbody>
+	</table>
+</blockquote>
+</body>
+</html>

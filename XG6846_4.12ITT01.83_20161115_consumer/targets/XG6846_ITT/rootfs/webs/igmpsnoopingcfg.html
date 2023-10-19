@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv='pragma' content='no-cache'>
+<link rel="stylesheet" href='stylemain.css' type='text/css'>
+<link rel="stylesheet" href='colors.css' type='text/css'>
+<script src="util.js"></script>
+<script>
+var is_sfplinked = parseInt('<%ejGetOther(checkWanFiber)%>', 10);
+function frmLoad() {
+	with ( document.forms[0] ) {
+		if ('<%ejGet(igmp_port1)%>' == '1')
+			 igmp_1.checked = true;
+		else
+			 igmp_1.checked = false; 
+		if ('<%ejGet(igmp_port2)%>' == '1')
+			 igmp_2.checked = true;
+		else
+			 igmp_2.checked = false; 
+			 
+		if ('<%ejGet(igmp_port3)%>' == '1')
+			 igmp_3.checked = true;
+		else
+			 igmp_3.checked = false; 
+			 
+		if ('<%ejGet(igmp_port4)%>' == '1')
+			 igmp_4.checked = true;
+		else
+			 igmp_4.checked = false; 
+			 
+		if ('<%ejGet(igmp_port5)%>' == '1')
+			 igmp_5.checked = true;
+		else
+			 igmp_5.checked = false;
+	}
+   
+	if (is_sfplinked > 0) {
+   		document.getElementById("disPlayLan5").style.display = "block";
+	} else {
+		document.getElementById("disPlayLan5").style.display = "none";
+	}
+}
+
+function btnApply() {
+   var sessionKey='<%ejGetOther(sessionKey)%>';
+   var loc = 'igmpsnoopingcfg.cgi?';
+
+   with ( document.forms[0] ) {	
+
+	 if (igmp_1.checked == true)
+            loc += 'igmp_port1=1';
+        else
+            loc += 'igmp_port1=0';
+	 if (igmp_2.checked == true)
+            loc += '&igmp_port2=1';
+        else
+            loc += '&igmp_port2=0';
+	 if (igmp_3.checked == true)
+            loc += '&igmp_port3=1';
+        else
+            loc += '&igmp_port3=0';
+	 if (igmp_4.checked == true)
+            loc += '&igmp_port4=1';
+        else
+            loc += '&igmp_port4=0';
+     if (igmp_5.checked == true)
+            loc += '&igmp_port5=1';
+        else
+            loc += '&igmp_port5=0';
+   }
+   
+   loc += '&sessionKey=' + sessionKey;
+   var code = 'location.assign("' + loc + '")';
+   eval(code);
+}
+</script>
+</head>
+<body onLoad='frmLoad()'>
+<blockquote>
+<form>
+	<b>Port IGMP Snooping Setting<br></b><br>  
+	<hr align="left" width="400" color="#CCCCCC"> 
+<br>
+<TABLE> 
+<tr align="center"></tr> 
+ 
+<tr>
+    <td>LAN1 : Enable IGMP Snooping <input name="igmp_1" type="checkbox" value="1"></td>
+ </tr> 
+<tr>
+    <td>LAN2 : Enable IGMP Snooping <input name="igmp_2" type="checkbox" value="1"></td>  
+</tr> 
+<tr>
+    <td>LAN3 : Enable IGMP Snooping <input name="igmp_3" type="checkbox" value="1"></td>
+</tr> 
+<tr>
+    <td>LAN4 : Enable IGMP Snooping <input name="igmp_4" type="checkbox" value="1"></td>   
+</tr> 
+</TABLE> 
+
+ <table  id="disPlayLan5" style="display:none;">
+ <tr>
+    <td>LAN5 : Enable IGMP Snooping <input name="igmp_5" type="checkbox" value="1"></td>   
+</tr>
+</TABLE> 
+
+<br> 
+<br>
+            
+
+            <p align="center">
+               <input type='button' onClick='btnApply()' value='Apply/Save'>
+            </P>
+         </form>
+      </blockquote>
+   </body>
+</html>

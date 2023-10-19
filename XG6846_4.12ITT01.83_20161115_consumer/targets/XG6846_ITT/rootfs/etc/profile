@@ -1,0 +1,96 @@
+#!/bin/sh
+# /etc/profile: system-wide .profile file for the Bourne shells
+#
+export PATH=/home/bin:/home/scripts:/opt/bin:/bin:/sbin:/usr/bin:/usr/local/jamvm/bin:/opt/scripts
+export LD_LIBRARY_PATH=/lib/public:/lib/private:/lib/gpl:/lib
+
+trap "" 2
+
+# if you want the busybox shell to timeout after some number of seconds of
+# inactivity, change the 0 to the number of seconds, e.g. 300.
+# TMOUT=0 means no busybox shell timeout.
+export TMOUT=0
+
+firsttime=`echo /var/udhcpd/udhcpd.lease*`
+[ "$firsttime" != "/var/udhcpd/udhcpd.lease*" ] && exit
+
+echo "Loading drivers and kernel modules... "
+mknod /var/fuse c 10 229
+chmod a+rw /var/fuse
+mkdir -p /var/log /var/run /var/state/dhcp /var/ppp /var/udhcpd /var/zebra /var/siproxd /var/cache /var/tmp /var/samba /var/samba/share /var/samba/homes /var/samba/private /var/samba/locks
+cp /etc/smb.conf /var/samba/ 2>/dev/null
+
+echo > /var/udhcpd/udhcpd.leases
+ifconfig lo 127.0.0.1 netmask 255.0.0.0 broadcast 127.255.255.255 up
+
+VER="2.6.30"
+# insmod module_list
+modins() {
+	for i in $@; do
+		fn="/lib/modules/$VER/extra/$i.ko"
+		test -e $fn && insmod $fn
+	done
+}
+
+# insmod module with parameters
+modparam() {
+	fn="/lib/modules/$VER/extra/$1.ko"
+	param="$2"
+	test -e $fn && insmod $fn $param
+}
+
+# insmod module with different path
+modpath() {
+	fn="$1.ko"
+	param="$2"
+	test -e $fn && insmod $fn $param
+}
+
+modins bcm_log chipinfo bcm_ingqos bcm_bpm
+modparam pktflow fcacheMaxEntries=1024
+modins pktcmf bcmfap
+
+test -e /etc/cmf/cmfcfg && /etc/cmf/cmfcfg
+modins profdrvdd bcmxtmcfg ext_bonding atmapi adsldd blaa_dd bcmprocfs
+
+# modpath /lib/modules/$VER/kernel/net/ipv6/ipv6
+modpath /lib/modules/$VER/kernel/net/atm/br2684
+modins linux-kernel-bde linux-user-bde
+
+# enet depends on moca depends on i2c
+modins i2c_bcm6xxx bcm3450 gpon_i2c laser_i2c bcmmoca bcm_enet
+modins bcmsw && ifconfig bcmsw up
+modins bcm_usb bcmarl
+
+# XAVI modules
+# marvell switch control
+modins mvsw igmpsnooping_swis xavi_sfp_fiber xavi_led_mode
+modins xavi_port_limit && xavi_sw -t 0 -p 4 -e 0
+
+#WLAN Module
+modins wl
+test -e /etc/wlan/rtecdc.trx && {
+	mount -t usbfs none /proc/bus/usb
+	/bin/bcmdl /etc/wlan/rtecdc.trx
+	sleep 2
+	modins wl-usb
+}
+modins dect dectshim dspdd endpointdd p8021ag
+
+# misc
+modins isdn
+modpath /lib/modules/$VER/kernel/drivers/isdn/capi/capi
+modins bcmgpon bcmvlan pwrmngtd
+modpath /lib/modules/$VER/kernel/drivers/char/hw_random/rng-core
+modins bcmtrng laser_dev eponlue
+
+# gponolt test tool
+test -e /bin/gponolt && /bin/gponolt --daemon
+
+# if engineering debug tools are being built, as indicated by presence of
+# dumpsysinfo.sh, then save a copy of bootup messages for dumping later
+test -e /opt/scripts/dumpsysinfo.sh && /bin/dmesg > /var/tmp/bootupmessages
+
+[ ! -s /sbin/watchdog.sh ] || (sleep 5 && /sbin/watchdog.sh) &
+echo /sbin/hotplug > /sys/kernel/uevent_helper
+smd

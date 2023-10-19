@@ -1,0 +1,121 @@
+<html>
+<head>
+<meta HTTP-EQUIV='Pragma' CONTENT='no-cache'>
+<link rel="stylesheet" href='stylemain.css' type='text/css'>
+<link rel="stylesheet" href='colors.css' type='text/css'>
+<script src="util.js"></script>
+<script>
+var is_sfplinked = parseInt('<%ejGetOther(checkWanFiber)%>', 10);
+function frmLoad() {
+   with ( document.forms[0] ) {
+       
+	if (  '<%ejGet(protect_lan1)%>' == '1')
+         pro_1.checked = true;
+       else
+         pro_1.checked = false; 
+         
+	if (  '<%ejGet(protect_lan2)%>' == '1')
+         pro_2.checked = true;
+       else
+         pro_2.checked = false; 
+         
+	if (  '<%ejGet(protect_lan3)%>' == '1')
+         pro_3.checked = true;
+       else
+         pro_3.checked = false; 
+         
+	if (  '<%ejGet(protect_lan4)%>' == '1')
+         pro_4.checked = true;
+       else
+         pro_4.checked = false; 
+         
+    if (  '<%ejGet(protect_lan5)%>' == '1')
+         pro_5.checked = true;
+       else
+         pro_5.checked = false; 
+   }
+   
+   if (is_sfplinked > 0) {
+   		document.getElementById("disPlayLan5").style.display = "block";
+   } else {
+   		document.getElementById("disPlayLan5").style.display = "none";
+   }
+}
+
+function btnApply() {
+   var sessionKey='<%ejGetOther(sessionKey)%>';
+   var loc = 'portprotect.cgi?';
+
+   with ( document.forms[0] ) {	
+
+	 if (pro_1.checked == true)
+            loc += 'protect_lan1=1';
+        else
+            loc += 'protect_lan1=0';
+	 if (pro_2.checked == true)
+            loc += '&protect_lan2=1';
+        else
+            loc += '&protect_lan2=0';
+	 if (pro_3.checked == true)
+            loc += '&protect_lan3=1';
+        else
+            loc += '&protect_lan3=0';
+	 if (pro_4.checked == true)
+            loc += '&protect_lan4=1';
+        else
+            loc += '&protect_lan4=0';
+     if (pro_5.checked == true)
+            loc += '&protect_lan5=1';
+        else
+            loc += '&protect_lan5=0';
+   }
+   
+   loc += '&sessionKey=' + sessionKey;
+   var code = 'location.assign("' + loc + '")';
+   eval(code);
+}
+
+</script>
+   </head>
+   <body onLoad='frmLoad()'>
+      <blockquote>
+         <form>
+            <b>Port Protect Setting<br>
+            </b>
+            <br>  
+<hr align="left" width="400" color="#CCCCCC"> 
+<br>
+<TABLE> 
+<tr align="center"></tr> 
+ 
+<tr>
+    <td>LAN1 : Enable Protect <input name="pro_1" type="checkbox" value="1"></td>
+ </tr> 
+<tr>
+    <td>LAN2 : Enable Protect <input name="pro_2" type="checkbox" value="1"></td>  
+</tr> 
+<tr>
+    <td>LAN3 : Enable Protect <input name="pro_3" type="checkbox" value="1"></td>
+</tr> 
+<tr>
+    <td>LAN4 : Enable Protect <input name="pro_4" type="checkbox" value="1"></td>   
+</tr> 
+</TABLE> 
+
+ <table  id="disPlayLan5" style="display:none;">
+ <tr>
+    <td>LAN5 : Enable Protect <input name="pro_5" type="checkbox" value="1"></td>   
+</tr>
+</TABLE> 
+
+<br> 
+<br>
+            
+
+            <p align="center">
+               <input type='button' onClick='btnApply()' value='Apply/Save'>
+            </P>
+         </form>
+      </blockquote>
+   </body>
+</html>

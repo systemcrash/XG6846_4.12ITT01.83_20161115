@@ -1,0 +1,765 @@
+################################################################################
+#
+# Define Support Basic Variables
+#
+################################################################################
+XAVI_UTILES_DEF_FILE     := $(XAVI_PRIVATE_INCLUDE_PATH)/xavi_config.h
+XAVI_VOIP_DEF_FILE       := $(XAVI_PRIVATE_INCLUDE_PATH)/xavi_voip.h
+XAVI_DATA_MODEL_DEF_FILE := $(XAVI_MAKEFILEDIR)/xavi_$(XAVI_DATA_MODEL_FILE)
+XAVI_BUSYBOX_DIR		 := $(BUILD_DIR)/userspace/gpl/apps/busybox
+BRCM_BUSYBOX_CONF		 := $(XAVI_BUSYBOX_DIR)/brcm.config.old
+XAVI_BUSYBOX_CONF		 := $(PROFILE_DIR)/busybox.conf
+XAVI_BUSYBOX_DEFCONFIG   := $(XAVI_BUSYBOX_DIR)/brcm.config
+
+################################################################################
+#
+# All kinds of Build define
+#
+################################################################################
+xavi_data-model_define:
+ifneq ($(strip $(XAVI_XMLPROV_DEF)),)
+	@echo -e "<object name=\"InternetGatewayDevice.X_XAVI_COM_XmlProvisionCfg.\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "shortObjectName=\"XmlProvisionCfgObject\" specSource=\"Custom\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "profile=\"Unspecified\" supportLevel=\"Present\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "<parameter name=\"LoggingLevel\" type=\"string\" specSource=\"Broadcom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" defaultValue=\"Error\" validValuesArray=\"LoggingLevelValues\"/>" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "<parameter name=\"LoggingDestination\" type=\"string\" specSource=\"Broadcom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" defaultValue=\"Standard Error\" validValuesArray=\"LoggingDestinationValues\"/>" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "<parameter name=\"X_XAVI_COM_XmlprovProvisioning\" type=\"boolean\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"false\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_XmlprovUseTftp\" type=\"boolean\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"false\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_XmlprovUseHttp\" type=\"boolean\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"false\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_XmlprovUse3des\" type=\"boolean\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"false\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_Xmlprov3deskey\" type=\"string\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"ffffffffffffffff\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_XmlprovTftpUrl\" type=\"string\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_XmlprovFWUrl\" type=\"string\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_XmlprovProfileInterval\" type=\"int\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"0\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_XmlprovVersion\" type=\"string\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_XmlprovBoundIfName\" type=\"string\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"Any_WAN\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+endif
+ifneq ($(strip $(XAVI_CUSTOMER_VIT)),)
+	@echo -e "    <parameter name=\"X_XAVI_COM_XmlprovResetDefault\" type=\"boolean\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"true\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+endif
+
+ifneq ($(strip $(XAVI_WAN_PROTO)),)
+	@echo -e "<object name=\"InternetGatewayDevice.X_XAVI_COM_InternetPortCfg.\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "shortObjectName=\"InternetPortCfgObject\" specSource=\"Custom\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "profile=\"Unspecified\" supportLevel=\"Present\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_InternetPort_WanConnType\" type=\"int\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"1\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_InternetPort_HostName\" type=\"string\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_InternetPort_DomainName\" type=\"string\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_InternetPort_StaticDnsEn\" type=\"int\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"0\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_InternetPort_PrimaryDns\" type=\"string\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_InternetPort_SecondaryDns\" type=\"string\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_InternetPort_StaticIPHostName\" type=\"string\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_InternetPort_StaticIPDomainName\" type=\"string\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_InternetPort_StaticIPAddress\" type=\"string\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_InternetPort_StaticIPMask\" type=\"string\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_InternetPort_StaticIPGateWay\" type=\"string\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" denyActiveNotification=\"true\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "supportLevel=\"ReadWrite\" defaultValue=\"\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_InternetPort_StaticIPPrimaryDns\" type=\"string\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_InternetPort_StaticIPSecondaryDns\" type=\"string\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_InternetPort_StaticIPMacAddress\" type=\"string\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+endif
+
+ifneq ($(strip $(XAVI_USER_SWITCH)),)
+	@echo -e "<object name=\"InternetGatewayDevice.X_XAVI_COM_Enbl8021pQosCfg.\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "shortObjectName=\"Enbl8021pQosCfgObject\" specSource=\"Custom\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "profile=\"Unspecified\" supportLevel=\"Present\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_Enbl8021pQosCfg_enbl8021pQos\" type=\"int\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"0\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@# Port Mode Cfg
+	@echo -en "<object name=\"InternetGatewayDevice.X_XAVI_COM_PortModeCfg.\" shortObjectName=\"PortModeCfgObject\" specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"Present\" />\n" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@(for ((i=0;i<$(XAVI_PORT_NUM);i=$$i+1)); do \
+		echo -en "\t<parameter name=\"X_XAVI_COM_PortModeCfg_lan"$$i"_speed\" type=\"int\" specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" defaultValue=\"0\" />\n" >> $(XAVI_DATA_MODEL_DEF_FILE) ; \
+		echo -en "\t<parameter name=\"X_XAVI_COM_PortModeCfg_lan"$$i"_pause\" type=\"int\" specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" defaultValue=\"0\" />\n" >> $(XAVI_DATA_MODEL_DEF_FILE) ; \
+	done)
+	@# Fiber speed and timer
+	@(\
+		echo -en "\t<parameter name=\"SFPSpeed\" type=\"unsignedInt\" specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" defaultValue=\"0\"/>\n" >> $(XAVI_DATA_MODEL_DEF_FILE) ; \
+		echo -en "\t<parameter name=\"SFPPoll\" type=\"unsignedInt\" specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" defaultValue=\"2\"/>\n" >> $(XAVI_DATA_MODEL_DEF_FILE) ; \
+		echo -en "\t<parameter name=\"SFPDelay\" type=\"unsignedInt\" specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" defaultValue=\"1\"/>\n" >> $(XAVI_DATA_MODEL_DEF_FILE) ; \
+		echo -en "\t<parameter name=\"EnforceSFPMDI\" type=\"unsignedInt\" specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" defaultValue=\"0\"/>\n" >> $(XAVI_DATA_MODEL_DEF_FILE) ; \
+	)
+
+	@echo -e "<object name=\"InternetGatewayDevice.X_XAVI_COM_CatvCfg.\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "shortObjectName=\"CatvCfgObject\" specSource=\"Custom\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "profile=\"Unspecified\" supportLevel=\"Present\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_CatvCfg_enblCATV\" type=\"int\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"1\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "<object name=\"InternetGatewayDevice.X_XAVI_COM_QinQCfg.\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "shortObjectName=\"QinQCfgObject\" specSource=\"Custom\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "profile=\"Unspecified\" supportLevel=\"Present\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_QinQCfg_qinq_wan\" type=\"boolean\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"false\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_QinQCfg_ethtype_wan\" type=\"unsignedInt\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"0\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@tmpIndex=0; while [[ $$tmpIndex -lt $(XAVI_PORT_NUM) ]]; do \
+	echo -e "    <parameter name=\"X_XAVI_COM_QinQCfg_qinq_lan"$$tmpIndex"\" type=\"boolean\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "defaultValue=\"false\" />" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "    <parameter name=\"X_XAVI_COM_QinQCfg_ethtype_lan"$$tmpIndex"\" type=\"unsignedInt\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "defaultValue=\"0\" />" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	((tmpIndex += 1)); \
+	done
+
+	@echo -e "<object name=\"InternetGatewayDevice.X_XAVI_COM_PortPowerCfg.\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "shortObjectName=\"PortPowerObject\" specSource=\"Custom\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "profile=\"Unspecified\" supportLevel=\"Present\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@tmpIndex=0; while [[ $$tmpIndex -lt $(XAVI_PORT_NUM) ]]; do \
+	echo -e "    <parameter name=\"X_XAVI_COM_PortPowerCfg_port"$$tmpIndex"_enable\" type=\"int\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "defaultValue=\"1\" />" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	((tmpIndex += 1)); \
+	done
+	@echo -e "    <parameter name=\"X_XAVI_COM_PortPowerCfg_lan_down_time\" type=\"unsignedInt\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"20\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+ifneq ($(strip $(XAVI_WATCHDOG)),)
+	@(\
+		echo ; \
+		echo -e "<object name=\"InternetGatewayDevice.X_XAVI_COM.\" shortObjectName=\"XaviCfgObject\" specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"Present\" />"; \
+		echo -e "\t<parameter name=\"TR69CBootStamp\" type=\"unsignedInt\" specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" defaultValue=\"0\" />"; \
+		echo -e "\t<parameter name=\"TR69RestartTimer\" type=\"unsignedInt\" specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" defaultValue=\"30\" />"; \
+		echo -e "\t<parameter name=\"TR69ForceRestart\" type=\"unsignedInt\" specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" defaultValue=\"0\" />"; \
+		echo -e "\t<parameter name=\"TR69ForceRestartStart\" type=\"unsignedInt\" specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" defaultValue=\"0\" />"; \
+		echo -e "\t<parameter name=\"TR69ForceRestartStop\" type=\"unsignedInt\" specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" defaultValue=\"0\" />"; \
+		echo -e "\t<parameter name=\"XGForceReboot\" type=\"unsignedInt\" specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" defaultValue=\"0\" />"; \
+		echo -e "\t<parameter name=\"XGForceRebootStart\" type=\"unsignedInt\" specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" defaultValue=\"0\" />"; \
+		echo -e "\t<parameter name=\"XGForceRebootStop\" type=\"unsignedInt\" specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" defaultValue=\"0\" />"; \
+		echo -e "\t<parameter name=\"XGNoIPRestoreDefault\" type=\"unsignedInt\" specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" defaultValue=\"0\" />"; \
+		echo -e "\t<parameter name=\"TR69CLastPeriodicInformTime\" type=\"unsignedInt\" specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" defaultValue=\"0\" />"; \
+		echo ; \
+	) >> $(XAVI_DATA_MODEL_DEF_FILE)
+endif
+ifneq ($(strip $(XAVI_APASD)),)
+	@echo -e "<object name=\"InternetGatewayDevice.X_XAVI_COM_ApasCfg.\" shortObjectName=\"ApasCfgObject\" specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"Present\" />\n" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "<parameter name=\"LoggingLevel\" type=\"string\" specSource=\"Broadcom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" defaultValue=\"Error\" validValuesArray=\"LoggingLevelValues\"/>" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "<parameter name=\"LoggingDestination\" type=\"string\" specSource=\"Broadcom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" defaultValue=\"Standard Error\" validValuesArray=\"LoggingDestinationValues\"/>" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "\t<parameter name=\"X_XAVI_COM_ApasCfg_Mode\" type=\"unsignedInt\" specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" defaultValue=\"2\" />\n" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "\t<parameter name=\"X_XAVI_COM_ApasCfg_Timer2Apply\" type=\"unsignedInt\" specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" defaultValue=\"10\" />\n" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "\t<parameter name=\"X_XAVI_COM_ApasCfg_LinkDetectDelay\" type=\"unsignedInt\" specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" defaultValue=\"0\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "\t<parameter name=\"X_XAVI_COM_ApasCfg_UnpluggedVID\" type=\"unsignedInt\" specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" defaultValue=\"4040\" />\n" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "\t<parameter name=\"X_XAVI_COM_ApasCfg_DefaultVID1\" type=\"string\" specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" defaultValue=\"1\" />\n" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "\t<parameter name=\"X_XAVI_COM_ApasCfg_DefaultVID2\" type=\"string\" specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" defaultValue=\"1\" />\n" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "\t<parameter name=\"X_XAVI_COM_ApasCfg_TagBoth\" type=\"boolean\" specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" defaultValue=\"false\" />\n" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "\t<parameter name=\"X_XAVI_COM_ApasCfg_Line1\" type=\"string\" specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" defaultValue=\"\" />\n" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "\t<parameter name=\"X_XAVI_COM_ApasCfg_Line2\" type=\"string\" specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" defaultValue=\"\" />\n" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "\t<parameter name=\"X_XAVI_COM_ApasCfg_Line3\" type=\"string\" specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" defaultValue=\"\" />\n" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "\t<parameter name=\"X_XAVI_COM_ApasCfg_Line4\" type=\"string\" specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" defaultValue=\"\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+endif
+
+	@echo -e "<object name=\"InternetGatewayDevice.X_XAVI_COM_JumboModeCfg.\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "shortObjectName=\"JumboModeCfgObject\" specSource=\"Custom\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "profile=\"Unspecified\" supportLevel=\"Present\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_JumboModeCfg_jumbo_wan\" type=\"int\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"0\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@tmpIndex=0; while [[ $$tmpIndex -lt $(XAVI_PORT_NUM) ]]; do \
+	echo -e "    <parameter name=\"X_XAVI_COM_JumboModeCfg_jumbo_lan"$$tmpIndex"\" type=\"int\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "defaultValue=\"0\" />" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	((tmpIndex += 1)); \
+	done
+
+	@echo -e "<object name=\"InternetGatewayDevice.X_XAVI_COM_PortProtectCfg.\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "shortObjectName=\"PortProtectCfgObject\" specSource=\"Custom\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "profile=\"Unspecified\" supportLevel=\"Present\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@tmpIndex=0; while [[ $$tmpIndex -lt $(XAVI_PORT_NUM) ]]; do \
+	echo -e "    <parameter name=\"X_XAVI_COM_PortProtectCfg_protect_lan"$$tmpIndex"\" type=\"boolean\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "defaultValue=\"false\" />" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	((tmpIndex += 1)); \
+	done
+
+	@echo -e "<object name=\"InternetGatewayDevice.X_XAVI_COM_VlanCfg.\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "shortObjectName=\"VlanCfgObject\" specSource=\"Custom\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "profile=\"Unspecified\" supportLevel=\"Present\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@tmpIndex=0; while [[ $$tmpIndex -lt $(XAVI_PORT_NUM)+2 ]]; do \
+	echo -e "    <parameter name=\"X_XAVI_COM_VlanCfg_vid_"$$tmpIndex"\" type=\"int\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "defaultValue=\"1\" />" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "    <parameter name=\"X_XAVI_COM_VlanCfg_def_pri_"$$tmpIndex"\" type=\"int\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "defaultValue=\"0\" />" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	((tmpIndex += 1)); \
+	done
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_VlanCfg_mode_wan\" type=\"int\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"1\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_VlanCfg_mode_cpu\" type=\"int\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"1\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_VlanCfg_port_based_vlan\" type=\"int\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"0\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_VlanCfg_enable_igmp_vid\" type=\"int\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"0\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_VlanCfg_igmp_vid\" type=\"int\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"0\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@tmpIndex=0; while [[ $$tmpIndex -lt $(XAVI_PORT_NUM) ]]; do \
+	echo -e "    <parameter name=\"X_XAVI_COM_VlanCfg_mode_lan"$$tmpIndex"\" type=\"int\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "defaultValue=\"1\" />" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "    <parameter name=\"X_XAVI_COM_VlanCfg_dscp_enable_"$$tmpIndex"\" type=\"int\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "defaultValue=\"0\" />" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	((tmpIndex += 1)); \
+	done
+
+	@tmpIndex1=1; while [[ $$tmpIndex1 -le 16 ]]; do \
+	echo -e "    <parameter name=\"X_XAVI_COM_VlanCfg_group_id_"$$tmpIndex1"\" type=\"int\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "defaultValue=\"0\" />" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "    <parameter name=\"X_XAVI_COM_VlanCfg_group_"$$tmpIndex1"_wan\" type=\"int\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "defaultValue=\"0\" />" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	tmpIndex2=0; while [[ $$tmpIndex2 -lt $(XAVI_PORT_NUM) ]]; do \
+	echo -e "    <parameter name=\"X_XAVI_COM_VlanCfg_group_"$$tmpIndex1"_lan"$$tmpIndex2"\" type=\"int\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "defaultValue=\"0\" />" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	((tmpIndex2 += 1)); \
+	done; \
+	((tmpIndex1 += 1)); \
+	done
+
+	@echo -e "<object name=\"InternetGatewayDevice.X_XAVI_COM_QosListCfg.\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "shortObjectName=\"QosListCfgObject\" specSource=\"Custom\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "profile=\"Unspecified\" supportLevel=\"Present\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@tmpIndex=0; while [[ $$tmpIndex -le 63 ]]; do \
+	echo -e "    <parameter name=\"X_XAVI_COM_QosListCfg_qos_"$$tmpIndex"\" type=\"int\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "defaultValue=\"0\" />" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	((tmpIndex += 1)); \
+	done
+
+	@echo -e "<object name=\"InternetGatewayDevice.X_XAVI_COM_RateLimitingCfg.\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "shortObjectName=\"RateLimitingObject\" specSource=\"Custom\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "profile=\"Unspecified\" supportLevel=\"Present\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@tmpIndex=0; while [[ $$tmpIndex -lt $(XAVI_PORT_NUM) ]]; do \
+	echo -e "    <parameter name=\"X_XAVI_COM_RateLimitingCfg_ingress_port"$$tmpIndex"_rate\" type=\"int\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "denyActiveNotification=\"true\" defaultValue=\"0\" />" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "    <parameter name=\"X_XAVI_COM_RateLimitingCfg_ingress_port"$$tmpIndex"_type\" type=\"int\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "defaultValue=\"0\" />" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "    <parameter name=\"X_XAVI_COM_RateLimitingCfg_ingress_port"$$tmpIndex"_layer\" type=\"int\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "defaultValue=\"0\" />" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "    <parameter name=\"X_XAVI_COM_RateLimitingCfg_ingress_port"$$tmpIndex"_enable\" type=\"boolean\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "defaultValue=\"false\" />" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "    <parameter name=\"X_XAVI_COM_RateLimitingCfg_egress_port"$$tmpIndex"_rate\" type=\"int\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "defaultValue=\"0\" />" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "    <parameter name=\"X_XAVI_COM_RateLimitingCfg_egress_port"$$tmpIndex"_layer\" type=\"int\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "defaultValue=\"0\" />" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "    <parameter name=\"X_XAVI_COM_RateLimitingCfg_egress_port"$$tmpIndex"_enable\" type=\"boolean\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "defaultValue=\"false\" />" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	((tmpIndex += 1)); \
+	done
+
+	@echo -e "<object name=\"InternetGatewayDevice.X_XAVI_COM_LANDevice.{i}.\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "shortObjectName=\"XaviLanDevObject\" specSource=\"TR98\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "profile=\"Baseline:1\" requirements=\"R\" supportLevel=\"MultipleInstances\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_LANDevice_LANPortNumberOfEntries\" type=\"unsignedInt\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"TR98\" profile=\"Baseline:1\" requirements=\"R\" supportLevel=\"ReadOnly\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"0\" alwaysWriteToConfigFile=\"true\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "<object name=\"InternetGatewayDevice.X_XAVI_COM_LANDevice.{i}.LANPortConfig.{i}.\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "shortObjectName=\"LanPortObject\" specSource=\"TR98\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "profile=\"Unspecified\" supportLevel=\"MultipleInstances\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_LANPortConfig_Enable\" type=\"boolean\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"TR98\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"false\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_LANPortConfig_PortName\" type=\"string\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"TR98\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "/>" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_LANPortConfig_PortNum\" type=\"int\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"TR98\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "/>" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "<object name=\"InternetGatewayDevice.X_XAVI_COM_LANDevice.{i}.LANPortConfig.{i}.Stats.\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "shortObjectName=\"LanPortStatsObject\" specSource=\"TR98\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "profile=\"Unspecified\" supportLevel=\"Present\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_Stats_UnicastsSent\" type=\"unsignedInt\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"TR98\" profile=\"Unspecified\" supportLevel=\"ReadOnly\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"0\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_Stats_UnicastsReceived\" type=\"unsignedInt\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"TR98\" profile=\"Unspecified\" supportLevel=\"ReadOnly\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"0\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_Stats_BroadcastsSent\" type=\"unsignedInt\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"TR98\" profile=\"Unspecified\" supportLevel=\"ReadOnly\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"0\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_Stats_BroadcastsReceived\" type=\"unsignedInt\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"TR98\" profile=\"Unspecified\" supportLevel=\"ReadOnly\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"0\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_Stats_MulticastsReceived\" type=\"unsignedInt\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"TR98\" profile=\"Unspecified\" supportLevel=\"ReadOnly\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"0\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_Stats_MulticastsSent\" type=\"unsignedInt\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"TR98\" profile=\"Unspecified\" supportLevel=\"ReadOnly\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"0\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_Stats_FCSErrSent\" type=\"unsignedInt\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"TR98\" profile=\"Unspecified\" supportLevel=\"ReadOnly\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"0\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_Stats_FCSErrReceived\" type=\"unsignedInt\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"TR98\" profile=\"Unspecified\" supportLevel=\"ReadOnly\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"0\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_Stats_PauseSent\" type=\"unsignedInt\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"TR98\" profile=\"Unspecified\" supportLevel=\"ReadOnly\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"0\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_Stats_PauseReceived\" type=\"unsignedInt\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"TR98\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"0\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_Stats_OctetsLoSent\" type=\"unsignedInt\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"TR98\" profile=\"Unspecified\" supportLevel=\"ReadOnly\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"0\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_Stats_OctetsLoReceived\" type=\"unsignedInt\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"TR98\" profile=\"Unspecified\" supportLevel=\"ReadOnly\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"0\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_Stats_OctetsHiSent\" type=\"unsignedInt\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"TR98\" profile=\"Unspecified\" supportLevel=\"ReadOnly\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"0\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_Stats_OctetsHiReceived\" type=\"unsignedInt\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"TR98\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"0\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_Stats_speed\" type=\"string\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadOnly\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "denyActiveNotification=\"true\" defaultValue=\"\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+endif
+
+ifneq ($(strip $(XAVI_PORT_MAC_TABLE_DEF)),)
+	@echo -e "<object name=\"InternetGatewayDevice.X_XAVI_COM_PortMacCfg.\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "shortObjectName=\"PortMacCfgObject\" specSource=\"Custom\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "profile=\"Unspecified\" supportLevel=\"Present\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_PortMacCfg_mac_port_name\" type=\"unsignedInt\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"0\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+endif
+
+	@echo -e "<object name=\"InternetGatewayDevice.X_BROADCOM_COM_ServiceCtrlCfg.\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "shortObjectName=\"ServiceCtrlCfgObject\" specSource=\"Custom\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "profile=\"X_XAVI_COM_LAN_WAN_ACCESS:1\" supportLevel=\"Present\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+ifneq ($(strip $(XAVI_LAN_WAN_ACCESS)),)
+	@echo -e "    <parameter name=\"FTP\" type=\"unsignedInt\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"1\" denyActiveNotification=\"true\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"HTTP\" type=\"unsignedInt\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"1\" denyActiveNotification=\"true\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"ICMP\" type=\"unsignedInt\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"1\" denyActiveNotification=\"true\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"SNMP\" type=\"unsignedInt\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"1\" denyActiveNotification=\"true\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"SSH\" type=\"unsignedInt\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"1\" denyActiveNotification=\"true\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"TELNET\" type=\"unsignedInt\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"1\" denyActiveNotification=\"true\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"TFTP\" type=\"unsignedInt\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"1\" denyActiveNotification=\"true\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "<object name=\"InternetGatewayDevice.X_BROADCOM_COM_IpAccCfg.\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "shortObjectName=\"IpAccObject\" specSource=\"Custom\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "profile=\"X_XAVI_COM_LAN_WAN_ACCESS:1\" supportLevel=\"Present\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <description source=\"BROADCOM\">ip access control</description>" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"Enable\" type=\"boolean\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"false\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"AccessMode\" type=\"string\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"\" maxLength=\"16\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "<object name=\"InternetGatewayDevice.X_BROADCOM_COM_IpAccCfg.X_BROADCOM_COM_IpAccListCfgObj.{i}.\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "shortObjectName=\"IpAccListObject\" specSource=\"Custom\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "profile=\"X_XAVI_COM_LAN_WAN_ACCESS:1\" supportLevel=\"DynamicInstances\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"Enable\" type=\"boolean\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"false\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"AccAddress\" type=\"string\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"\" maxLength=\"128\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "<parameter name=\"AccNetMask\" type=\"string\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"\" maxLength=\"128\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+endif
+
+ifneq ($(strip $(XAVI_CATV_MODULE)),)
+	@echo -e "\n<object name=\"InternetGatewayDevice.X_XAVI_COM_CatvSwitch.\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "shortObjectName=\"CatvSwitchCfgObject\" specSource=\"Custom\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "profile=\"X_XAVI_COM_CATVMODULE:1\" supportLevel=\"Present\" />" >>  $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"catvModule\" type=\"boolean\" specSource=\"Custom\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "profile=\"Unspecified\" supportLevel=\"ReadWrite\" defaultValue=\"true\" />"  >> $(XAVI_DATA_MODEL_DEF_FILE)	
+
+	@echo -e "    <parameter name=\"Enable\" type=\"boolean\" specSource=\"Custom\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "profile=\"Unspecified\" supportLevel=\"ReadWrite\" defaultValue=\"false\" />"  >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"BwFilter\" type=\"unsignedInt\" specSource=\"Custom\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "profile=\"Unspecified\" supportLevel=\"ReadWrite\" defaultValue=\"8\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+endif
+
+ifneq ($(strip $(XAVI_IGMP_SNOOPING_DEF)),)
+	@echo -e "<object name=\"InternetGatewayDevice.X_XAVI_COM_IgmpCfg.\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "shortObjectName=\"IgmpSnoopingEnableCfgObject\" specSource=\"Custom\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "profile=\"Unspecified\" supportLevel=\"Present\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@tmpIndex=0; while [[ $$tmpIndex -lt $(XAVI_PORT_NUM) ]]; do \
+	echo -e "    <parameter name=\"X_XAVI_COM_IgmpCfg_igmp_port"$$tmpIndex"\" type=\"boolean\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	echo -e "defaultValue=\"true\" />" >> $(XAVI_DATA_MODEL_DEF_FILE); \
+	((tmpIndex += 1)); \
+	done
+endif
+
+ifneq ($(strip $(XAVI_LED_MODE)),)
+	@echo -e "<object name=\"InternetGatewayDevice.X_XAVI_COM_LedCfg.\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "shortObjectName=\"LedCfgObject\" specSource=\"Custom\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "profile=\"Unspecified\" supportLevel=\"Present\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+
+	@echo -e "    <parameter name=\"X_XAVI_COM_Led_LedMode\" type=\"int\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "specSource=\"Custom\" profile=\"Unspecified\" supportLevel=\"ReadWrite\" \c" >> $(XAVI_DATA_MODEL_DEF_FILE)
+	@echo -e "defaultValue=\"1\" />" >> $(XAVI_DATA_MODEL_DEF_FILE)
+endif
+
+xavi_data-model_replace:
+ifneq ($(strip $(XAVI_UDHCPC_OPTION)),)
+	@sed -i -e '/dhcp Option 61, IAID, 8 hex digits/a \
+	\n  <parameter name="X_XAVI_COM_Op121StaticRoute" type="string" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="" maxLength="512" />  \
+	\n  <parameter name="X_XAVI_COM_Op66Enabled" type="boolean" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="false" />  \
+	\n  <parameter name="X_XAVI_COM_Op67Enabled" type="boolean" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="false" />  \
+	\n  <parameter name="X_XAVI_COM_Op43Enabled" type="boolean" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="false" />  \
+	\n  <parameter name="X_XAVI_COM_Op128Enabled" type="boolean" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="false" />  \
+	\n  <parameter name="X_XAVI_COM_Op121Enabled" type="boolean" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="false" />  \
+	\n  <parameter name="X_XAVI_COM_Op132Enabled" type="boolean" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="false" /> '  \
+	$(XAVI_DATA_MODEL_PATH)/xavi_$(XAVI_DATA_MODEL_FILE)
+endif
+
+ifeq ($(strip $(XAVI_MODEL_NAME)), "DG150")
+	@sed -i -e '/Number of instances of VoiceProfile/a  \
+	\n  <parameter name="X_XAVI_COM_PSTNSwitch" type="string" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="false" /> '  \
+	$(XAVI_DATA_MODEL_PATH)/xavi_$(XAVI_DATA_MODEL_FILE)
+endif
+
+ifneq ($(strip $(XAVI_SIP_STACK)),)
+	@sed -i -e '/Object associated with a collection of voice lines/a  \
+	\n  <parameter name="X_XAVI_COM_NATWANAddr" type="string" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="" />  \
+	\n  <parameter name="X_XAVI_COM_NATKeepAlive_Interval" type="unsignedInt" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="5" />  \
+	\n  <parameter name="X_XAVI_COM_FailoverRetries" type="unsignedInt" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="10" />  \
+	\n  <parameter name="X_XAVI_COM_MaxRedirect" type="unsignedInt" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="5" />  \
+	\n  <parameter name="X_XAVI_COM_SessionExpire" type="unsignedInt" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="0" />  \
+	\n  <parameter name="X_XAVI_COM_FaxCodec" type="unsignedInt" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="1" /> '  \
+	$(XAVI_DATA_MODEL_PATH)/xavi_$(XAVI_DATA_MODEL_FILE)
+
+	@sed -i -e '/Voice profile parameters that are specific to SIP/a  \
+	\n  <parameter name="X_XAVI_COM_AltProxyServer" type="string" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="" maxLength="256" />  \
+	\n  <parameter name="X_XAVI_COM_AltProxyServerPort" type="unsignedInt" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="5060" minValue="0" maxValue="65535" />  \
+	\n  <parameter name="X_XAVI_COM_DNSSRVEnable" type="boolean" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="false" />  \
+	\n  <parameter name="X_XAVI_COM_NATKeepAlive_Method" type="unsignedInt" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="0" minValue="0" maxValue="256" />  \
+	\n  <parameter name="X_XAVI_COM_ProxyRequire_HDR" type="string" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="" maxLength="256" />  \
+	\n  <parameter name="X_XAVI_COM_VIA_RPort" type="boolean" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="false" />  \
+	\n  <parameter name="X_XAVI_COM_CLIRMethod" type="unsignedInt" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="0" />  \
+	\n  <parameter name="X_XAVI_COM_PondSignEscape" type="boolean" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="true" /> '  \
+	$(XAVI_DATA_MODEL_PATH)/xavi_$(XAVI_DATA_MODEL_FILE)
+
+	@sed -i -e '/Voice line parameters that are specific to SIP call/a  \
+	\n  <parameter name="X_XAVI_COM_UserStatus" type="string" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="" /> '  \
+	$(XAVI_DATA_MODEL_PATH)/xavi_$(XAVI_DATA_MODEL_FILE)
+
+	@sed -i -e '/Voice line parameters related to optional endpoint/a  \
+	\n  <parameter name="X_XAVI_COM_CallWaitingActivate" type="string" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="*43#" />  \
+	\n  <parameter name="X_XAVI_COM_CallWaitingDeactive" type="string" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="#43#" />  \
+	\n  <parameter name="X_XAVI_COM_CallForwardUnconditionalActivate" type="string" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="*21*" />  \
+	\n  <parameter name="X_XAVI_COM_CallForwardUnconditionalDeactivate" type="string" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="#21#" />  \
+	\n  <parameter name="X_XAVI_COM_CallForwardOnBusyActivate" type="string" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="*67*" />  \
+	\n  <parameter name="X_XAVI_COM_CallForwardOnBusyDeactivate" type="string" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="#67#" />  \
+	\n  <parameter name="X_XAVI_COM_CallForwardOnNoAnswerActivate" type="string" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="*61*" />  \
+	\n  <parameter name="X_XAVI_COM_CallForwardOnNoAnswerDeactive" type="string" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="#61#" />  \
+	\n  <parameter name="X_XAVI_COM_AnonymousCallCLIR" type="string" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="#31#" />  \
+	\n  <parameter name="X_XAVI_COM_AnonymousCallCLIP" type="string" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="" />  \
+	\n  <parameter name="X_XAVI_COM_AnonymousCallPermanentCLIR" type="string" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="" />  \
+	\n  <parameter name="X_XAVI_COM_AnonymousCallPermanentCLIP" type="string" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="" />  \
+	\n  <parameter name="X_XAVI_COM_CallReturnOnServer" type="boolean" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="false" />  \
+	\n  <parameter name="X_XAVI_COM_CallReturnActivate" type="string" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="*69#" />  \
+	\n  <parameter name="X_XAVI_COM_CAllCompletionOnBusyDeactivate" type="string" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="#37#" />  \
+	\n  <parameter name="X_XAVI_COM_UnattendedTransferActivate" type="string" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="*90*" />  \
+	\n  <parameter name="X_XAVI_COM_InternalCall" type="string" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="###" /> '  \
+	$(XAVI_DATA_MODEL_PATH)/xavi_$(XAVI_DATA_MODEL_FILE)
+
+#below is to change default value of data model, 2013/1/10 xavi Chris
+	@sed -i -e '/<parameter name="DigitMap" type="string" specSource="TR104" profile="Unspecified" requirements="W" supportLevel="ReadWrite" maxLength="256" \/>/c  \
+	<parameter name="DigitMap" type="string" specSource="TR104" profile="Unspecified" requirements="W" supportLevel="ReadWrite" maxLength="768" />'  \
+	$(XAVI_DATA_MODEL_PATH)/xavi_$(XAVI_DATA_MODEL_FILE)
+
+	@sed -i -e '/<parameter name="UserAgentPort" type="unsignedInt" specSource="TR104" profile="SIPEndpoint:1" requirements="W" supportLevel="ReadWrite" defaultValue="0" minValue="0" maxValue="65535" \/>/c  \
+	<parameter name="UserAgentPort" type="unsignedInt" specSource="TR104" profile="SIPEndpoint:1" requirements="W" supportLevel="ReadWrite" defaultValue="5060" minValue="0" maxValue="65535" />'  \
+	$(XAVI_DATA_MODEL_PATH)/xavi_$(XAVI_DATA_MODEL_FILE)
+
+	@sed -i -e '/<parameter name="TelephoneEventPayloadType" type="unsignedInt" specSource="TR104" profile="Endpoint:1" requirements="W" supportLevel="ReadWrite" minValue="0" maxValue="128" \/>/c  \
+	<parameter name="TelephoneEventPayloadType" type="unsignedInt" specSource="TR104" profile="Endpoint:1" requirements="W" supportLevel="ReadWrite" defaultValue="101" minValue="0" maxValue="128" />'  \
+	$(XAVI_DATA_MODEL_PATH)/xavi_$(XAVI_DATA_MODEL_FILE)
+	
+	@sed -i -e '/<parameter name="RegisterExpires" type="unsignedInt" specSource="TR104" profile="SIPEndpoint:1" requirements="W" supportLevel="ReadWrite" minValue="1" maxValue="4294967295" \/>/c  \
+	<parameter name="RegisterExpires" type="unsignedInt" specSource="TR104" profile="SIPEndpoint:1" requirements="W" supportLevel="ReadWrite" defaultValue="3600" minValue="1" maxValue="4294967295" />'  \
+	$(XAVI_DATA_MODEL_PATH)/xavi_$(XAVI_DATA_MODEL_FILE)
+endif
+
+ifneq ($(strip $(XAVI_QINQ)),)
+	@sed -i -e '/<description source="BROADCOM">VlanMuxId/a \
+	\n  <parameter name="X_XAVI_COM_QinQ_qinq_wan" type="boolean" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="false" />  \
+	\n  <parameter name="X_XAVI_COM_QinQ_ethtype_wan" type="unsignedInt" specSource="Custom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="33024" />'  \
+	$(XAVI_DATA_MODEL_PATH)/xavi_$(XAVI_DATA_MODEL_FILE)
+endif
+
+ifneq ($(strip %(XAVI_NGT_CONFIG)),)
+	@sed -i -e '/<parameter name="AdminPassword" type="string" specSource="Broadcom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="BdisPLr1917" maxLength="40" isTr69Password="true" isConfigPassword="true" \/>/c  \
+	<parameter name="AdminPassword" type="string" specSource="Broadcom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="admin" maxLength="16" isTr69Password="true" isConfigPassword="true" />'  \
+	$(XAVI_DATA_MODEL_PATH)/xavi_$(XAVI_DATA_MODEL_FILE)
+	@sed -i -e '/<parameter name="SupportPassword" type="string" specSource="Broadcom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="BdisPLr1917" maxLength="40" isTr69Password="true" isConfigPassword="true" \/>/c  \
+	<parameter name="SupportPassword" type="string" specSource="Broadcom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="support" maxLength="16" isTr69Password="true" isConfigPassword="true" />'  \
+	$(XAVI_DATA_MODEL_PATH)/xavi_$(XAVI_DATA_MODEL_FILE)
+endif
+
+ifneq ($(strip $(XAVI_PPPOE_EXT)),)
+	@sed -i -e '/<parameter name="MaxMRUSize" type="unsignedInt" specSource="TR98" profile="Unspecified" requirements="W" supportLevel="NotSupported" minValue="1" maxValue="1540" \/>/c  \
+	<parameter name="MaxMRUSize" type="unsignedInt" specSource="TR98" profile="Unspecified" requirements="W" supportLevel="ReadWrite" minValue="1" maxValue="1540" />'  \
+	$(XAVI_DATA_MODEL_PATH)/xavi_$(XAVI_DATA_MODEL_FILE)
+endif
+
+ifneq ($(strip $(XAVI_LOGINCFG_EXT)),)
+	@sed -i -e '/<parameter name="AdminUserName" type="string" specSource="Broadcom" profile="Unspecified" supportLevel="ReadOnly" defaultValue="admin" maxLength="16" \/>/c  \
+	<parameter name="AdminUserName" type="string" specSource="Broadcom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="admin" maxLength="16" />'  \
+	$(XAVI_DATA_MODEL_PATH)/xavi_$(XAVI_DATA_MODEL_FILE)	
+	@sed -i -e '/<parameter name="AdminPassword" type="string" specSource="BROADCOM" profile="Unspecified" supportLevel="ReadWrite" defaultValue="admin" maxLength="16" isTr69Password="true" isConfigPassword="true" \/>/c  \
+	<parameter name="AdminPassword" type="string" specSource="Broadcom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="admin" maxLength="24" isTr69Password="true" isConfigPassword="true" />'  \
+	$(XAVI_DATA_MODEL_PATH)/xavi_$(XAVI_DATA_MODEL_FILE)
+	@sed -i -e '/<parameter name="SupportUserName" type="string" specSource="Broadcom" profile="Unspecified" supportLevel="ReadOnly" defaultValue="support" maxLength="16" \/>/c  \
+	<parameter name="SupportUserName" type="string" specSource="Broadcom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="support" maxLength="16" />'  \
+	$(XAVI_DATA_MODEL_PATH)/xavi_$(XAVI_DATA_MODEL_FILE)	
+	@sed -i -e '/<parameter name="SupportPassword" type="string" specSource="Broadcom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="support" maxLength="16" isTr69Password="true" isConfigPassword="true" \/>/c  \
+	<parameter name="SupportPassword" type="string" specSource="Broadcom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="support" maxLength="24" isTr69Password="true" isConfigPassword="true" />'  \
+	$(XAVI_DATA_MODEL_PATH)/xavi_$(XAVI_DATA_MODEL_FILE)
+	@sed -i -e '/<parameter name="UserUserName" type="string" specSource="Broadcom" profile="Unspecified" supportLevel="ReadOnly" defaultValue="user" maxLength="16" \/>/c  \
+	<parameter name="UserUserName" type="string" specSource="Broadcom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="user" maxLength="16" />'  \
+	$(XAVI_DATA_MODEL_PATH)/xavi_$(XAVI_DATA_MODEL_FILE)		
+	@sed -i -e '/<parameter name="UserPassword" type="string" specSource="Broadcom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="user" maxLength="16" isTr69Password="true" isConfigPassword="true" \/>/c  \
+	<parameter name="UserPassword" type="string" specSource="Broadcom" profile="Unspecified" supportLevel="ReadWrite" defaultValue="user" maxLength="24" isTr69Password="true" isConfigPassword="true" />'  \
+	$(XAVI_DATA_MODEL_PATH)/xavi_$(XAVI_DATA_MODEL_FILE)
+endif
+
+xavi_userspace_define:
+	@(cd $(XAVI_BUSYBOX_DIR); \
+		[ ! -s "$(BRCM_BUSYBOX_CONF)" ] || \
+			cp $(BRCM_BUSYBOX_CONF) $(XAVI_BUSYBOX_DEFCONFIG) ; \
+		[ ! -s "$(XAVI_BUSYBOX_CONF)" ] || \
+			cp $(XAVI_BUSYBOX_CONF) $(XAVI_BUSYBOX_DEFCONFIG) ; \
+	)
+ifeq ($(strip $(XAVI_MODEL_NAME)), "XG6846")
+	@sed -i -e "s/# CONFIG_UDHCPC is not set/CONFIG_UDHCPC=y/" $(XAVI_BUSYBOX_DEFCONFIG)
+	@sed -i -e "s/# CONFIG_AWK is not set/CONFIG_AWK=y/" $(XAVI_BUSYBOX_DEFCONFIG)
+	@sed -i -e "s/# CONFIG_FEATURE_PIDFILE is not set/CONFIG_FEATURE_PIDFILE=y/" $(XAVI_BUSYBOX_DEFCONFIG)
+endif
+ifneq ($(strip $(XAVI_WATCHDOG)),)
+	@sed -i -e "s/# CONFIG_SED is not set/CONFIG_SED=y/" $(XAVI_BUSYBOX_DEFCONFIG)
+	@sed -i -e "s/# CONFIG_PIDOF is not set/CONFIG_PIDOF=y/" $(XAVI_BUSYBOX_DEFCONFIG)
+endif
+ifneq ($(strip $(XAVI_BUSYBOX_TRACEROUTE)),)
+	@sed -i -e "s/# CONFIG_TRACEROUTE is not set/CONFIG_TRACEROUTE=y/" $(XAVI_BUSYBOX_DEFCONFIG)
+	@sed -i -e "s/# CONFIG_FEATURE_TRACEROUTE_USE_ICMP is not set/CONFIG_FEATURE_TRACEROUTE_USE_ICMP=y/" $(XAVI_BUSYBOX_DEFCONFIG)
+ifneq ($(strip $(BUILD_IPV6)),)
+	@sed -i -e "s/# CONFIG_TRACEROUTE6 is not set/CONFIG_TRACEROUTE6=y/" $(XAVI_BUSYBOX_DEFCONFIG)
+endif
+endif
+ifeq ($(strip $(OEM_CUSTOMER_NAME)), "Telia")
+	@sed -i -e "s/CONFIG_TFTPD=y/# CONFIG_TFTPD is not set/" $(XAVI_BUSYBOX_DEFCONFIG)
+	@sed -i -e "s/CONFIG_BRCMTFTPD=y/# CONFIG_BRCMTFTPD is not set/" $(XAVI_BUSYBOX_DEFCONFIG)
+	@( ENABLE_LIST="FEATURE_MD5_SHA1_SUM_CHECK MD5SUM"; \
+		for i in $$ENABLE_LIST; do \
+			sed -ie "s/^# CONFIG_"$$i" is not set/CONFIG_"$$i"=y/" $(XAVI_BUSYBOX_DEFCONFIG) ; \
+		done ; \
+	)
+endif
+	@ln -sf $(XAVI_UTILES_DEF_FILE) $(XAVI_PUBLIC_INCLUDE_PATH)
+	@echo "/* This is an automatically generated file. Do not modify. */" > $(XAVI_UTILES_DEF_FILE)
+	@echo "/* The config file only define about configure */" >> $(XAVI_UTILES_DEF_FILE)
+	@echo "/* Dom<dom_hsu@xavi.com.tw> 20100727 Create */" >> $(XAVI_UTILES_DEF_FILE)
+	@echo -e "#ifndef _XAVI_CONFIG_H_\n#define _XAVI_CONFIG_H_\n" >> $(XAVI_UTILES_DEF_FILE)
+ifneq ($(strip $(XAVI_OEM_CUSTOM_DEFINE)),)
+	@echo -e "#define XAVI_FW_BUILD_DATE\tget_file_string(\"cat /etc/build_date\")" >> $(XAVI_UTILES_DEF_FILE)
+	@echo -e "#define XAVI_VENDOR_NAME\tget_file_string(\"cat /etc/vendor_name\")" >> $(XAVI_UTILES_DEF_FILE)
+	@echo -e "#define XAVI_MODEL_NAME\t\tget_file_string(\"cat /etc/model_name\")" >> $(XAVI_UTILES_DEF_FILE)
+	@echo -e "#define XAVI_SW_VERSION\t\tget_file_string(\"cat /etc/sw_version\")" >> $(XAVI_UTILES_DEF_FILE)
+
+	@echo -e "#define XAVI_DATA_SIZE\t\t64\n" >> $(XAVI_UTILES_DEF_FILE)
+	@echo -e "static char *get_file_string(const char *file_path)" >> $(XAVI_UTILES_DEF_FILE)
+	@echo -e "{\tstatic FILE *fp = NULL;" >> $(XAVI_UTILES_DEF_FILE)
+	@echo -e "\tstatic char *data_string = NULL, data_line[XAVI_DATA_SIZE];\n" >> $(XAVI_UTILES_DEF_FILE)
+	@echo -e "\tif ((fp = popen(file_path, \"r\")) != NULL)" >> $(XAVI_UTILES_DEF_FILE)
+	@echo -e "\t\tfgets(data_line, sizeof(data_line), fp);" >> $(XAVI_UTILES_DEF_FILE)
+	@echo -e "\t(fp == NULL) ? : pclose(fp);" >> $(XAVI_UTILES_DEF_FILE)
+	@echo -e "\tdata_string = data_line;\n" >> $(XAVI_UTILES_DEF_FILE)
+	@echo -e "\treturn data_string;" >> $(XAVI_UTILES_DEF_FILE)
+	@echo -e "}" >> $(XAVI_UTILES_DEF_FILE)
+else
+	@echo -e "#define XAVI_FW_BUILD_DATE\t\"$(strip $(XAVI_FW_BUILD_DATE))\"" >> $(XAVI_UTILES_DEF_FILE)
+ifneq ($(strip $(XAVI_VENDOR_NAME)),)
+	@echo -e "#define XAVI_VENDOR_NAME\t\t\"$(strip $(XAVI_VENDOR_NAME))\"" >> $(XAVI_UTILES_DEF_FILE)
+endif
+ifneq ($(strip $(XAVI_MODEL_NAME)),)
+	@echo -e "#define XAVI_MODEL_NAME\t\t\"$(strip $(XAVI_MODEL_NAME))\"" >> $(XAVI_UTILES_DEF_FILE)
+endif
+ifneq ($(strip $(XAVI_SW_VERSION)),)
+	@echo -e "#define XAVI_SW_VERSION\t\t\"$(strip $(XAVI_SW_VERSION))\"" >> $(XAVI_UTILES_DEF_FILE)
+endif
+endif
+	@echo -e "\n#endif  /* _XAVI_CONFIG_H_ */" >> $(XAVI_UTILES_DEF_FILE)
+
+ifneq ($(strip $(XAVI_SIP_STACK)),)
+	@ln -sf $(XAVI_VOIP_DEF_FILE) $(XAVI_PUBLIC_INCLUDE_PATH)
+ifneq ($(strip $(XAVI_SIP_VERSION)),)
+	@echo -e "#define VOIP_VERSION \"$(strip $(XAVI_SIP_VERSION))\"" > $(XAVI_VOIP_DEF_FILE)
+else
+	@echo -e "#define VOIP_VERSION \"\"" > $(XAVI_VOIP_DEF_FILE)
+endif
+endif
+ifeq ($(strip $(XAVI_BUILD_OPENSSL)),)
+	@sed -i -e "s/CONFIG_FEATURE_WGET_HTTPS=y/# CONFIG_FEATURE_WGET_HTTPS is not set/" $(XAVI_BUSYBOX_DEFCONFIG)
+endif
+

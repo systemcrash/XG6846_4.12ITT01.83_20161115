@@ -1,0 +1,136 @@
+# XAVI Model Kernel and Driver Configuration
+menu "XAVI CommEngine Project Model"
+
+choice
+	prompt "XAVI Project Model"
+	default MIPS_BRCM
+	help
+		Select different Project Model
+
+config XAVI_XG6846
+	bool "XAVI_XG6846 Project Model Name"
+
+config XAVI_FI560
+	bool "XAVI_FI560 Project Model Name"
+
+config XAVI_VI580
+	bool "XAVI_VI580 Project Model Name"
+
+config XAVI_DG150
+	bool "XAVI_DG150 Project Model Name"
+
+endchoice
+
+config XAVI_ANNEX_A
+	bool "XAVI DSL Annex define"
+	depends on BCM96368 || BCM96328 || BCM96362
+
+config XAVI_FACTORY_PRODUCE_DEF
+	bool "XAVI Factory Feature Support"
+	depends on BCM96368 || BCM96328 || BCM96816 || BCM96362
+
+config XAVI_LEDCTL
+	bool "XAVI GPIO and Led Control Configure Support"
+	depends on BCM96368 || BCM96328 || BCM96816 || BCM96362
+
+config XAVI_RESET_BUTTON
+	bool "XAVI Reboot, Factory Default and Boot in CFE Support"
+	depends on BCM96368 || BCM96328 || BCM96816 || BCM96362
+
+config XAVI_XMLPROV_DEF
+	bool "XAVI XML provsion Config Device Configure Support"
+	depends on BCM96368 || BCM96328 || BCM96816 || BCM96362
+
+config XAVI_SFP_DDM_DEF
+	bool "XAVI SFP I2C Driver for DDM Information Support"
+	depends on BCM96368 || BCM96328 || BCM96816 || BCM96362
+
+config XAVI_DISABLE_WIFIBTN
+	bool "Xavi Disable WIFI on/off and WPS button"
+	depends on BCM96368 || BCM96816 || BCM96362 
+
+config XAVI_FIBER_100
+	bool "XAVi Fiber 100Mbps"
+	depends on BCM96816
+
+config XAVI_USER_SWITCH
+	bool "XAVI user switch function"
+
+config XAVI_FIBER_100M_ONLY
+	bool "XAVi Fiber 100Mbps Only"
+	depends on XAVI_USER_SWITCH
+
+config XAVI_FIBER_1000M_ONLY
+	bool "XAVi Fiber 1000Mbps Only"
+	depends on XAVI_USER_SWITCH
+
+config XAVI_SWITCH_DRIVER
+	bool "XAVI Switch Driver"
+	depends on BCM_ENET
+
+config XAVI_SWITCH_TYPE
+	string "XAVI Switch Type"
+	depends on XAVI_SWITCH_DRIVER
+
+config XAVI_IGMP_SNOOPING_DEF
+	bool "XAVI Switch IGMP Snooping Support"
+	depends on XAVI_SWITCH_DRIVER
+
+config XAVI_SWITCH_EEE
+	bool "XAVI Switch EEE Support"
+	depends on XAVI_SWITCH_DRIVER
+
+config XAVI_SWITCH_EEE_DISABLE
+	bool "XAVI Switch EEE Default Disabled"
+	depends on XAVI_SWITCH_EEE
+
+config XAVI_SWITCH_TCAM
+	bool "XAVI Switch TCAM Support"
+	depends on XAVI_SWITCH_DRIVER
+	
+config XAVI_SIP_STACK
+	bool "XAVI SIP stack and call manager support"
+
+config XAVI_SFP_FIBER
+	bool "XAVI SFP Fiber"
+	depends on XAVI_SWITCH_DRIVER
+
+config XAVI_LED_MODE
+	bool "XAVI LED Mode"
+	depends on XAVI_SWITCH_DRIVER
+
+config XAVI_PORT_LIMIT
+	bool "XAVI Port Limit"
+	depends on XAVI_SWITCH_DRIVER
+
+config XAVI_CFE_MULTICASTBOOT
+	bool "XAVI Multicast upgrade"
+	depends on XAVI_XG6846 || XAVI_FI560 || XAVI_DG150
+
+config XAVI_NAND_BLOCK_LARGE
+	bool "XAVI NAND Flash block size large"
+
+config XAVI_RESET_BUTTON_CHANGE
+	bool "XAVI exchange reset and wps button irq"
+
+config XAVI_TELIA_SPEC_DEF
+	bool "XAVI for Telia Specification Definition"
+
+config XAVI_CATV_ALARM
+	bool "XAVI for CATV Alarm read function"
+
+config XAVI_PORT_MIRROR
+	bool "XAVI Port Mirroring"
+	depends on XAVI_SWITCH_DRIVER
+
+config XAVI_PORT_NUM
+	int "Marvell Switch LAN Port Number"
+	depends on XAVI_MARVELL_EXT_SWITCH
+
+config XAVI_TLINE_NUM
+	int "Vlan Group Number"
+	depends on XAVI_MARVELL_EXT_SWITCH
+
+config XAVI_RESTORE_DEFAULT_CONFIG_AFTER_TR69_SW_UPGRADE
+	bool "Restore default config after software upgraded"
+endmenu

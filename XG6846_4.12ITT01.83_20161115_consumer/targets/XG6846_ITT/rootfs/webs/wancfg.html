@@ -1,0 +1,187 @@
+<html>
+<head>
+<meta http-equiv='pragma' content='no-cache'/>
+<link rel="stylesheet" href='stylemain.css' type='text/css'/>
+<link rel="stylesheet" href='colors.css' type='text/css'/>
+<script src="util.js"></script>
+<script src="jquery.min.js"></script>
+<script>
+<!--
+var sessionKey='<%ejGetOther(sessionKey)%>';
+var state = '<%ejGet(dnsRefresh)%>';
+var dhcp_hostname = '<%ejGet(HostName)%>';
+if (state == '1') {
+	location.href = 'wancfg.cgi?dnsRefresh=0&sessionKey=' + sessionKey;
+}
+var conntype = '<%ejGet(wanConnType)%>';
+var addr = '<%ejGet(staticIPAddress)%>';
+var mask = '<%ejGet(staticIPMask)%>';
+var gateway = '<%ejGet(staticIPGateWay)%>';
+var dns1 = '<%ejGet(staticIPPrimaryDns)%>'; if (dns1 == '&nbsp') dns1 = '';
+var dns2 = '<%ejGet(staticIPSecondaryDns)%>'; if (dns2 == '&nbsp') dns2 = '';
+
+function on_wantype(v) {
+	var bool = (v == "dhcp");
+
+	with (document.forms[0]) {
+		staticIPAddress.disabled = bool;
+		staticIPMask.disabled = bool;
+		staticIPGateWay.disabled = bool;
+		staticIPPrimaryDns.disabled = bool;
+		staticIPSecondaryDns.disabled = bool;
+		hostname.disabled = !bool;
+		hostname.value = dhcp_hostname;
+	}
+
+	if (v == "dhcp") {
+		with (document.forms[0]) {
+			staticIPAddress.value = "";
+			staticIPMask.value = "";
+			staticIPGateWay.value = "";
+			staticIPPrimaryDns.value = "";
+			staticIPSecondaryDns.value = "";
+		}
+		return;
+	}
+
+	/* static */
+	with (document.forms[0]) {
+		staticIPAddress.value = addr;
+		staticIPMask.value = mask;
+		staticIPGateWay.value = gateway;
+		staticIPPrimaryDns.value = dns1;
+		staticIPSecondaryDns.value = dns2;
+	}
+}
+
+function btnSave() {
+	var loc = 'wancfg.cgi?';
+
+	with (document.forms[0]) {
+		if (wan[0].checked) {
+			loc += 'wanConnType=1';   // auto WAN address
+			loc += '&dnsRefresh=0';
+		} else {
+			loc += 'wanConnType=0';   // static WAN address
+			if (!isValidIpAddress(staticIPAddress.value)) {
+				alert('WAN IP address "' + staticIPAddress.value + '" is invalid IP address.');
+				return;
+			}
+			loc += '&staticIPAddress=' + staticIPAddress.value;
+			if (!isValidIpAddress(staticIPMask.value)) {
+				alert('WAN subnet mask "' + staticIPMask.value + '" is invalid IP address.');
+				return;
+			}
+			loc += '&staticIPMask=' + staticIPMask.value;
+			if (!isValidIpAddress(staticIPGateWay.value)) {
+				alert('WAN gateway IP address "' + staticIPGateWay.value + '" is invalid gateway IP address.');
+				return;
+			}
+			loc += '&staticIPGateWay=' + staticIPGateWay.value;
+			if (staticIPPrimaryDns.value != '' &&
+				!isValidIpAddress(staticIPPrimaryDns.value)) {
+				alert('Primary DNS "' + staticIPPrimaryDns.value +
+					'" has invalid IP address.');
+				return;
+			}
+			if (staticIPPrimaryDns.value != '') {
+				loc += '&staticIPPrimaryDns=' + staticIPPrimaryDns.value;
+			}
+			if (staticIPSecondaryDns.value != '') {
+					if (staticIPSecondaryDns.value != '0.0.0.0' &&
+						!isValidIpAddress(staticIPSecondaryDns.value)) {
+					alert('Secondary DNS "' + staticIPSecondaryDns.value +
+						'" has invalid IP address.');
+					return;
+				}
+				loc += '&staticIPSecondaryDns=' + staticIPSecondaryDns.value;
+			} else
+				loc +=  '&staticIPSecondaryDns=' + '0.0.0.0';
+			loc += '&dnsRefresh=1';
+		}
+		if (hostname.value == "" || !isValidName(hostname.value) ||
+			hostname.value.indexOf("--") != -1) {
+			alert("Invalid HostName, please enter a valid HostName.");
+			return;
+		}
+	   loc += '&HostName=' + hostname.value;
+	}
+   loc += '&sessionKey=' + sessionKey;
+   location.href = loc;
+}
+
+function frmLoad() {
+	with (document.forms[0]) {
+		if (conntype == '1') {
+			wan[0].checked = true;
+			on_wantype("dhcp");
+		} else {
+			wan[1].checked = true;
+			staticIPPrimaryDns.value = dns1;
+			if (dns2 == '0.0.0.0')
+				staticIPSecondaryDns.value = '';
+			else
+				staticIPSecondaryDns.value = dns2;
+			on_wantype("static");
+		}
+	}
+	$("#dhcp").click(function() { on_wantype("dhcp"); });
+	$("#static").click(function() { on_wantype("static"); });
+}
+$(window).ready(function() { frmLoad(); })
+// -->
+</script>
+</head>
+<body>
+<blockquote>
+<form name="tf0">
+	<b>WAN IP Settings</b><br><br>
+	Enter information provided to you by your ISP to configure the WAN IP settings.<br>
+	Notice: If "Obtain an IP address automatically" is chosen, DHCP will be enabled.<br>
+	If "Use the following Static IP address" is chosen, enter the WAN IP, subnet mask, gateway and dns.<br><br>
+	<table border="0" cellpadding="0" cellspacing="0">
+		<tr>
+			<td colspan="2">
+				<input type="radio" id="dhcp" name="wan" value="dhcp">
+					Obtain an IP address automatically
+			</td>
+		</tr>
+		<tr>
+			<td width="160">DHCP Hostname:</td>
+			<td><input type='text' name='hostname'></td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<input type="radio" id="static" name="wan" value="static">
+					Use the following Static IP address:
+			</td>
+		</tr>
+		<tr>
+			<td>WAN IP Address:</td>
+			<td><input type='text' name='staticIPAddress'></td>
+		</tr>
+		<tr>
+			<td>WAN Subnet Mask:</td>
+			<td><input type='text' name='staticIPMask'></td>
+		</tr>
+		<tr>
+			<td>WAN Gateway IP Address:</td>
+			<td><input type='text' name='staticIPGateWay'></td>
+		</tr>
+		<tr>
+			<td>Primary DNS server:</td>
+			<td><input type='text' name='staticIPPrimaryDns'></td>
+		</tr>
+		<tr>
+			<td>Secondary DNS server:</td>
+			<td><input type='text' name='staticIPSecondaryDns'></td>
+		</tr>
+	</table><br/><br/>
+	<center>
+		<input type='button' onClick='btnSave()' value='Apply/Save'>
+	</center>
+</form>
+</blockquote>
+</body>
+</html>
+

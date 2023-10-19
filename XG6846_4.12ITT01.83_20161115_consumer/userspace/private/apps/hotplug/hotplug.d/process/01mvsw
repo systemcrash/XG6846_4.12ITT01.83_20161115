@@ -1,0 +1,28 @@
+#!/bin/sh
+
+[ "$NAME" = "mvsw" ] || exit
+
+mvswdir="/proc/driver/mvsw"
+is_bootstrap="/var/run/mvsw.bootstrap"
+is_vlanapplied="/var/run/mvsw.vlanapplied"
+
+if [ "$COUNTER_RESET" = "1" ]; then
+	echo clean > /proc/driver/mvsw/counter
+fi
+
+if [ "$BOOTSTRAP" = "1" ]; then
+	echo > $is_bootstrap
+	cat $mvswdir/tline
+	cat $mvswdir/vlan_id
+	echo 1 > /proc/xavi_igmpsnooping/allon
+	# always turn on power
+	echo 1 > $mvswdir/power/4 #EXT1
+	echo 1 > $mvswdir/power/5
+	echo 1 > $mvswdir/power/6
+fi
+if [ "$VLANAPPLIED" = "1" ]; then
+	echo > $is_vlanapplied
+elif [ "$VLANAPPLIED" = "0" ]; then
+	[ ! -f $is_vlanapplied ] || rm -f $is_vlanapplied
+fi
+

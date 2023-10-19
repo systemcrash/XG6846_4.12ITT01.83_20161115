@@ -1,0 +1,24 @@
+#!/bin/bash
+
+opt=""
+for i in $@; do
+	case "$opt" in
+		"-a")
+			action="$i"
+			;;
+		"-f")
+			fn="$i"
+			;;
+		"-i")
+			ip="$i"
+			;;
+	esac
+	opt="$i"
+done
+
+echo "tftp_xavi action = $action, fn = $fn, ip = $ip"
+cd /tmp
+
+tftp -o /var/tftp.pid -gt i -f $fn $ip
+rm -f /var/tftp.pid
+

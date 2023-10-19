@@ -1,0 +1,28 @@
+<html>
+<head>
+<meta HTTP-EQUIV='Pragma' CONTENT='no-cache'>
+<link rel="stylesheet" href='stylemain.css' type='text/css'>
+<link rel="stylesheet" href='colors.css' type='text/css'>
+<script language="javascript">
+<!--
+
+function restoreClick() {
+	if (confirm("Are you sure you want to restore factory default settings?"))
+		location.href = "restoreinfo.cgi?sessionKey=" + sessionKey;
+}
+var sessionKey = "<%ejGetOther(sessionKey)%>";
+// -->
+</script>
+</head>
+<body>
+	<blockquote>
+	<form>
+		<b>Tools -- Restore Default Settings</b><br>
+		<br>Restore XG settings to the factory defaults.<br>
+		<br><br>
+		<p align="center"><input type='button' value='Restore Default Settings' onClick='restoreClick()'></p>
+	</form>
+	</blockquote>
+</body>
+</html>
+

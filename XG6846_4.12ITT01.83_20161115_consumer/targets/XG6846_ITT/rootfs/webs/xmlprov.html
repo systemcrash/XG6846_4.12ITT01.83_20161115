@@ -1,0 +1,129 @@
+<html>
+   <head>
+   <meta HTTP-EQUIV='Pragma' CONTENT='no-cache'>
+   <link rel="stylesheet" href='stylemain.css' type='text/css'>
+   <link rel="stylesheet" href='colors.css' type='text/css'>
+   <script language="javascript" src="util.js"></script>
+   <script language="javascript">
+<!-- hide
+var ut = '<%ejGet(useTftp)%>';
+//var utul = '<%ejGet(useTftpUrl)%>';
+var tul = '<%ejGet(tftpUrl)%>';
+var hfwul = '<%ejGet(httpFWUrl)%>';
+var ver = '<%ejGet(xmlversion)%>';
+var pi = '<%ejGet(profileInterval)%>';
+var u3des = '<%ejGet(use3des)%>';
+var dkey = '<%ejGet(desKey)%>';
+var uhul = '<%ejGet(useHttpUrl)%>';
+
+function frmLoad() {
+    with (document.forms[0]) {
+        if (ut == '1')
+            use_tftp.checked = true;
+        else
+            use_tftp.checked = false;
+
+        /* if (utul == '1')
+            use_tftp_url.checked = true;
+        else
+            use_tftp_url.checked = false; */
+
+        if (uhul == '1')
+            url_type[1].checked = true;
+        else
+            url_type[0].checked = true;
+
+        if (u3des == '1')
+            use_3deskey.checked = true;
+        else
+            use_3deskey.checked = false;
+
+        tftp_url.value = tul;
+        upgrade_fw.value = hfwul;
+        version.value = ver;
+        profile_interval.value = pi;
+        des3_pw.value = dkey;
+    }
+}
+
+function btnSave() {
+    var loc = 'xmlprov.cgi?';
+
+    with (document.forms[0]) {
+        if (use_tftp.checked == true)
+            loc += 'useTftp=1';
+        else
+            loc += 'useTftp=0';
+
+        if (encodeUrl(tftp_url.value))
+            loc += '&useTftpUrl=1';
+        else
+            loc += '&useTftpUrl=0';
+
+        if (url_type[1].checked == true)
+            loc += '&useHttpUrl=1';
+        else
+            loc += '&useHttpUrl=0';
+
+        if (use_3deskey.checked == true)
+            loc += '&use3des=1';
+        else
+            loc += '&use3des=0';
+
+        loc += '&tftpUrl=' + encodeUrl(tftp_url.value);
+        loc += '&httpFWUrl=' + encodeUrl(upgrade_fw.value);
+        loc += '&xmlversion=' + version.value;
+        loc += '&profileInterval=' + profile_interval.value;
+        loc += '&desKey=' + des3_pw.value;
+    }
+    loc += '&sessionKey=<%ejGetOther(sessionKey)%>';
+    var code = 'location="' + loc + '"';
+    eval(code);
+}
+// done hiding -->
+</script></head>
+<body onLoad="frmLoad()">
+<blockquote><form>
+  <b>XML -- Provisioning Setup</b>
+  <br><br>
+  <table>
+  <tr>
+    <td>Enable Provision</td>
+    <td>:<input type='checkbox' name="use_tftp"></td>
+  </tr>
+  <tr>
+    <td>Use URL</td>
+    <!--<td>:<input type='checkbox' name="use_tftp_url"></td>
+  </tr>
+  <tr>
+    <td>URL Address</td>-->
+    <td>:<input type='text' name="tftp_url" size="32" maxlength="128"></td>
+  </tr>
+  <tr>
+    <td>Protocol</td>
+    <td>:<input type='radio' name="url_type" value="0"> TFTP <input type='radio' name="url_type" value="1"> HTTP</td>
+  </tr>
+  <tr>
+    <td>HTTP FW URL</td>
+    <td>:<input type='text' name="upgrade_fw" size="32" maxlength="128"></td>
+  </tr>
+  <tr>
+    <td>XML version</td>
+    <td>:<input type='text' name="version" size="20" maxlength="40"></td>
+  </tr>
+  <tr>
+    <td>Polling Interval</td>
+    <td>:<input type='text' name="profile_interval" size="12" maxlength="8"></td>
+  </tr>
+  <tr>
+    <td>Use 3DES Key</td>
+    <td>:<input type='checkbox' name="use_3deskey"></td>
+  </tr>
+  <tr>
+    <td>3DES Key</td>
+    <td>:<input type='text' name="des3_pw" size="24" maxlength="16"></td>
+  </tr>
+  </table>
+  <br><p align="center"><input type='button' onClick='btnSave()' value='Save'></p>
+</form></blockquote>
+</body></html>

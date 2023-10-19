@@ -1,0 +1,112 @@
+<html>
+   <head>
+      <meta HTTP-EQUIV='Pragma' CONTENT='no-cache'>
+      <link rel="stylesheet" href='stylemain.css' type='text/css'>
+         <link rel="stylesheet" href='colors.css' type='text/css'>
+            <script language="javascript" src="util.js"></script>
+            <script language="javascript" src="portName.js"></script>
+
+<script language="javascript">
+<!-- hide
+
+function applyClick(intfEnable) {
+    // lst format: monitor_interface|direction(1[out],0[in])|
+    // mirror_interface|status(1[enabled],0[disabled]),
+    with ( document.forms[0] ) {
+    var lst = '';
+    var loc = 'engdebug.cmd?action=apply';
+
+    if (intfEnable.length > 0) {
+        for (i = 0; i < intfEnable.length; i++) {
+            if (monitorIntf[i].value == mirrorIntf[i].value) {
+                alert("Monitor Interface can not be the same as Mirror Interface!");
+                return;
+            }
+            lst = lst + monitorIntf[i].value + intfEnable[i].value + '|' + mirrorIntf[i].value + '|';
+            if ( intfEnable[i].checked == true )
+                lst = lst + '1,';
+            else
+                lst = lst + '0,';
+
+        }
+    }
+
+    loc += '&mirrorLst=' + lst;
+    loc += '&sessionKey=<%ejGetOther(sessionKey)%>';
+    var code = 'location="' + loc + '"';
+    eval(code);
+    }
+}
+// done hiding -->
+</script>
+</head>
+<body>
+    <blockquote>
+        <form>
+<script language="javascript">
+<!-- hide
+   var i = 0;
+   var j = 0;
+   var monIntfInfo = '<%ejGetOther(wanInterfaceInfo, portMirror)%>';
+   var monIntfs = monIntfInfo.split('|');
+   var brIntfInfo = '<%ejGetOther(mirrorInterfaceInfo, all)%>';
+   var brIntfs = brIntfInfo.split('|');
+   var brdId = '<%ejGet(boardID)%>';
+   var intfDisp1 = '';
+   var intfDisp2 = '';
+   var brdIntf1 = '';
+   var brdIntf2 = '';
+   
+   document.write("     <b>Port Mirroring Setup</b><br><br>");
+   document.write("        <table border='1' cellpadding='6' cellspacing='0'>");
+   document.write("        <tr align='center'>");
+   document.write("            <td class='hd'>Monitor Interface</td>");
+   document.write("            <td class='hd'>Direction</td>");
+   document.write("            <td class='hd'>Mirror Interface</td>");
+   document.write("            <td class='hd'>Enable</td>");
+   document.write("        </tr>");
+   // Entry format: monitor_interface|direction(1[out],0[in])|
+   // mirror_interface|status(1[enabled],0[disabled])
+   for ( i = 0; i < monIntfs.length; i++ ) {
+      var monEntry = monIntfs[i].split('/');
+      document.write("<tr align='center'> ");
+      document.write("<td> <select name='monitorIntf'> ");
+      for ( j = 0; j < brIntfs.length; j++ ) {
+        brdIntf1 = brdId + '|' + brIntfs[j];
+        intfDisp1 = getUNameByLName(brdIntf1);
+        if ( monEntry[0] == brIntfs[j] )
+          document.write("<option value='" + brIntfs[j] + "' selected> " + intfDisp1 + "</option>");
+        else
+          document.write("<option value='" + brIntfs[j] + "'> " + intfDisp1 + "</option>");
+      }
+      document.write("<td> " + monEntry[1] + "</td> ");
+
+      document.write("<td> <select name='mirrorIntf'> ");
+      for ( j = 0; j < brIntfs.length; j++ ) {
+        brdIntf2 = brdId + '|' + brIntfs[j];
+        intfDisp2 = getUNameByLName(brdIntf2);
+        if ( monEntry[2] == brIntfs[j] )
+          document.write("<option value='" + brIntfs[j] + "' selected> " + intfDisp2 + "</option>");
+        else
+          document.write("<option value='" + brIntfs[j] + "'> " + intfDisp2 + "</option>");
+      }
+      document.write("</select></td> ");
+      if ( monEntry[3] == 1 )
+        document.write("<td align='center'><input type='checkbox' name='intfEnable' value='" + "|" + monEntry[1] + "' checked> </td> ");
+      else
+        document.write("<td align='center'><input type='checkbox' name='intfEnable' value='" + "|" + monEntry[1] + "'> </td> ");
+      document.write("</tr> ");
+   }
+
+// done hiding -->
+</script>
+        </table>
+        <br>
+        <center>
+        <input type='button' onClick='applyClick(this.form.intfEnable)' value='Apply/Save'>
+        </center>
+        </form>
+    </blockquote>
+</body>
+</html>
+

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv='pragma' content='no-cache'>
+<link rel="stylesheet" href='stylemain.css' type='text/css'>
+<link rel="stylesheet" href='colors.css' type='text/css'>
+<script src="jquery.min.js"></script>
+<script src="util.js"></script>
+<script>
+<!--
+var is_sfplinked = parseInt('<%ejGetOther(checkWanFiber)%>', 10);
+function frmLoad() {
+	with (document.forms[0]) {
+		speed_lan1.value = "<%ejGet(lan1_speed)%>";
+		pause_lan1.value = "<%ejGet(lan1_pause)%>";
+		speed_lan2.value = "<%ejGet(lan2_speed)%>";
+		pause_lan2.value = "<%ejGet(lan2_pause)%>";
+		speed_lan3.value = "<%ejGet(lan3_speed)%>";
+		pause_lan3.value = "<%ejGet(lan3_pause)%>";
+		speed_lan4.value = "<%ejGet(lan4_speed)%>";
+		pause_lan4.value = "<%ejGet(lan4_pause)%>";
+		speed_lan5.value = "<%ejGet(lan5_speed)%>";
+		pause_lan5.value = "<%ejGet(lan5_pause)%>";
+		sfpspeed.value = "<%ejGet(sfpspeed)%>";
+		sfppoll.value = "<%ejGet(sfppoll)%>";
+		sfpdelay.value = "<%ejGet(sfpdelay)%>";
+	}
+	if (is_sfplinked > 0) {
+		$("#disPlayLan5").show();
+	} else {
+		$("#disPlayLan5").hide();
+	}
+}
+
+function btnApply() {
+	var sessionKey='<%ejGetOther(sessionKey)%>';
+	var url = 'portmode.cgi?';
+
+	with (document.forms[0]) {
+		url += 'lan1_speed=' + speed_lan1.value;
+		url += '&lan1_pause=' + pause_lan1.value;
+		url += '&lan2_speed=' + speed_lan2.value;
+		url += '&lan2_pause=' + pause_lan2.value;
+		url += '&lan3_speed=' + speed_lan3.value;
+		url += '&lan3_pause=' + pause_lan3.value;
+		url += '&lan4_speed=' + speed_lan4.value;
+		url += '&lan4_pause=' + pause_lan4.value;
+		url += '&lan5_speed=' + speed_lan5.value;
+		url += '&lan5_pause=' + pause_lan5.value;
+		url += '&sfpspeed=' + sfpspeed.value;
+		url += '&sfppoll=' + sfppoll.value;
+		url += '&sfpdelay=' + sfpdelay.value;
+	}
+	url += '&sessionKey=' + sessionKey;
+	location.href = url;
+}
+// -->
+</script>
+</head>
+<body onLoad='frmLoad()'>
+<blockquote>
+	<form>
+		<b>Port Settings</b><br/>
+		<hr class="h1_hr"><br/>
+		<table>
+			<tr>
+				<td colspan="1"></td>
+				<td>Speed/Duplex</td>
+				<td>Pause</td>
+			</tr>
+			<tr>
+				<td>LAN1 :</td>
+				<td>
+					<select name='speed_lan1'>
+						<option value="0">Auto</option>
+						<option value="1">10M/FD</option>
+						<option value="2">10M/HD</option>
+						<option value="3">100M/FD</option>
+						<option value="4">100M/HD</option>
+						<option value="5">1000M/FD</option>
+						<option value="6">1000M/HD</option>
+					</select>
+				</td>
+				<td>
+					<select name='pause_lan1'>
+						<option value="0">Off</option>
+						<option value="1">On</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>LAN2 :</td>
+				<td>
+					<select name='speed_lan2'>
+						<option value="0">Auto</option>
+						<option value="1">10M/FD</option>
+						<option value="2">10M/HD</option>
+						<option value="3">100M/FD</option>
+						<option value="4">100M/HD</option>
+						<option value="5">1000M/FD</option>
+						<option value="6">1000M/HD</option>
+					</select>
+				</td>
+				<td>
+					<select name='pause_lan2'>
+						<option value="0">Off</option>
+						<option value="1">On</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>LAN3 :</td>
+				<td>
+					<select name='speed_lan3'>
+						<option value="0">Auto</option>
+						<option value="1">10M/FD</option>
+						<option value="2">10M/HD</option>
+						<option value="3">100M/FD</option>
+						<option value="4">100M/HD</option>
+						<option value="5">1000M/FD</option>
+						<option value="6">1000M/HD</option>
+					</select>
+				</td>
+				<td>
+					<select name='pause_lan3'>
+						<option value="0">Off</option>
+						<option value="1">On</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>LAN4 :</td>
+				<td>
+					<select name='speed_lan4'>
+						<option value="0">Auto</option>
+						<option value="1">10M/FD</option>
+						<option value="2">10M/HD</option>
+						<option value="3">100M/FD</option>
+						<option value="4">100M/HD</option>
+						<option value="5">1000M/FD</option>
+						<option value="6">1000M/HD</option>
+					</select>
+				</td>
+				<td>
+					<select name='pause_lan4'>
+						<option value="0">Off</option>
+						<option value="1">On</option>
+					</select>
+				</td>
+			</tr>
+			<tr id="disPlayLan5">
+				<td>LAN5 :</td>
+				<td>
+					<select name='speed_lan5'>
+						<option value="0">Auto</option>
+						<option value="1">10M/FD</option>
+						<option value="2">10M/HD</option>
+						<option value="3">100M/FD</option>
+						<option value="4">100M/HD</option>
+						<option value="5">1000M/FD</option>
+						<option value="6">1000M/HD</option>
+					</select>
+				</td>
+				<td>
+					<select name='pause_lan5'>
+						<option value="0">Off</option>
+						<option value="1">On</option>
+					</select>
+				</td>
+			</tr>
+		</table><br/>
+
+		<b>SFP Settings</b><br/>
+		<hr class="h1_hr"><br/>
+		<table>
+			<tr>
+				<td>SFP Speed Mode</td>
+				<td>
+					<select name='sfpspeed'>
+						<option value="0">Auto</option>
+						<option value="1">1000M Only</option>
+						<option value="2">100M Only</option>
+					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>SFP Poll Time (1~600 sec)</td>
+				<td>
+					<input name="sfppoll" type="text" size="4"/>
+				</td>
+			</tr>
+			<tr>
+				<td>SFP Delay Time (1~600 sec)</td>
+				<td>
+					<input name="sfpdelay" type="text" size="4"/>
+				</td>
+			</tr>
+	    </table>
+		<tr><td>(If changed, restart to take effect)</td></tr>			
+		<br/><br/>
+		<p align="center">
+			<input type='button' onClick='btnApply()' value='Apply/Save'>
+		</P>
+	</form>
+</blockquote>
+</body>
+</html>
+

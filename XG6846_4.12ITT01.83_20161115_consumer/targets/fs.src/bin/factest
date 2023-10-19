@@ -1,0 +1,10 @@
+#!/bin/sh
+MODEL=$(cat /etc/model_name 2> /dev/null)
+
+case "$MODEL" in
+	XG6846)
+		xavi_sw -t 16
+		ifconfig br0 192.168.1.1
+		rmmod xavi_port_limit
+		;;
+esac

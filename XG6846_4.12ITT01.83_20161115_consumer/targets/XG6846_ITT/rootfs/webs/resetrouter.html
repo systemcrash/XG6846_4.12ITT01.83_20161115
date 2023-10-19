@@ -1,0 +1,30 @@
+<html>
+<head>
+<meta HTTP-EQUIV='Pragma' CONTENT='no-cache'>
+<link rel="stylesheet" href='stylemain.css' type='text/css'>
+<link rel="stylesheet" href='colors.css' type='text/css'>
+<script>
+<!--
+var sessionKey="<%ejGetOther(sessionKey)%>";
+function btnReset() {
+   location.href = "rebootinfo.cgi?sessionKey=" + sessionKey;
+}
+function frmLoad() {
+}
+// -->
+</script>
+</head>
+<body onLoad='frmLoad()'>
+<blockquote>
+	<center>
+		<br/>
+		<strong>Click the button below to reboot.</strong>
+	</center>
+	<p align="center">
+		<input type='button' onClick='btnReset()' value='Reboot'/>
+		<br>
+	</p>
+</blockquote>
+</body>
+</html>
+

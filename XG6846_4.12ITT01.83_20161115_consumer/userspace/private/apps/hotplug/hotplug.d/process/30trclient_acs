@@ -1,0 +1,10 @@
+#!/bin/sh
+
+[ "$NAME" = "trclient_acs" ] || exit
+is_connected="/var/run/trclient_acs.connected"
+
+if [ "$CONNECTED" = "1" ]; then
+	echo > $is_connected
+else
+	rm -f $is_connected > /dev/null 2>&1
+fi

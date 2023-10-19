@@ -1,0 +1,60 @@
+.h1_hr {
+	margin-top:0px;
+	margin-left:0;
+	width:400px;
+	color:#ccc;
+}
+
+body {
+    color: #FFFFFF;
+    background-color: #999999;
+}
+td {
+    color: #FFFFFF;
+    background-color: #999999;
+}
+td.menu {
+    background-color: #999999;
+}
+td.hd {
+    color: #FFFFFF;
+    background-color: #999999;
+}
+input {
+    color: #000000;
+}
+input.hd {
+    color: #FFFFFF;
+    background-color: #999999;
+}
+.footerbody {
+    border-top: #b70024 1px solid;
+    border-bottom: #b70024 1px solid;
+    background: #000000 none;
+}
+.footertd {
+    color: #000000;
+    background-color: #000000;
+}
+.menuLink {
+    color: #FFFFFF;
+}
+.menuLink:hover {
+    color: #FFFFFF;
+    background-color: #000000;
+}
+.menuLink:active {
+    color: #FFFFFF;
+    background-color: #000000;
+}
+.menuLink:focus {
+    color: #FFFFFF;
+    background-color: #000000;
+}
+.menuLink:focus:hover {
+    color: #ffffff;
+    background-color: #b70024;
+}
+.menuCell {
+    background-color: #999999;
+}

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+PORT=$1
+PORT=${PORT:=0}
+LIST=$(awk '{ if ($4 == "P-'$PORT'") print $1}' /proc/driver/mvsw/mac_list)
+for i in $LIST; do
+	echo $i > /proc/driver/mvsw/mac_del
+done

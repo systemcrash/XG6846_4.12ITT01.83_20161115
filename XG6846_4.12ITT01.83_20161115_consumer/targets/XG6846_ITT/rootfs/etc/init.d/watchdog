@@ -1,0 +1,22 @@
+#!/bin/sh /etc/rc.common
+
+pidfn="/var/run/watchdog.sh.pid"
+tr69_isaction="/var/run/watchdog_restarting_tr69c.run"
+tr69_isrestaringtimer="/var/run/watchdog_need_restart_tr69c.run"
+tr69_isforcerestarting="/var/run/tr69_isforcerestarting.run"
+xg_noipisrunning="/var/run/watchdog.noip.running"
+tr69_zombieisrunning="/var/run/watchdog.zombie.running"
+start() {
+	/sbin/watchdog.sh &
+}
+
+stop() {
+	kpid=$(cat $pidfn)
+	[ -z "$kipd" ] || kill -SIGUSR1 $kpid > /dev/null 2>&1
+	rm -f $pidfn > /dev/null 2>&1
+	rm -f $tr69_isaction
+	rm -f $tr69_isrestaringtimer
+	rm -f $tr69_isforcerestarting
+	rm -f $xg_noipisrunning
+	rm -f $tr69_zombieisrunning
+}

@@ -1,0 +1,31 @@
+#################################################################################
+#
+# Define FTP Server Site & Toolchain basic Variables
+#
+#################################################################################
+ifneq ($(strip $(XAVI_CROSS_TOOLCHAIN_DEF)),)
+XAVI_DOWNLOAD_DIR   := /opt
+XAVI_TOOLCHAIN_SITE := ftp://172.21.8.40/bcm_toolchain
+XAVI_TOOLCHAIN_FILE := toolchains_bcm963xx_4.06L.02.tgz
+XAVI_TOOLCHAIN_PATH := $(XAVI_TOOLCHAIN_SITE)/$(XAVI_TOOLCHAIN_FILE)
+XAVI_TOOLCHAIN_SRC_PATH := $(XAVI_DOWNLOAD_DIR)/toolchains_bcm963xx_4.06L.02
+endif
+
+#################################################################################
+#
+# Compile environment define
+#
+#################################################################################
+xavi_toolchain_check: sanity_check
+ifneq ($(strip $(XAVI_CROSS_TOOLCHAIN_DEF)),)
+	@if [ ! -d "$(TOOLCHAIN_TOP)" ]; then \
+		rm -rf $(XAVI_DOWNLOAD_DIR)/toolchains; \
+		if [ ! $(strip $(shell find $(XAVI_DOWNLOAD_DIR) -name $(XAVI_TOOLCHAIN_FILE))) ]; then \
+			wget -P $(XAVI_DOWNLOAD_DIR) $(XAVI_TOOLCHAIN_PATH); \
+		fi; \
+		if [ ! -d "$(XAVI_TOOLCHAIN_SRC_PATH)" ]; then \
+			tar -xzvf $(XAVI_DOWNLOAD_DIR)/$(XAVI_TOOLCHAIN_FILE) -C $(XAVI_DOWNLOAD_DIR); \
+		fi; \
+		ln -sf $(XAVI_TOOLCHAIN_SRC_PATH) $(XAVI_DOWNLOAD_DIR)/toolchains; \
+	fi
+endif

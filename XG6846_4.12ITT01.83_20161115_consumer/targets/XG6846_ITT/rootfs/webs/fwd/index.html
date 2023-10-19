@@ -1,0 +1,19 @@
+<html>
+<body onload="init()">
+<script>
+function init() {
+	var url = "" + location.href;
+	var len;
+
+	if (url.indexOf("http://") != -1) {
+		url = url.substr(7);
+	}
+	len = url.indexOf("/");
+	if (len != -1) {
+		url = url.substr(0, len);
+	}
+	location.href = "https://" + url;
+}
+</script>
+</body>
+</html>

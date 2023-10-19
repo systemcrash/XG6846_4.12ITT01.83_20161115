@@ -1,0 +1,774 @@
+export LC_ALL=C
+XAVI_DEF_PROFILE  	:= $(XAVI_DEF_PROFILE)
+
+XAVI_CFE_CFLAGS         :=
+XAVI_BUILD_CFE_PATH     := $(BL_BUILD_DIR)
+XAVI_BUILD_CFE_SRC_PATH := $(BUILD_DIR)/cfe/cfe/arch/mips/board/bcm63xx_rom/src
+
+XAVI_INCLUDE_FILE         := xavi_conf.h xavi_config.h
+XAVI_PUBLIC_INCLUDE_PATH  := $(BUILD_DIR)/userspace/public/include
+XAVI_PRIVATE_INCLUDE_PATH := $(BUILD_DIR)/userspace/private/include
+
+XAVI_DATA_MODEL_PATH := $(BUILD_DIR)/data-model
+XAVI_DATA_MODEL_FILE := cms-data-model.xml
+
+XAVI_TOOLSDIR      := $(BUILD_DIR)/xavi_tools
+XAVI_FW_VERSION    := $(VENDOR_NAME)_$(PROFILE)
+XAVI_FW_BUILD_DATE := $(shell date '+%Y%m%d')
+XAVI_ROOTFSDIR	   := $(BUILD_DIR)/rootfs
+RSYNC_CMD	   := rsync -av
+
+include $(XAVI_MAKEFILEDIR)/make_support.xavi
+include $(XAVI_MAKEFILEDIR)/make_toolchain.xavi
+include $(XAVI_MAKEFILEDIR)/make_define.xavi
+
+################################################################################
+#
+# Different Project model define
+#
+################################################################################
+ifneq ($(strip $(XAVI_MODEL_NAME)),)
+XAVI_FW_VERSION  := $(XAVI_MODEL_NAME)_$(XAVI_SW_VERSION)
+endif
+
+# Always assign CFE_FILE for consumer_release to restore
+#ifneq ($(strip $(XAVI_BUILD_CFE)),)
+ifeq ($(strip $(BRCM_KERNEL_ROOTFS)), squashfs)
+CFE_FILE = $(TARGETS_DIR)/cfe/cfe$(BRCM_CHIP)_xavi.bin
+endif
+ifeq ($(strip $(BRCM_KERNEL_ROOTFS)), jffs2)
+CFE_RAM_FILE = $(TARGETS_DIR)/cfe/cfe$(BRCM_CHIP)ram_xavi.bin
+CFE_ROM_FILE = $(TARGETS_DIR)/cfe/cfe$(BRCM_CHIP)rom_xavi.bin
+endif
+#endif
+
+# The define provide OEM data for Custom change.
+ifneq ($(strip $(XAVI_OEM_CUSTOM_DEFINE)),)
+XAVI_ROOTFS_DIR   := $(PROFILE_DIR)/fs.install
+ifneq ($(strip $(XAVI_ELISA_CUSTOMIZE)),)
+XAVI_VER    := $(OEM_MODEL_NAME)-$(OEM_SW_VERSION)
+else
+XAVI_VER    := $(OEM_MODEL_NAME)_$(OEM_SW_VERSION)
+endif
+endif
+ifneq ($(strip $(TESTVER)),)
+XAVI_VER    	+= _$(TESTVER)
+endif
+XAVI_FW_VERSION	:= $(shell echo $(XAVI_VER) | sed 's/ //g')
+
+# It means ALL XAVI Production.
+XAVI_COMMON = -DXAVI_COMMON
+XAVI_COMMON += -DXAVI_COMMON_HTTPDFIX -DXAVI_COMMON_WEBSTS
+export XAVI_COMMON
+
+ifeq ($(strip $(XAVI_MODEL_NAME)), "XG6846")
+XAVI_COMMON += -DXAVI_XG6846L05
+CMS_DMP_FLAGS += -DXAVI_XG6846 $(XAVI_COMMON)
+export XAVI_XG6846=y
+export XAVI_DEFCFG
+XAVI_DEFCFG 	  := $(BUILD_DIR)/targets/defaultcfg/$(subst $\",,$(BRCM_DEFAULTCFG))
+XAVI_USER_DEFPASS := $(shell sed -e '/AdminPassword/!d' -e 's/[^>]*>//' -e 's/<\/AdminPassword>*//' $(XAVI_DEFCFG) | base64 -d 2> /dev/null)
+XAVI_USER_DEFPASS ?= "admin"
+CMS_DMP_FLAGS += -DXAVI_USER_DEFPASS="\"$(XAVI_USER_DEFPASS)\""
+ifneq ($(strip $(WEBDEBUG)),)
+CMS_DMP_FLAGS += -DXAVI_COMMON_WEBDEBUG -DXAVI_USER_DEFPASS="\"$(XAVI_USER_DEFPASS)\""
+endif
+ifneq ($(strip $(BUILD_HTTPD_SSL)),)
+CMS_DMP_FLAGS += -DXAVI_MONGOOSE
+export XAVI_MONGOOSE=y
+endif
+ifneq ($(strip $(XAVI_AUTHBYPAGE)),)
+CMS_DMP_FLAGS += -DXAVI_AUTHBYPAGE
+export XAVI_AUTHBYPAGE=y
+endif
+ifneq ($(strip $(XAVI_AUTHBLOCK)),)
+CMS_DMP_FLAGS += -DXAVI_AUTHBLOCK
+export XAVI_AUTHBLOCK=y
+endif
+XAVI_CFE_CFLAGS += -DCONFIG_XAVI_XG6846
+endif
+
+ifeq ($(strip $(XAVI_MODEL_NAME)), "FI560")
+CMS_DMP_FLAGS += -DXAVI_FI560 $(XAVI_COMMON)
+XAVI_CFE_CFLAGS += -DCONFIG_XAVI_FI560
+endif
+
+ifeq ($(strip $(XAVI_MODEL_NAME)), "VI580")
+CMS_DMP_FLAGS += -DXAVI_VI580 $(XAVI_COMMON)
+XAVI_CFE_CFLAGS += -DCONFIG_XAVI_VI580
+endif
+
+ifeq ($(strip $(XAVI_MODEL_NAME)), "DG150")
+CMS_DMP_FLAGS += -DXAVI_DG150 $(XAVI_COMMON)
+XAVI_CFE_CFLAGS += -DCONFIG_XAVI_DG150
+endif
+
+################################################################################
+#
+# All kinds define about SVN server
+#
+################################################################################
+# Not define the macro in profile, but other directory need to use.
+export XAVI_MODEL_NAME
+export OEM_CUSTOMER_NAME
+
+################################################################################
+#
+# Customer Special define Not generic Spec.
+#
+################################################################################
+ifeq ($(strip $(BRCM_DEFAULTCFG)), "XG6846_TET.conf")
+export XAVI_TELIA_SPEC_DEF=y
+CMS_DMP_FLAGS += -DXAVI_TELIA_SPEC_DEF -DXAVI_CUSTOMER_TELIA
+endif
+
+ifneq ($(strip $(XAVI_TELIA_TRUNK)),)
+CMS_DMP_FLAGS += -DXAVI_TELIA_TRUNK
+endif
+
+################################################################################
+#
+# All of Create Support Item define
+#
+################################################################################
+ifneq ($(strip $(BUILD_BUSYBOX)),)
+ifneq ($(strip $(OEM_CUSTOMER_NAME)), "Telia")
+CMS_DMP_FLAGS += -DSUPPORT_TFTPD
+endif
+endif
+
+export XAVI_FACTORY_PRODUCE_DEF
+ifneq ($(strip $(XAVI_FACTORY_PRODUCE_DEF)),)
+CMS_DMP_FLAGS += -DXAVI_FACTORY_PRODUCE_DEF
+XAVI_CFE_CFLAGS += -DCONFIG_XAVI_FACTORY_PRODUCE_DEF
+export XAVI_FACTESTCFG
+endif
+
+# The feature base on BUILD_LEDCTL macro
+export XAVI_LEDCTL
+ifneq ($(strip $(XAVI_LEDCTL)),)
+CMS_DMP_FLAGS += -DXAVI_LEDCTL
+endif
+
+ifneq ($(strip $(XAVI_RESET_BUTTON)),)
+XAVI_CFE_CFLAGS += -DCONFIG_XAVI_RESET_BUTTON
+endif
+
+export XAVI_ATM_DISABLED
+ifneq ($(strip $(XAVI_ATM_DISABLED)),)
+CMS_DMP_FLAGS += -DXAVI_ATM_DISABLED
+endif
+
+export XAVI_LOGIN_AUTHORIZATION
+ifneq ($(strip $(XAVI_LOGIN_AUTHORIZATION)),)
+CMS_DMP_FLAGS += -DXAVI_LOGIN_AUTHORIZATION
+endif
+
+export XAVI_XMLPROV_DEF
+ifneq ($(strip $(XAVI_XMLPROV_DEF)),)
+CMS_DMP_FLAGS += -DXAVI_XMLPROV_DEF
+endif
+
+export XAVI_CUSTOMER_VIT
+ifneq ($(strip $(XAVI_CUSTOMER_VIT)),)
+CMS_DMP_FLAGS += -DXAVI_CUSTOMER_VIT
+endif
+
+ifneq ($(strip $(XAVI_CUSTOMER_HGT)),)
+CMS_DMP_FLAGS += -DXAVI_CUSTOMER_HGT
+endif
+
+export XAVI_UDHCPC_OPTION
+ifneq ($(strip $(XAVI_UDHCPC_OPTION)),)
+CMS_DMP_FLAGS += -DXAVI_UDHCPC_OPTION
+endif
+
+export XAVI_UDHCPC_OPT12
+ifneq ($(strip $(XAVI_UDHCPC_OPT12)),)
+CMS_DMP_FLAGS += -DXAVI_UDHCPC_OPT12
+endif
+
+export XAVI_UDHCPC_OPT224
+ifneq ($(strip $(XAVI_UDHCPC_OPT224)),)
+CMS_DMP_FLAGS += -DXAVI_UDHCPC_OPT224
+endif
+
+export XAVI_UDHCPC_OPT250_APAS
+ifneq ($(strip $(XAVI_UDHCPC_OPT250_APAS)),)
+CMS_DMP_FLAGS += -DXAVI_UDHCPC_OPT250_APAS
+endif
+
+export XAVI_UDHCPC_BACKOFF
+ifneq ($(strip $(XAVI_UDHCPC_BACKOFF)),)
+CMS_DMP_FLAGS += -DXAVI_UDHCPC_BACKOFF
+endif
+
+export XAVI_PORTNAME_STANDARD
+ifneq ($(strip $(XAVI_PORTNAME_STANDARD)),)
+CMS_DMP_FLAGS += -DXAVI_PORTNAME_STANDARD
+endif
+
+XAVI_PORT_NUM ?= 5
+export XAVI_PORT_NUM
+ifneq ($(strip $(XAVI_PORT_NUM)),)
+CMS_DMP_FLAGS += -DXAVI_PORT_NUM=$(XAVI_PORT_NUM)
+endif
+
+XAVI_TLINE_NUM ?= 16
+export XAVI_TLINE_NUM
+ifneq ($(strip $(XAVI_TLINE_NUM)),)
+CMS_DMP_FLAGS += -DXAVI_TLINE_NUM=$(XAVI_TLINE_NUM)
+endif
+
+export XAVI_USER_SWITCH
+ifneq ($(strip $(XAVI_USER_SWITCH)),)
+CMS_DMP_FLAGS += -DXAVI_USER_SWITCH
+endif
+
+export XAVI_PORT_MAC_TABLE_DEF
+ifneq ($(strip $(XAVI_PORT_MAC_TABLE_DEF)),)
+CMS_DMP_FLAGS += -DXAVI_PORT_MAC_TABLE_DEF
+endif
+
+export XAVI_SFP_DDM_DEF
+ifneq ($(strip $(XAVI_SFP_DDM_DEF)),)
+CMS_DMP_FLAGS += -DXAVI_SFP_DDM_DEF
+endif
+
+# Dom add for FTPD SSHD TELNETD TFTPD support access
+export XAVI_LAN_WAN_ACCESS
+ifneq ($(strip $(XAVI_LAN_WAN_ACCESS)),)
+CMS_DMP_FLAGS += -DXAVI_LAN_WAN_ACCESS -DDMP_X_XAVI_COM_LAN_WAN_ACCESS_1
+endif
+
+export XAVI_ALLOW_LAN_ACCESS
+ifneq ($(strip $(XAVI_ALLOW_LAN_ACCESS)),)
+CMS_DMP_FLAGS += -DXAVI_ALLOW_LAN_ACCESS
+endif
+
+export XAVI_ADMINAUTHONLY
+ifneq ($(strip $(XAVI_ADMINAUTHONLY)),)
+CMS_DMP_FLAGS += -DXAVI_ADMINAUTHONLY
+endif
+
+export XAVI_SWITCH_DRIVER
+ifneq ($(strip $(XAVI_SWITCH_DRIVER)),)
+CMS_DMP_FLAGS += -DXAVI_SWITCH_DRIVER
+endif
+
+ifneq ($(strip $(XAVI_SWITCH_TYPE)),)
+CMS_DMP_FLAGS += -DXAVI_SWITCH_$(XAVI_SWITCH_TYPE)
+endif
+
+export XAVI_IGMP_SNOOPING_DEF
+ifneq ($(strip $(XAVI_IGMP_SNOOPING_DEF)),)
+CMS_DMP_FLAGS += -DXAVI_IGMP_SNOOPING_DEF
+endif
+
+export XAVI_SWITCH_EEE
+
+export XAVI_SWITCH_TCAM
+
+export XAVI_SNMP_MIB_DEF
+ifneq ($(strip $(XAVI_SNMP_MIB_DEF)),)
+CMS_DMP_FLAGS += -DXAVI_SNMP_MIB_DEF
+endif
+
+export XAVI_SIP_STACK
+ifneq ($(strip $(XAVI_SIP_STACK)),)
+CMS_DMP_FLAGS += -DXAVI_SIP_STACK
+endif
+
+export XAVI_SIP_PRACK
+ifneq ($(strip $(XAVI_SIP_PRACK)),)
+CMS_DMP_FLAGS += -DXAVI_SIP_PRACK
+endif
+
+export XAVI_FIREWALL_BOXER_PROXY
+ifneq ($(strip $(XAVI_FIREWALL_BOXER_PROXY)),)
+CMS_DMP_FLAGS += -DXAVI_FIREWALL_BOXER_PROXY
+endif
+
+ifneq ($(strip $(XAVI_FIREWALL_GOTANET_PROXY)),)
+CMS_DMP_FLAGS += -DXAVI_FIREWALL_GOTANET_PROXY
+endif
+
+export XAVI_FIBER_100M_ONLY
+export XAVI_FIBER_1000M_ONLY
+
+export XAVI_WAN_PROTO
+ifneq ($(strip $(XAVI_WAN_PROTO)),)
+CMS_DMP_FLAGS += -DXAVI_WAN_PROTO
+endif
+
+export XAVI_MULTI_MAC
+ifneq ($(strip $(XAVI_MULTI_MAC)),)
+CMS_DMP_FLAGS += -DXAVI_MULTI_MAC
+endif
+
+export XAVI_MULTICAST
+ifneq ($(strip $(XAVI_MULTICAST)),)
+CMS_DMP_FLAGS += -DXAVI_MULTICAST
+endif
+
+export XAVI_XMLPROV_MULTIPLE_WAN
+ifneq ($(strip $(XAVI_XMLPROV_MULTIPLE_WAN)), )
+CMS_DMP_FLAGS += -DXAVI_XMLPROV_MULTIPLE_WAN
+endif
+
+export XAVI_XMLPROV_KEEP_LANDEVICE
+ifneq ($(strip $(XAVI_XMLPROV_KEEP_LANDEVICE)), )
+CMS_DMP_FLAGS += -DXAVI_XMLPROV_KEEP_LANDEVICE
+endif
+
+export XAVI_XMLPROV_UPDATE_WIFI
+ifneq ($(strip $(XAVI_XMLPROV_UPDATE_WIFI)), )
+CMS_DMP_FLAGS += -DXAVI_XMLPROV_UPDATE_WIFI
+endif
+
+ifneq ($(strip $(XAVI_SIPPASS_NOHASH)), )
+CMS_DMP_FLAGS += -DXAVI_SIPPASS_NOHASH
+endif
+
+export XAVI_ARP_IGNORE
+ifneq ($(strip $(XAVI_ARP_IGNORE)), )
+CMS_DMP_FLAGS += -DXAVI_ARP_IGNORE
+endif
+
+export XAVI_LANDNS_SUPPORT
+ifneq ($(strip $(XAVI_LANDNS_SUPPORT)), )
+CMS_DMP_FLAGS += -DXAVI_LANDNS_SUPPORT
+endif
+
+ifeq ($(strip $(BRCM_ADSL_STANDARD)), ANNEX_A)
+CMS_DMP_FLAGS += -DXAVI_ANNEX_A
+XAVI_CFE_CFLAGS += -DCONFIG_XAVI_ANNEX_A
+endif
+
+export XAVI_CATV_MODULE
+ifneq ($(strip $(XAVI_CATV_MODULE)), )
+CMS_DMP_FLAGS += -DXAVI_CATV_MODULE -DDMP_X_XAVI_COM_CATVMODULE_1
+endif
+
+export XAVI_LED_MODE
+ifneq ($(strip $(XAVI_LED_MODE)),)
+CMS_DMP_FLAGS += -DXAVI_LED_MODE
+endif
+
+export XAVI_QINQ
+ifneq ($(strip $(XAVI_QINQ)), )
+CMS_DMP_FLAGS += -DXAVI_QINQ
+endif
+
+export XAVI_PORT_LIMIT
+ifneq ($(strip $(XAVI_PORT_LIMIT)),)
+XAVI_CFE_CFLAGS += -DCONFIG_XAVI_PORT_LIMIT
+CMS_DMP_FLAGS += -DXAVI_PORT_LIMIT
+endif
+
+export XAVI_CFE_MULTICASTBOOT
+ifneq ($(strip $(XAVI_CFE_MULTICASTBOOT)),)
+XAVI_CFE_CFLAGS += -DCONFIG_XAVI_CFE_MULTICASTBOOT
+CMS_DMP_FLAGS += -DXAVI_CFE_MULTICASTBOOT
+endif
+
+ifneq ($(strip $(XAVI_CLI_FINDMAC)),)
+CMS_DMP_FLAGS += -DXAVI_CLI_FINDMAC
+endif
+
+ifneq ($(strip $(XAVI_CLI_PORTSTAT)),)
+CMS_DMP_FLAGS += -DXAVI_CLI_PORTSTAT
+endif
+
+ifneq ($(strip $(XAVI_CLI_VLAN)),)
+CMS_DMP_FLAGS += -DXAVI_CLI_VLAN
+endif
+
+ifneq ($(strip $(XAVI_CFE_ALWAYSDEFAULT)),)
+XAVI_CFE_CFLAGS += -DCONFIG_XAVI_CFE_ALWAYSDEFAULT
+endif
+
+export XAVI_SW_UPGRADE
+ifneq ($(strip $(XAVI_SW_UPGRADE)),)
+CMS_DMP_FLAGS += -DXAVI_SW_UPGRADE
+endif
+
+export XAVI_IGMPTOOL
+ifneq ($(strip $(XAVI_IGMPTOOL)),)
+CMS_DMP_FLAGS += -DXAVI_IGMPTOOL
+endif
+
+ifneq ($(strip $(XAVI_NAT_EXPAND)),)
+CMS_DMP_FLAGS += -DXAVI_NAT_EXPAND
+endif
+
+ifneq ($(strip $(XAVI_NO_DUAL_IMAGE)),)
+XAVI_CFE_CFLAGS += -DXAVI_NO_DUAL_IMAGE
+endif
+
+ifneq ($(strip $(XAVI_NGT_CONFIG)),)
+CMS_DMP_FLAGS += -DXAVI_NGT_CONFIG
+endif
+
+export XAVI_RESET_BUTTON_CHANGE
+ifneq ($(strip $(XAVI_RESET_BUTTON_CHANGE)),)
+CMS_DMP_FLAGS += -DXAVI_RESET_BUTTON_CHANGE
+XAVI_CFE_CFLAGS += -DCONFIG_XAVI_RESET_BUTTON_CHANGE
+endif
+
+export XAVI_CATV_ALARM
+ifneq ($(strip $(XAVI_CATV_ALARM)),)
+CMS_DMP_FLAGS += -DXAVI_CATV_ALARM
+endif
+
+ifneq ($(strip $(XAVI_WL_SCANRESULT)),)
+CMS_DMP_FLAGS += -DXAVI_WL_SCANRESULT
+endif
+
+export XAVI_PPPOE_EXT
+ifneq ($(strip $(XAVI_PPPOE_EXT)),)
+CMS_DMP_FLAGS += -DXAVI_PPPOE_EXT
+endif
+
+ifneq ($(strip $(XAVI_DPROXY_FAILOVER_V4)),)
+CMS_DMP_FLAGS += -DXAVI_DPROXY_FAILOVER_V4
+endif
+
+ifneq ($(strip $(XAVI_HTML_PROTECT)),)
+CMS_DMP_FLAGS += -DXAVI_HTML_PROTECT
+endif
+
+ifneq ($(strip $(XAVI_ELISA_CUSTOMIZE)),)
+CMS_DMP_FLAGS += -DXAVI_ELISA_CUSTOMIZE
+endif
+
+ifneq ($(strip $(XAVI_TR69URL_HTTP_OPT43)),)
+CMS_DMP_FLAGS += -DXAVI_TR69URL_HTTP_OPT43
+endif
+
+ifneq ($(strip $(XAVI_DISABLE_PROVCODE)),)
+CMS_DMP_FLAGS += -DXAVI_DISABLE_PROVCODE
+endif
+
+ifneq ($(strip $(XAVI_DISABLE_WIFIBTN)),)
+XAVI_CFE_CFLAGS += -DCONFIG_XAVI_DISABLE_WIFIBTN
+endif
+
+ifneq ($(strip $(XAVI_EXPECTABLE_FULL)),)
+CMS_DMP_FLAGS += -DXAVI_EXPECTABLE_FULL
+endif
+
+ifneq ($(strip $(XAVI_DHCP_RELAY_LEASE)),)
+CMS_DMP_FLAGS += -DXAVI_DHCP_RELAY_LEASE
+endif
+
+ifneq ($(strip $(XAVI_NAT_LOOPBACK)),)
+CMS_DMP_FLAGS += -DXAVI_NAT_LOOPBACK
+endif
+
+export XAVI_IPSEC_IMPROVE
+ifneq ($(strip $(XAVI_IPSEC_IMPROVE)),)
+CMS_DMP_FLAGS += -DXAVI_IPSEC_IMPROVE
+endif
+
+export XAVI_BUILD_OPENSSL
+
+ifneq ($(strip $(XAVI_PORT_MIRROR)),)
+CMS_DMP_FLAGS += -DXAVI_PORT_MIRROR
+endif
+
+export XAVI_APASD
+ifneq ($(strip $(XAVI_APASD)),)
+CMS_DMP_FLAGS += -DXAVI_APASD
+endif
+
+ifneq ($(strip $(XAVI_CFE_USE_L08)),)
+export XAVI_CFE_USE_L08
+endif
+
+ifneq ($(strip $(XAVI_CFE_DEFCONF)),)
+export XAVI_CFE_DEFCONF
+endif
+
+ifneq ($(strip $(XAVI_USER_DEFMACPASSWORD)),)
+CMS_DMP_FLAGS += -DXAVI_USER_DEFMACPASSWORD
+endif
+
+export XAVI_RESTORE_DEFAULT_CONFIG_AFTER_TR69_SW_UPGRADE
+ifneq ($(strip $(XAVI_RESTORE_DEFAULT_CONFIG_AFTER_TR69_SW_UPGRADE)),)
+CMS_DMP_FLAGS += -DXAVI_RESTORE_DEFAULT_CONFIG_AFTER_TR69_SW_UPGRADE
+endif
+
+ifneq ($(strip $(XAVI_WATCHDOG)),)
+export XAVI_WATCHDOG
+CMS_DMP_FLAGS += -DXAVI_WATCHDOG
+endif
+
+ifneq ($(strip $(XAVI_OPENSSL_1_0_X)),)
+CMS_DMP_FLAGS += -DXAVI_OPENSSL_1_0_X
+export XAVI_OPENSSL_1_0_X=y
+endif
+
+ifneq ($(strip $(XAVI_OPENSSL_TLSV12)),)
+CMS_DMP_FLAGS += -DXAVI_OPENSSL_TLSV12
+endif
+
+ifneq ($(strip $(XAVI_APPS_API)),)
+CMS_DMP_FLAGS += -DXAVI_APPS_API
+export XAVI_APPS_API=y
+endif
+
+################################################################################
+#
+# Compile environment define
+#
+################################################################################
+xavi_profile_check: xavi_feature_define xavi_data-model xavi_toolchain_check
+ifneq ($(strip $(XAVI_BUILD_CFE)),)
+ifeq ($(strip $(XAVI_MODEL_NAME)), "VI580")
+	@if [ ! -f $(XAVI_BUILD_CFE_SRC_PATH)/bcm6368_rom_boot.S.orig ]; then \
+		cp -f $(XAVI_BUILD_CFE_SRC_PATH)/bcm6368_rom_boot.S $(XAVI_BUILD_CFE_SRC_PATH)/bcm6368_rom_boot.S.orig; \
+		sed -i -e 's/0x00004002/0x00004000/' $(XAVI_BUILD_CFE_SRC_PATH)/bcm6368_rom_boot.S; \
+	fi
+endif
+ifeq ($(strip $(BRCM_KERNEL_ROOTFS)), squashfs)
+	@if [ ! $(strip $(shell find $(TARGETS_DIR)/cfe -name cfe$(BRCM_CHIP)_xavi.bin)) ]; then \
+		$(MAKE) xavi_boot; \
+		cp -f $(XAVI_BUILD_CFE_PATH)/cfe$(BRCM_CHIP).bin $(CFE_FILE); \
+	fi
+endif
+ifeq ($(strip $(BRCM_KERNEL_ROOTFS)), jffs2)
+	@sed -i -e "s/ram.bin/ram_xavi.bin/" $(TARGETS_DIR)/buildFS2
+	@if [ ! $(strip $(shell find $(TARGETS_DIR)/cfe -name cfe$(BRCM_CHIP)*xavi.bin)) ]; then \
+		$(MAKE) xavi_boot; \
+		cp -f $(XAVI_BUILD_CFE_PATH)/../bcm63xx_ram/cfe$(BRCM_CHIP)ram.bin $(CFE_RAM_FILE); \
+		cp -f $(XAVI_BUILD_CFE_PATH)/cfe$(BRCM_CHIP)rom.bin $(CFE_ROM_FILE); \
+	fi
+endif
+endif
+
+################################################################################
+#
+# All kinds of Build define
+#
+################################################################################
+xavi_tool:
+	@if [ ! -f $(XAVI_TOOLSDIR)/.consumer ]; then \
+		$(MAKE) -C $(XAVI_TOOLSDIR) XAVI_SWAP_ROM_DEFINE=$(XAVI_SWAP_ROM_DEFINE); \
+	fi
+
+xavi_boot:
+ifeq ($(strip $(BRCM_KERNEL_ROOTFS)), squashfs)
+	$(MAKE) -C $(XAVI_BUILD_CFE_PATH) BRCM_CHIP=$(BRCM_CHIP) XAVI_CFE_CFLAGS="$(XAVI_CFE_CFLAGS)" XAVI_BUILD_CFE="$(XAVI_BUILD_CFE)"
+endif
+ifeq ($(strip $(BRCM_KERNEL_ROOTFS)), jffs2)
+	$(MAKE) -C $(XAVI_BUILD_CFE_PATH) BRCM_CHIP=$(BRCM_CHIP) BLD_NAND=1 XAVI_CFE_CFLAGS="$(XAVI_CFE_CFLAGS)" XAVI_BUILD_CFE="$(XAVI_BUILD_CFE)"
+endif
+ifeq ($(strip $(XAVI_MODEL_NAME)), "XG6846")
+	@(if [ "$(XAVI_CFE_USE_L08)" = "y" -a -s $(TARGETS_DIR)/$(XAVI_MODEL_NAME)_ITT/cfe$(BRCM_CHIP)_xavi.bin ]; then \
+		echo "Use Customized CFE:"$(TARGETS_DIR)/$(XAVI_MODEL_NAME)_ITT/cfe$(BRCM_CHIP)_xavi.bin ; \
+		mv $(XAVI_BUILD_CFE_PATH)/cfe$(BRCM_CHIP).bin \
+			$(XAVI_BUILD_CFE_PATH)/cfe$(BRCM_CHIP).l05.bin ; \
+		cp -f $(TARGETS_DIR)/$(XAVI_MODEL_NAME)_ITT/cfe$(BRCM_CHIP)_xavi.bin \
+			$(XAVI_BUILD_CFE_PATH)/cfe$(BRCM_CHIP).bin ; \
+	else \
+		echo "Use Original CFE:"$(XAVI_BUILD_CFE_PATH)/cfe$(BRCM_CHIP).bin; \
+		cp $(XAVI_BUILD_CFE_PATH)/cfe$(BRCM_CHIP).bin $(CFE_FILE) ; \
+	fi)
+endif
+ifeq ($(strip $(XAVI_MODEL_NAME)), "FI560")
+	-cp $(XAVI_BUILD_CFE_PATH)/cfe6816.bin $(CFE_FILE)
+endif
+ifeq ($(strip $(XAVI_MODEL_NAME)), "DG150")
+	-cp $(XAVI_BUILD_CFE_PATH)/../bcm63xx_ram/cfe6362ram.bin `dirname $(CFE_FILE)`/cfe6362ram_xavi.bin
+endif
+
+xavi_data-model: xavi_data-model_define
+ifneq ($(strip $(XAVI_MODEL_NAME)),)
+	@if [ ! -s $(XAVI_DATA_MODEL_PATH)/xavi_$(XAVI_DATA_MODEL_FILE) ]; then \
+		$(XAVI_TOOLSDIR)/csplit $(XAVI_DATA_MODEL_PATH)/$(XAVI_DATA_MODEL_FILE) 20 -f dom_tmp \
+			> /dev/null 2>&1; \
+		cat dom_tmp00 $(XAVI_MAKEFILEDIR)/xavi_$(XAVI_DATA_MODEL_FILE) dom_tmp01 \
+			> $(XAVI_DATA_MODEL_PATH)/xavi_$(XAVI_DATA_MODEL_FILE); \
+		rm -rf dom_tmp0*; \
+		$(MAKE) -s xavi_data-model_replace; \
+	fi
+endif
+
+xavi_buildimage: xavi_tool
+	(cd $(BUILD_DIR); \
+		unlink $(XAVI_ROOTFSDIR); \
+		ln -s $(PROFILE_DIR)/fs $(XAVI_ROOTFSDIR) ; \
+	)
+	@find $(INSTALL_DIR) -name ".svn" | xargs rm -rf
+ifeq ($(strip $(XAVI_UDHCPC_OPT224)),)
+	-(cd $(INSTALL_DIR)/bin; \
+		rm -f on_random_delay on_opt224; \
+	)
+endif
+ifeq ($(strip $(XAVI_CLI_PORTSTAT)),)
+	-(cd $(INSTALL_DIR)/bin ; \
+		rm -f portstat ; \
+		cd - )
+endif
+ifeq ($(strip $(XAVI_UDHCPC_OPT224)),)
+	-(cd $(INSTALL_DIR)/bin ; \
+		rm -f on_opt224 on_random_delay ; \
+	)
+endif
+ifeq ($(strip $(XAVI_SNMP_MIB_DEF)),)
+	-rm -f $(INSTALL_DIR)/bin/tftp_xavi
+endif
+ifneq ($(strip $(XAVI_OEM_CUSTOM_DEFINE)),)
+	@(cd $(XAVI_ROOTFS_DIR)/etc ; \
+		echo -en $(strip $(XAVI_FW_BUILD_DATE)) > build_date ; \
+		echo -en $(strip $(OEM_VENDOR_NAME)) > vendor_name ; \
+		echo -en $(strip $(OEM_MODEL_NAME)) > model_name ; \
+	)
+ifneq ($(strip $(XAVI_MODEL_NAME)), "XG6846")
+	echo -en $(strip $(OEM_SW_VERSION)) > \
+		$(XAVI_ROOTFS_DIR)/etc/sw_version
+else
+	echo "$(XAVI_VER)_$(XAVI_FW_BUILD_DATE)" > \
+		$(XAVI_ROOTFS_DIR)/etc/version ;
+	LC_ALL=C date -u >> $(XAVI_ROOTFS_DIR)/etc/version ;
+	-mkdir -p $(XAVI_ROOTFS_DIR)/usr/share
+	sed -e '/is not set/d' -e '/^#/d' $(PROFILE_DIR)/$(PROFILE) | \
+		base64 > $(XAVI_ROOTFS_DIR)/usr/share/xavi_features
+	echo -en $(strip $(XAVI_FW_VERSION)) | sed 's/[^_]*_//' > \
+		$(XAVI_ROOTFS_DIR)/etc/sw_version
+endif
+endif
+ifneq ($(strip $(CMS_SECURITY_LOG)),)
+	-(cd $(PROFILE_DIR)/fs.install/; \
+		mkdir data ; cd data ; \
+		[ ! -e securitylog ] || rm -f securitylog ; \
+		ln -s /var/securitylog ; \
+	)
+endif
+	test ! -d $(BUILD_DIR)/targets/$(PROFILE)/rootfs || { \
+		$(RSYNC_CMD) $(PROFILE_DIR)/rootfs/ $(INSTALL_DIR) ; \
+	}
+ifeq ($(strip $(XAVI_WATCHDOG)),)
+	rm -f $(INSTALL_DIR)/sbin/watchdog.sh
+	rm -f $(INSTALL_DIR)/etc/init.d/watchdog
+endif
+
+xavi_release_image:
+	@rm -rf $(IMAGES_DIR)/*_$(BRCM_RELEASETAG)*
+ifeq ($(strip $(BRCM_KERNEL_ROOTFS)), jffs2)
+ifeq ($(strip $(XAVI_NAND_BLOCK_LARGE)), y)
+ifneq ($(strip $(XAVI_FILENAME_NODATE)), y)
+	@(cd $(PROFILE_DIR); \
+	cp -f $(FLASH_NAND_FS_IMAGE_NAME_128).w $(IMAGES_DIR)/$(XAVI_FW_VERSION)_$(XAVI_FW_BUILD_DATE); \
+	cp -f $(FLASH_NAND_CFEROM_FS_IMAGE_NAME_128).w $(IMAGES_DIR)/$(XAVI_FW_VERSION)_CFE_$(XAVI_FW_BUILD_DATE))
+else
+	@(cd $(PROFILE_DIR); \
+	cp -f $(FLASH_NAND_FS_IMAGE_NAME_128).w $(IMAGES_DIR)/$(XAVI_FW_VERSION); \
+	cp -f $(FLASH_NAND_CFEROM_FS_IMAGE_NAME_128).w $(IMAGES_DIR)/$(XAVI_FW_VERSION)_CFE)
+endif
+else
+	@(cd $(PROFILE_DIR); \
+	cp -f $(FLASH_NAND_FS_IMAGE_NAME_16).w $(IMAGES_DIR)/$(XAVI_FW_VERSION)_$(XAVI_FW_BUILD_DATE); \
+	cp -f $(FLASH_NAND_CFEROM_FS_IMAGE_NAME_16).w $(IMAGES_DIR)/$(XAVI_FW_VERSION)_CFE_$(XAVI_FW_BUILD_DATE))
+endif
+endif
+ifeq ($(strip $(BRCM_KERNEL_ROOTFS)), squashfs)
+	@(cd $(PROFILE_DIR); \
+	cp -f $(FS_KERNEL_IMAGE_NAME) $(IMAGES_DIR)/$(XAVI_FW_VERSION)_$(XAVI_FW_BUILD_DATE); \
+	cp -f $(CFE_FS_KERNEL_IMAGE_NAME) $(IMAGES_DIR)/$(XAVI_FW_VERSION)_CFE_$(XAVI_FW_BUILD_DATE); \
+	cp -f $(FLASH_IMAGE_NAME).w $(IMAGES_DIR)/$(XAVI_FW_VERSION)_CFE_$(XAVI_FW_BUILD_DATE)_flash_image.w)
+endif
+ifneq ($(strip $(XAVI_SWAP_ROM_DEFINE)),)
+	@(cd $(IMAGES_DIR); \
+	$(XAVI_TOOLSDIR)/xavi_swap -I $(PROFILE_DIR)/$(FLASH_IMAGE_NAME).w \
+		-O $(FLASH_IMAGE_NAME).bin \
+		-S $(XAVI_FLASH_FILL_SIZE) -W $(XAVI_ROM_SWAP_SIZE); \
+	mv $(FLASH_IMAGE_NAME).bin \
+		$(XAVI_FW_VERSION)_CFE_$(XAVI_FW_BUILD_DATE)_flash_image.bin)
+endif
+ifneq ($(strip $(XAVI_CFE_DEFCONF)),)
+	$(MAKE) -s xavi_cfedefconf
+endif
+	echo "XAVI_FW_VERSION=$(XAVI_FW_VERSION)" > $(BUILD_DIR)/version.xavi
+	echo "XAVI_FW_BUILD_DATE=$(XAVI_FW_BUILD_DATE)" >> $(BUILD_DIR)/version.xavi
+
+xavi_cfedefconf:
+	@(cd $(IMAGES_DIR); \
+		../xavi_tools/xxd $(CFE_FILE).defconfig \
+		$(XAVI_FW_VERSION)_CFE_$(XAVI_FW_BUILD_DATE)_flash_image.bin; \
+	)
+
+################################################################################
+#
+# Alias on single application or single part
+#
+################################################################################
+
+user_r_%:
+	$(MAKE) -C $(BUILD_DIR)/userspace/private/apps $(subst user_r_,,$@)
+
+user_p_%:
+	$(MAKE) -C $(BUILD_DIR)/userspace/public/apps $(subst user_p_,,$@)
+
+user_g_%:
+	$(MAKE) -C $(BUILD_DIR)/userspace/gpl/apps $(subst user_g_,,$@)
+
+user_r_libs:
+	$(MAKE) -C $(BUILD_DIR)/userspace/private/libs
+
+user_p_libs:
+	$(MAKE) -C $(BUILD_DIR)/userspace/public/libs
+
+user_g_libs:
+	$(MAKE) -C $(BUILD_DIR)/userspace/gpl/libs
+
+################################################################################
+#
+# All kinds of clean define
+#
+################################################################################
+xavi_tool_clean:
+	$(MAKE) -C $(XAVI_TOOLSDIR) clean \
+		XAVI_SWAP_ROM_DEFINE=$(XAVI_SWAP_ROM_DEFINE)
+
+xavi_boot_clean:
+ifneq ($(strip $(XAVI_BUILD_CFE)),)
+ifeq ($(strip $(XAVI_MODEL_NAME)), "VI580")
+	@if [ -f $(XAVI_BUILD_CFE_SRC_PATH)/bcm6368_rom_boot.S.orig ]; then \
+		mv $(XAVI_BUILD_CFE_SRC_PATH)/bcm6368_rom_boot.S.orig $(XAVI_BUILD_CFE_SRC_PATH)/bcm6368_rom_boot.S; \
+	fi
+endif
+	$(MAKE) -C $(XAVI_BUILD_CFE_PATH) clean
+ifeq ($(strip $(BRCM_KERNEL_ROOTFS)), squashfs)
+	@rm -rf $(CFE_FILE)
+endif
+ifeq ($(strip $(BRCM_KERNEL_ROOTFS)), jffs2)
+	@sed -i -e "s/ram_xavi.bin/ram.bin/" $(TARGETS_DIR)/buildFS2
+	@rm -rf $(CFE_RAM_FILE) $(CFE_ROM_FILE)
+endif
+endif
+
+xavi_data-model_clean:
+ifneq ($(strip $(XAVI_MODEL_NAME)),)
+	@rm -rf $(XAVI_DATA_MODEL_PATH)/xavi_$(XAVI_DATA_MODEL_FILE)
+	@sed -i -e "s/xavi_$(XAVI_DATA_MODEL_FILE)/$(XAVI_DATA_MODEL_FILE)/" \
+		$(XAVI_DATA_MODEL_PATH)/generate_from_dm.pl $(XAVI_DATA_MODEL_PATH)/Makefile
+endif
+
+xavi_clean: xavi_boot_clean xavi_tool_clean 
+ifneq ($(strip $(XAVI_MODEL_NAME)),)
+	@sed -i -e "s/CONFIG_UDHCPC=y/# CONFIG_UDHCPC is not set/" $(XAVI_BUSYBOX_DEFCONFIG)
+	@sed -i -e "s/CONFIG_AWK=y/# CONFIG_AWK is not set/" $(XAVI_BUSYBOX_DEFCONFIG)
+	@sed -i -e "s/CONFIG_TRACEROUTE=y/# CONFIG_TRACEROUTE is not set/" $(XAVI_BUSYBOX_DEFCONFIG)
+	@sed -i -e "s/CONFIG_FEATURE_TRACEROUTE_USE_ICMP=y/# CONFIG_FEATURE_TRACEROUTE_USE_ICMP is not set/" $(XAVI_BUSYBOX_DEFCONFIG)
+	@sed -i -e "s/CONFIG_TRACEROUTE6=y/# CONFIG_TRACEROUTE6 is not set/" $(XAVI_BUSYBOX_DEFCONFIG)
+	@sed -i -e "s/CONFIG_FEATURE_PIDFILE=y/# CONFIG_FEATURE_PIDFILE is not set/" $(XAVI_BUSYBOX_DEFCONFIG)
+	@rm -rf $(XAVI_DATA_MODEL_DEF_FILE)
+endif
+#	@(cd $(XAVI_PUBLIC_INCLUDE_PATH);  rm -rf $(XAVI_INCLUDE_FILE))
+#	@(cd $(XAVI_PRIVATE_INCLUDE_PATH); rm -rf $(XAVI_INCLUDE_FILE))
+ifeq ($(strip $(XAVI_RD_DEBUG)),)
+#	rm -rf $(IMAGES_DIR)
+endif
+

@@ -1,0 +1,28 @@
+#!/bin/bash
+
+PATCH=$1
+TARGET=$2
+[ -n "$PATCH" ] || {
+	echo "PATCH File is required"
+	exit 1
+}
+[ -n "$TARGET" ] || {
+	echo "TARGET File is required"
+	exit 1
+}
+
+IFS="
+"
+main() {
+	for line in $(cat $PATCH); do
+		offset=$(echo $line | awk -F ':' '{print $1}')
+		value=$(echo $line | awk -F ':' '{print $2}')
+		value=${value/ /}
+		#offset=$(printf "%d" 0x$offset)
+		#value=$(printf "%d" 0x$value)
+		#offset=$(printf "%07x" $(($offset-1)))
+		../xavi_tools/axxd $offset $value $TARGET > /dev/null
+	done
+}
+
+main

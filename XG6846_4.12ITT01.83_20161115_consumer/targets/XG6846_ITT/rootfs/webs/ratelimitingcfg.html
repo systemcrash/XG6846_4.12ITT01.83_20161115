@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta HTTP-EQUIV='Pragma' CONTENT='no-cache'>
+<link rel="stylesheet" href='stylemain.css' type='text/css'>
+<link rel="stylesheet" href='colors.css' type='text/css'>
+<script src="util.js"></script>
+<script>
+var is_sfplinked = parseInt('<%ejGetOther(checkWanFiber)%>', 10);
+function frmLoad() {
+   with ( document.forms[0] ) {
+   	       ingress_rate_1.value = '<%ejGet(ingress_port1_rate)%>';
+		ingress_type_1.value = '<%ejGet(ingress_port1_type)%>';
+		ingress_layer_1.value = '<%ejGet(ingress_port1_layer)%>';
+		if('<%ejGet(ingress_port1_enable)%>' == '1')
+			ingress_en_1.checked = true;
+		else
+			ingress_en_1.checked = false;
+
+		ingress_rate_2.value = '<%ejGet(ingress_port2_rate)%>';
+		ingress_type_2.value = '<%ejGet(ingress_port2_type)%>';
+		ingress_layer_2.value = '<%ejGet(ingress_port2_layer)%>';
+		if('<%ejGet(ingress_port2_enable)%>' == '1')
+			ingress_en_2.checked = true;
+		else
+			ingress_en_2.checked = false;
+
+		ingress_rate_3.value = '<%ejGet(ingress_port3_rate)%>';
+		ingress_type_3.value = '<%ejGet(ingress_port3_type)%>';
+		ingress_layer_3.value = '<%ejGet(ingress_port3_layer)%>';
+		if('<%ejGet(ingress_port3_enable)%>' == '1')
+			ingress_en_3.checked = true;
+		else
+			ingress_en_3.checked = false;
+
+		ingress_rate_4.value = '<%ejGet(ingress_port4_rate)%>';
+		ingress_type_4.value = '<%ejGet(ingress_port4_type)%>';
+		ingress_layer_4.value = '<%ejGet(ingress_port4_layer)%>';
+		if('<%ejGet(ingress_port4_enable)%>' == '1')
+			ingress_en_4.checked = true;
+		else
+			ingress_en_4.checked = false;
+			
+		ingress_rate_5.value = '<%ejGet(ingress_port5_rate)%>';
+		ingress_type_5.value = '<%ejGet(ingress_port5_type)%>';
+		ingress_layer_5.value = '<%ejGet(ingress_port5_layer)%>';
+		if('<%ejGet(ingress_port5_enable)%>' == '1')
+			ingress_en_5.checked = true;
+		else
+			ingress_en_5.checked = false;
+
+		egress_rate_1.value = '<%ejGet(egress_port1_rate)%>';
+		egress_layer_1.value = '<%ejGet(egress_port1_layer)%>';
+		if('<%ejGet(egress_port1_enable)%>' == '1')
+			egress_en_1.checked = true;
+		else
+			egress_en_1.checked = false;
+
+		egress_rate_2.value = '<%ejGet(egress_port2_rate)%>';
+		egress_layer_2.value = '<%ejGet(egress_port2_layer)%>';
+		if('<%ejGet(egress_port2_enable)%>' == '1')
+			egress_en_2.checked = true;
+		else
+			egress_en_2.checked = false;
+
+		egress_rate_3.value = '<%ejGet(egress_port3_rate)%>';
+		egress_layer_3.value = '<%ejGet(egress_port3_layer)%>';
+		if('<%ejGet(egress_port3_enable)%>' == '1')
+			egress_en_3.checked = true;
+		else
+			egress_en_3.checked = false;
+
+		egress_rate_4.value = '<%ejGet(egress_port4_rate)%>';
+		egress_layer_4.value = '<%ejGet(egress_port4_layer)%>';
+		if('<%ejGet(egress_port4_enable)%>' == '1')
+			egress_en_4.checked = true;
+		else
+			egress_en_4.checked = false;
+			
+		egress_rate_5.value = '<%ejGet(egress_port5_rate)%>';
+		egress_layer_5.value = '<%ejGet(egress_port5_layer)%>';
+		if('<%ejGet(egress_port5_enable)%>' == '1')
+			egress_en_5.checked = true;
+		else
+			egress_en_5.checked = false;
+   }
+   
+   if (is_sfplinked > 0) {
+   		document.getElementById("disPlayLan5_1").style.display = "block";
+   		document.getElementById("disPlayLan5_2").style.display = "block";
+   } else {
+   		document.getElementById("disPlayLan5_1").style.display = "none";
+   		document.getElementById("disPlayLan5_2").style.display = "none";
+   }
+}
+
+function check_data()
+{
+   with ( document.forms[0] ) {	
+    if(ingress_en_1.checked == true)
+    	{
+    	   if((ingress_rate_1.value == '' ||ingress_rate_1.value == '0') ||(ingress_layer_1.value== '0'))
+    	   	{
+    	   	   alert("Please input the correct port 1 ingress rate ,layer,and type .");
+		   return false;
+    	   	}
+    	}
+    if(ingress_en_2.checked == true)
+    	{
+    	   if((ingress_rate_2.value == '' ||ingress_rate_2.value == '0') ||(ingress_layer_2.value== '0'))
+    	   	{
+    	   	   alert("Please input the correct port 2 ingress rate ,layer,and type .");
+		   return false;
+    	   	}
+    	}
+   if(ingress_en_3.checked == true)
+    	{
+    	   if((ingress_rate_3.value == '' ||ingress_rate_3.value == '0') ||(ingress_layer_3.value== '0'))
+    	   	{
+    	   	   alert("Please input the correct port 3 ingress rate ,layer,and type .");
+		   return false;
+    	   	}
+    	}
+   if(ingress_en_4.checked == true)
+    	{
+    	   if((ingress_rate_4.value == '' ||ingress_rate_4.value == '0') ||(ingress_layer_4.value== '0'))
+    	   	{
+    	   	   alert("Please input the correct port 4 ingress rate ,layer,and type .");
+		   return false;
+    	   	}
+    	}
+   if(ingress_en_5.checked == true)
+    	{
+    	   if((ingress_rate_5.value == '' ||ingress_rate_5.value == '0') ||(ingress_layer_5.value== '0'))
+    	   	{
+    	   	   alert("Please input the correct port 5 ingress rate ,layer,and type .");
+		   return false;
+    	   	}
+    	}
+    	
+   if(egress_en_1.checked == true)
+    	{
+    	   if((egress_rate_1.value == '' ||egress_rate_1.value == '0') ||(egress_layer_1.value== '0'))
+    	   	{
+    	   	   alert("Please input the correct port 1 egress rate ,layer,and type .");
+		   return false;
+    	   	}
+    	}
+    if(egress_en_2.checked == true)
+    	{
+    	   if((egress_rate_2.value == '' ||egress_rate_2.value == '0') ||(egress_layer_2.value== '0'))
+    	   	{
+    	   	   alert("Please input the correct port 2 egress rate ,layer,and type .");
+		   return false;
+    	   	}
+    	}
+     if(egress_en_3.checked == true)
+    	{
+    	   if((egress_rate_3.value == '' ||egress_rate_3.value == '0') ||(egress_layer_3.value== '0'))
+    	   	{
+    	   	   alert("Please input the correct port 3 egress rate ,layer,and type .");
+		   return false;
+    	   	}
+    	}
+      if(egress_en_4.checked == true)
+    	{
+    	   if((egress_rate_4.value == '' ||egress_rate_4.value == '0') ||(egress_layer_4.value== '0'))
+    	   	{
+    	   	   alert("Please input the correct port 4 egress rate ,layer,and type .");
+		   return false;
+    	   	}
+    	}
+      if(egress_en_5.checked == true)
+    	{
+    	   if((egress_rate_5.value == '' ||egress_rate_5.value == '0') ||(egress_layer_5.value== '0'))
+    	   	{
+    	   	   alert("Please input the correct port 5 egress rate ,layer,and type .");
+		   return false;
+    	   	}
+    	}
+   	}
+}
+
+function btnApply() {
+   var sessionKey='<%ejGetOther(sessionKey)%>';
+   var loc = 'ratelimitingcfg.cgi?';
+    
+   with ( document.forms[0] ) {	
+   	 if(ingress_en_1.checked == true)
+    	{
+    	   if((ingress_rate_1.value == '' ||ingress_rate_1.value == '0') ||(ingress_layer_1.value== '0'))
+    	   	{
+    	   	   alert("Please input the correct port 1 ingress rate ,layer,and type .");
+		   return false;
+    	   	}
+    	}
+    if(ingress_en_2.checked == true)
+    	{
+    	   if((ingress_rate_2.value == '' ||ingress_rate_2.value == '0') ||(ingress_layer_2.value== '0'))
+    	   	{
+    	   	   alert("Please input the correct port 2 ingress rate ,layer,and type .");
+		   return false;
+    	   	}
+    	}
+   if(ingress_en_3.checked == true)
+    	{
+    	   if((ingress_rate_3.value == '' ||ingress_rate_3.value == '0') ||(ingress_layer_3.value== '0'))
+    	   	{
+    	   	   alert("Please input the correct port 3 ingress rate ,layer,and type .");
+		   return false;
+    	   	}
+    	}
+   if(ingress_en_4.checked == true)
+    	{
+    	   if((ingress_rate_4.value == '' ||ingress_rate_4.value == '0') ||(ingress_layer_4.value== '0'))
+    	   	{
+    	   	   alert("Please input the correct port 4 ingress rate ,layer,and type .");
+		   return false;
+    	   	}
+    	}
+    if(ingress_en_5.checked == true)
+    	{
+    	   if((ingress_rate_5.value == '' ||ingress_rate_5.value == '0') ||(ingress_layer_5.value== '0'))
+    	   	{
+    	   	   alert("Please input the correct port 5 ingress rate ,layer,and type .");
+		   return false;
+    	   	}
+    	}
+    	
+   if(egress_en_1.checked == true)
+    	{
+    	   if((egress_rate_1.value == '' ||egress_rate_1.value == '0') ||(egress_layer_1.value== '0'))
+    	   	{
+    	   	   alert("Please input the correct port 1 egress rate ,layer,and type .");
+		   return false;
+    	   	}
+    	}
+    if(egress_en_2.checked == true)
+    	{
+    	   if((egress_rate_2.value == '' ||egress_rate_2.value == '0') ||(egress_layer_2.value== '0'))
+    	   	{
+    	   	   alert("Please input the correct port 2 egress rate ,layer,and type .");
+		   return false;
+    	   	}
+    	}
+     if(egress_en_3.checked == true)
+    	{
+    	   if((egress_rate_3.value == '' ||egress_rate_3.value == '0') ||(egress_layer_3.value== '0'))
+    	   	{
+    	   	   alert("Please input the correct port 3 egress rate ,layer,and type .");
+		   return false;
+    	   	}
+    	}
+      if(egress_en_4.checked == true)
+    	{
+    	   if((egress_rate_4.value == '' ||egress_rate_4.value == '0') ||(egress_layer_4.value== '0'))
+    	   	{
+    	   	   alert("Please input the correct port 4 egress rate ,layer,and type .");
+		   return false;
+    	   	}
+    	}
+      if(egress_en_5.checked == true)
+    	{
+    	   if((egress_rate_5.value == '' ||egress_rate_5.value == '0') ||(egress_layer_5.value== '0'))
+    	   	{
+    	   	   alert("Please input the correct port 5 egress rate ,layer,and type .");
+		   return false;
+    	   	}
+    	}	
+   	 
+	 if(ingress_en_1.checked == true)
+	 {	    
+	    loc += 'ingress_port1_rate=' + ingress_rate_1.value;
+      	    loc += '&ingress_port1_type=' + ingress_type_1.value;
+      	    loc += '&ingress_port1_layer=' + ingress_layer_1.value;
+      	    loc += '&ingress_port1_enable=1';
+	 }
+	 else
+	 {
+	    loc += 'ingress_port1_rate=0';
+      	    loc += '&ingress_port1_type=0';
+      	    loc += '&ingress_port1_layer=0';
+	    loc += '&ingress_port1_enable=0';
+	 }
+	 if(ingress_en_2.checked == true)
+	 {
+	    loc += '&ingress_port2_rate=' + ingress_rate_2.value;
+	    loc += '&ingress_port2_type=' + ingress_type_2.value;
+	    loc += '&ingress_port2_layer=' + ingress_layer_2.value;
+	    loc += '&ingress_port2_enable=1';
+	 }
+	 else
+	  {
+	    loc += '&ingress_port2_rate=0';
+	    loc += '&ingress_port2_type=0';
+	    loc += '&ingress_port2_layer=0';
+	    loc += '&ingress_port2_enable=0';
+	 }
+
+	 if(ingress_en_3.checked == true)
+	 {
+      	    loc += '&ingress_port3_rate=' + ingress_rate_3.value;
+      	    loc += '&ingress_port3_type=' + ingress_type_3.value;
+      	    loc += '&ingress_port3_layer=' + ingress_layer_3.value;
+      	    loc += '&ingress_port3_enable=1';
+	 }
+	 else
+	 {
+	    loc += '&ingress_port3_rate=0';
+      	    loc += '&ingress_port3_type=0';
+      	    loc += '&ingress_port3_layer=0';
+	    loc += '&ingress_port3_enable=0';
+	 }
+
+	 if(ingress_en_4.checked == true)
+	 {
+	     loc += '&ingress_port4_rate=' + ingress_rate_4.value;
+	     loc += '&ingress_port4_type=' + ingress_type_4.value;
+	     loc += '&ingress_port4_layer=' + ingress_layer_4.value;	 
+	      loc += '&ingress_port4_enable=1';
+	 }
+	 else
+	 {
+	     loc += '&ingress_port4_rate=0';
+	     loc += '&ingress_port4_type=0';
+	     loc += '&ingress_port4_layer=0';	
+	     loc += '&ingress_port4_enable=0';
+	 }
+	 
+	 if(ingress_en_5.checked == true)
+	 {
+	     loc += '&ingress_port5_rate=' + ingress_rate_5.value;
+	     loc += '&ingress_port5_type=' + ingress_type_5.value;
+	     loc += '&ingress_port5_layer=' + ingress_layer_5.value;	 
+	      loc += '&ingress_port5_enable=1';
+	 }
+	 else
+	 {
+	     loc += '&ingress_port5_rate=0';
+	     loc += '&ingress_port5_type=0';
+	     loc += '&ingress_port5_layer=0';	
+	     loc += '&ingress_port5_enable=0';
+	 }
+
+	 if(egress_en_1.checked == true)
+	 {
+	    loc += '&egress_port1_rate=' + egress_rate_1.value;
+	    loc += '&egress_port1_layer=' + egress_layer_1.value;
+	    loc += '&egress_port1_enable=1';
+	 }
+	 else
+	 {
+	    loc += '&egress_port1_rate=0';
+	    loc += '&egress_port1_layer=0';
+	    loc += '&egress_port1_enable=0';
+	 }
+
+	 if(egress_en_2.checked == true)
+	 {	    
+	    loc += '&egress_port2_rate=' + egress_rate_2.value;
+	    loc += '&egress_port2_layer=' + egress_layer_2.value;
+	    loc += '&egress_port2_enable=1';
+	 }
+	 else
+	 {
+	    loc += '&egress_port2_rate=0';
+	    loc += '&egress_port2_layer=0';
+	    loc += '&egress_port2_enable=0';
+	 }
+
+	 if(egress_en_3.checked == true)
+	 {
+	    loc += '&egress_port3_rate=' + egress_rate_3.value;
+	    loc += '&egress_port3_layer=' + egress_layer_3.value;
+	    loc += '&egress_port3_enable=1';
+	 }
+	 else
+	 {
+	    loc += '&egress_port3_rate=0';
+	    loc += '&egress_port3_layer=0';
+	    loc += '&egress_port3_enable=0';
+	 }
+
+	 if(egress_en_4.checked == true)
+	 {
+	     loc += '&egress_port4_rate=' + egress_rate_4.value;
+	    loc += '&egress_port4_layer=' + egress_layer_4.value;
+	    loc += '&egress_port4_enable=1';
+	 }
+	 else
+	 { 
+	    loc += '&egress_port4_rate=0';
+	    loc += '&egress_port4_layer=0';
+	    loc += '&egress_port4_enable=0';
+	 }
+	 
+	 if(egress_en_5.checked == true)
+	 {
+	    loc += '&egress_port5_rate=' + egress_rate_5.value;
+	    loc += '&egress_port5_layer=' + egress_layer_5.value;
+	    loc += '&egress_port5_enable=1';
+	 }
+	 else
+	 { 
+	    loc += '&egress_port5_rate=0';
+	    loc += '&egress_port5_layer=0';
+	    loc += '&egress_port5_enable=0';
+	 }
+   }
+   loc += '&sessionKey=' + sessionKey;
+   var code = 'location.assign("' + loc + '")';
+   eval(code);
+}
+
+</script>
+   </head>
+   <body onLoad='frmLoad()'>
+      <blockquote>
+         <form>
+            <b>Ingress Rate Limiting<br>
+            </b>
+            <br> 
+<hr align="left" width="400" color="#CCCCCC"> 
+<br> 
+The value of Ingress and Egress Rate must be integer,and the unit is Mbps.<br><br>
+<TABLE> 
+  <tr align="center"></tr> 
+  <tr align="center">
+	<td style="width: 50px;"></td>
+	<td style="width: 100px;">&nbsp;&nbsp;Ingress Rate</td>
+	<td style="width: 100px;">&nbsp;&nbsp;Frame Type</td>
+	<td style="width: 100px;">&nbsp;&nbsp;Count Layer</td>
+	<td style="width: 50px;">Enable</td>
+  </tr> 
+  <tr align="center"> 
+    <td>Port1 :</td> 
+    <td>&nbsp;&nbsp;<INPUT class="textarea" type="text" name="ingress_rate_1" size="6" maxlength="4"></td>
+    <td><select name='ingress_type_1' size="1">
+             <option value="0">All</option>
+             <option value="1">Unicast</option>                  
+             <option value="2">Multicast</option>
+             <option value="3">Broadcast</option>
+             </select>
+     </td>
+     <td>&nbsp;&nbsp;<select name='ingress_layer_1' size="1">
+             <option value="0">None</option>
+             <option value="1">Layer 1</option>                      
+             <option value="2">Layer 2</option>
+             <option value="3">Layer 3</option>
+             </select>
+     </td>  
+     <td style="width: 50px;"><input name="ingress_en_1" type="checkbox" value="1"></td>
+  </tr> 
+  <tr align="center"> 
+    <td>Port2 :</td> 
+    <td>&nbsp;&nbsp;<INPUT class="textarea" type="text" name="ingress_rate_2" size="6" maxlength="4"></td>
+    <td><select name='ingress_type_2' size="1">
+             <option value="0">All</option>
+             <option value="1">Unicast</option>                       
+             <option value="2">Multicast</option>
+             <option value="3">Broadcast</option>
+             </select>
+     </td>
+     <td>&nbsp;&nbsp;<select name='ingress_layer_2' size="1">
+             <option value="0">None</option>
+             <option value="1">Layer 1</option>                       
+             <option value="2">Layer 2</option>
+             <option value="3">Layer 3</option>
+             </select>
+     </td>
+      <td><input name="ingress_en_2" type="checkbox" value="1"> </td>
+  </tr> 
+  <tr align="center"> 
+    <td>Port3 :</td> 
+    <td>&nbsp;&nbsp;<INPUT class="textarea" type="text" name="ingress_rate_3" size="6" maxlength="4"></td>   
+    <td><select name='ingress_type_3' size="1">
+            <option value="0">All</option>
+             <option value="1">Unicast</option>                       
+             <option value="2">Multicast</option>
+             <option value="3">Broadcast</option>
+             </select>
+     </td>
+     <td>&nbsp;&nbsp;<select name='ingress_layer_3' size="1">
+             <option value="0">None</option>
+             <option value="1">Layer 1</option>                       
+             <option value="2">Layer 2</option>
+             <option value="3">Layer 3</option>
+             </select>
+     </td>
+      <td><input name="ingress_en_3" type="checkbox" value="1"> </td>
+  </tr> 
+  <tr align="center"> 
+    <td>Port4 :</td> 
+    <td>&nbsp;&nbsp;<INPUT class="textarea" type="text" name="ingress_rate_4" size="6" maxlength="4"></td>   
+    <td><select name='ingress_type_4' size="1">
+             <option value="0">All</option>
+             <option value="1">Unicast</option>                      
+             <option value="2">Multicast</option>
+             <option value="3">Broadcast</option>
+             </select>
+     </td>
+     <td>&nbsp;&nbsp;<select name='ingress_layer_4' size="1">
+             <option value="0">None</option>
+             <option value="1">Layer 1</option>                     
+             <option value="2">Layer 2</option>
+             <option value="3">Layer 3</option>
+             </select>
+     </td>
+      <td><input name="ingress_en_4" type="checkbox" value="1"> </td>
+  </tr> 
+</TABLE> 
+
+<table  id="disPlayLan5_1" style="display:none;">
+ <tr align="center"> 
+    <td style="width: 50px;">Port5 :</td> 
+    <td style="width: 100px;">&nbsp;&nbsp;<INPUT class="textarea" type="text" name="ingress_rate_5" size="6" maxlength="4"></td>   
+    <td style="width: 100px;"><select name='ingress_type_5' size="1">
+             <option value="0">All</option>
+             <option value="1">Unicast</option>                     
+             <option value="2">Multicast</option>
+             <option value="3">Broadcast</option>
+             </select>
+     </td>
+     <td style="width: 100px;">&nbsp;&nbsp;<select name='ingress_layer_5' size="1">
+             <option value="0">None</option>
+             <option value="1">Layer 1</option>                      
+             <option value="2">Layer 2</option>
+             <option value="3">Layer 3</option>
+             </select>
+     </td>
+     <td style="width: 50px;"><input name="ingress_en_5" type="checkbox" value="1"> </td>
+  </tr> 
+</TABLE> 
+<br>
+            <br>
+<b>Egress Rate Limiting<br>
+            </b>
+            <br> 
+<hr align="left" width="400" color="#CCCCCC"> 
+<br> 
+            <TABLE> 
+  <tr align="center"></tr> 
+  <tr align="center"><td style="width: 50px;"></td><td style="width: 100px;">&nbsp;&nbsp;Egress Rate</td><td style="width: 100px;">&nbsp;&nbsp;Count Layer</td><td style="width: 50px;">Enable</td></tr> 
+  <tr align="center"> 
+    <td>Port1 :</td> 
+    <td>&nbsp;&nbsp;<INPUT class="textarea" type="text" name="egress_rate_1" size="6" maxlength="4"></td>
+     <td>&nbsp;&nbsp;<select name='egress_layer_1' size="1">
+             <option value="0">None</option>
+             <option value="1">Layer 1</option>                       
+             <option value="2">Layer 2</option>
+             <option value="3">Layer 3</option>
+             </select>
+     </td>  
+     <td><input name="egress_en_1" type="checkbox" value="1"></td>
+  </tr> 
+  <tr align="center"> 
+    <td>Port2 :</td> 
+    <td>&nbsp;&nbsp;<INPUT class="textarea" type="text" name="egress_rate_2" size="6" maxlength="4"></td>
+     <td>&nbsp;&nbsp;<select name='egress_layer_2' size="1">
+             <<option value="0">None</option>
+             <option value="1">Layer 1</option>                       
+             <option value="2">Layer 2</option>
+             <option value="3">Layer 3</option>
+             </select>
+     </td>
+      <td><input name="egress_en_2" type="checkbox" value="1"> </td>
+  </tr> 
+  <tr align="center"> 
+    <td>Port3 :</td> 
+    <td>&nbsp;&nbsp;<INPUT class="textarea" type="text" name="egress_rate_3" size="6" maxlength="4"></td>   
+     <td>&nbsp;&nbsp;<select name='egress_layer_3' size="1">
+             <option value="0">None</option>
+             <option value="1">Layer 1</option>                       
+             <option value="2">Layer 2</option>
+             <option value="3">Layer 3</option>
+             </select>
+     </td>
+      <td><input name="egress_en_3" type="checkbox" value="1"> </td>
+  </tr> 
+  <tr align="center"> 
+    <td>Port4 :</td> 
+    <td>&nbsp;&nbsp;<INPUT class="textarea" type="text" name="egress_rate_4" size="6" maxlength="4"></td>   
+     <td>&nbsp;&nbsp;<select name='egress_layer_4' size="1">
+             <option value="0">None</option>
+             <option value="1">Layer 1</option>                       
+             <option value="2">Layer 2</option>
+             <option value="3">Layer 3</option>
+             </select>
+     </td>
+      <td><input name="egress_en_4" type="checkbox" value="1"> </td>
+  </tr> 
+</TABLE> 
+<table  id="disPlayLan5_2" style="display:none;">
+<tr align="center"> 
+    <td style="width: 50px;">Port5 :</td> 
+    <td style="width: 100px;">&nbsp;&nbsp;<INPUT class="textarea" type="text" name="egress_rate_5" size="6" maxlength="4"></td>   
+     <td style="width: 100px;">&nbsp;&nbsp;<select name='egress_layer_5' size="1">
+             <option value="0">None</option>
+             <option value="1">Layer 1</option>                 
+             <option value="2">Layer 2</option>
+             <option value="3">Layer 3</option>
+             </select>
+     </td>
+      <td style="width: 50px;"><input name="egress_en_5" type="checkbox" value="1"> </td>
+  </tr>
+</TABLE>
+            
+
+            <p align="center">
+               <input type='button' onClick='btnApply()' value='Apply/Save'>
+            </P>
+         </form>
+      </blockquote>
+   </body>
+</html>

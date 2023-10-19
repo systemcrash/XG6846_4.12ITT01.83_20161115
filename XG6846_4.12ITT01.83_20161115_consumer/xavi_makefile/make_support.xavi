@@ -1,0 +1,23 @@
+################################################################################
+#
+# Define Support Basic Variables
+#
+################################################################################
+XAVI_SUPPORT_DEF_FILE     := $(XAVI_PRIVATE_INCLUDE_PATH)/xavi_conf.h
+
+################################################################################
+#
+# All of include feature config define
+#
+################################################################################
+xavi_feature_define:
+	@ln -sf $(XAVI_SUPPORT_DEF_FILE) $(XAVI_PUBLIC_INCLUDE_PATH)
+	@echo "/* This is an automatically generated file. Do not modify. */" > $(XAVI_SUPPORT_DEF_FILE)
+	@echo "/* The config file only define about feature support */" >> $(XAVI_SUPPORT_DEF_FILE)
+	@echo -e "/* Dom<dom_hsu@xavi.com.tw> 20100723 Create */\n" >> $(XAVI_SUPPORT_DEF_FILE)
+
+# Dom add support option 43 66 67 121 for udhcp
+ifneq ($(strip $(XAVI_UDHCPC_OPTION)),)
+	@echo -e "#define XAVI_UDHCPC_OPTION\t\t1" >> $(XAVI_SUPPORT_DEF_FILE)
+	@echo -e "#define CONFIG_XAVI_UDHCPC_OPTION\ty" >> $(XAVI_SUPPORT_DEF_FILE)
+endif

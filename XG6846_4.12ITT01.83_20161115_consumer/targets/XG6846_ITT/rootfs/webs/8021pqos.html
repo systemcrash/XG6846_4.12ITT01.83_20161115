@@ -1,0 +1,64 @@
+<html>
+   <head>
+      <meta HTTP-EQUIV='Pragma' CONTENT='no-cache'>
+      <link rel="stylesheet" href='stylemain.css' type='text/css'>
+         <link rel="stylesheet" href='colors.css' type='text/css'>
+            <script language="javascript">
+<!-- hide
+
+var enbl8021pQos = '<%ejGet(enbl8021pQos)%>';
+
+function btnApply() {
+	var sessionKey='<%ejGetOther(sessionKey)%>';
+    var loc = '8021pqos.cgi?';
+    
+    with ( document.forms[0] )
+    {
+         if ( switchQos[1].checked == true )
+            loc += 'enbl8021pQos=1';         
+         else
+            loc += 'enbl8021pQos=0';
+    }
+    
+    loc += '&sessionKey=' + sessionKey;
+    var code = 'location=\"' + loc + '\"';  
+    eval(code);
+}
+
+function frmLoad() {
+   with ( document.forms[0])
+   {
+     if ( enbl8021pQos == '1' )
+        switchQos[1].checked = true;
+     else
+        switchQos[0].checked = true;
+   }
+}
+
+// done hiding -->
+</script>
+   </head>
+    <body onLoad='frmLoad()'>
+    	<blockquote>
+    	<form>
+    		<b>802.1p Strict Priority Queuing<br>
+            </b>
+            <br>  
+			<hr align="left" width="400" color="#CCCCCC"> 
+			<br>
+    		<table>
+    		<tr align="center"></tr> 
+    		<tr>
+    		<td >Type :</td>
+    		<td><input name='switchQos' type='radio'>Disable</td>
+    		<td><input name='switchQos' type='radio'>Enable</td>
+    		</tr>
+    		</table>
+    		<br>
+    		<p align="center">
+    		<input type='button' onClick='btnApply()' value='Save/Apply'>
+    	</form>
+    	</P> </blockquote>
+    </body>
+</html> 
+

@@ -1,0 +1,56 @@
+#!/bin/sh
+
+export PATH=/usr/bin:/bin:/usr/sbin:/sbin:/opt/scripts
+
+start() {
+	return 0
+}
+
+stop() {
+	return 0
+}
+
+restart() {
+	trap '' TERM
+	stop
+	start
+}
+
+boot() {
+	boot
+}
+
+shutdown() {
+	echo shutdown > /dev/null
+}
+
+help() {
+	cat <<EOF
+Syntax: $initscript [command]
+
+Available commands:
+	boot	Start the service on boot
+	start	Start the service
+	stop	Stop the service
+	restart	Restart the service
+EOF
+}
+
+initscript="$1"
+action="$2"
+
+. "$initscript"
+
+cmds=
+for cmd in $EXTRA_COMMANDS; do
+	cmds="${cmds:+$cmds$N}$cmd) $cmd;;"
+done
+eval "case \"\$action\" in
+	start) start;;
+	stop) stop;;
+	restart) restart;;
+	boot) boot;;
+	shutdown) shutdown;;
+	$cmds
+	*) help;;
+esac"

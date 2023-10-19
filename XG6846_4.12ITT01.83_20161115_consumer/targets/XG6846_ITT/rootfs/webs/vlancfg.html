@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv='pragma' content='no-cache'>
+<link rel="stylesheet" href='stylemain.css' type='text/css'>
+<link rel="stylesheet" href='colors.css' type='text/css'>
+<script src="util.js"></script>
+<script>
+<!--
+var test_stats = '<%ejGet(group_1_lan2)%>';
+var vid7 = '<%ejGet(vid_7)%>';
+var cpumode = '<%ejGet(mode_cpu)%>';
+var is_sfplinked = parseInt('<%ejGetOther(checkWanFiber)%>', 10);
+
+function frmLoad() {
+   with ( document.forms[0] ) {
+	vid_1.value = '<%ejGet(vid_1)%>';
+	vid_2.value = '<%ejGet(vid_2)%>';
+	vid_3.value = '<%ejGet(vid_3)%>';
+	vid_4.value = '<%ejGet(vid_4)%>';
+	vid_5.value = '<%ejGet(vid_5)%>';
+	vid_6.value = '<%ejGet(vid_6)%>';
+	vid_7.value = '<%ejGet(vid_7)%>';
+
+	if ('<%ejGet(port_based_vlan)%>' == '1')
+	    port_based_vlan.checked = true;
+	else
+	    port_based_vlan.checked = false;
+
+	if ('<%ejGet(enable_igmp_vid)%>' == '1')
+	    enable_igmp_vid.checked = true;
+	else
+	    enable_igmp_vid.checked = false;
+	    
+	igmp_vid.value = '<%ejGet(igmp_vid)%>';
+
+	defpri_1.value = '<%ejGet(def_pri_1)%>';
+	defpri_2.value = '<%ejGet(def_pri_2)%>';
+	defpri_3.value = '<%ejGet(def_pri_3)%>';
+	defpri_4.value = '<%ejGet(def_pri_4)%>';
+	defpri_5.value = '<%ejGet(def_pri_5)%>';
+	defpri_6.value = '<%ejGet(def_pri_6)%>';
+	defpri_7.value = '<%ejGet(def_pri_7)%>';
+
+	lan1_mode.value = <%ejGet(mode_lan1)%>;
+	lan2_mode.value = <%ejGet(mode_lan2)%>;
+	lan3_mode.value = <%ejGet(mode_lan3)%>;
+	lan4_mode.value = <%ejGet(mode_lan4)%>;
+	lan5_mode.value = <%ejGet(mode_lan5)%>;
+	wan_mode.value = <%ejGet(mode_wan)%>;
+	cpu_mode.value = <%ejGet(mode_cpu)%>;;
+
+	groupid_1.value = '<%ejGet(group_id_1)%>';
+	groupid_2.value = '<%ejGet(group_id_2)%>';
+	groupid_3.value = '<%ejGet(group_id_3)%>';
+	groupid_4.value = '<%ejGet(group_id_4)%>';
+	groupid_5.value = '<%ejGet(group_id_5)%>';
+	groupid_6.value = '<%ejGet(group_id_6)%>';
+	groupid_7.value = '<%ejGet(group_id_7)%>';
+	groupid_8.value = '<%ejGet(group_id_8)%>';
+	groupid_9.value = '<%ejGet(group_id_9)%>';
+	groupid_10.value = '<%ejGet(group_id_10)%>';
+	groupid_11.value = '<%ejGet(group_id_11)%>';
+	groupid_12.value = '<%ejGet(group_id_12)%>';
+	groupid_13.value = '<%ejGet(group_id_13)%>';
+	groupid_14.value = '<%ejGet(group_id_14)%>';
+	groupid_15.value = '<%ejGet(group_id_15)%>';
+	groupid_16.value = '<%ejGet(group_id_16)%>';
+
+	if ('<%ejGet(dscp_enable_1)%>' == '1')
+	    dscp_1.checked = true;
+	else
+	    dscp_1.checked = false;
+	if ('<%ejGet(dscp_enable_2)%>' == '1')
+	    dscp_2.checked = true;
+	else
+	    dscp_2.checked = false;
+	if ('<%ejGet(dscp_enable_3)%>' == '1')
+	    dscp_3.checked = true;
+	else
+	    dscp_3.checked = false;
+	if ('<%ejGet(dscp_enable_4)%>' == '1')
+	    dscp_4.checked = true;
+	else
+	    dscp_4.checked = false;
+	if ('<%ejGet(dscp_enable_5)%>' == '1')
+	    dscp_5.checked = true;
+	else
+	    dscp_5.checked = false;
+
+//---------------------------
+        group1_lan1.value = '<%ejGet(group_1_lan1)%>';
+        group1_lan2.value = '<%ejGet(group_1_lan2)%>';
+        group1_lan3.value = '<%ejGet(group_1_lan3)%>';
+        group1_lan4.value = '<%ejGet(group_1_lan4)%>';
+        group1_lan5.value = '<%ejGet(group_1_lan5)%>';
+        group1_wan.value  = '<%ejGet(group_1_wan)%>';
+//---------------------------
+        group2_lan1.value = '<%ejGet(group_2_lan1)%>';
+        group2_lan2.value = '<%ejGet(group_2_lan2)%>';
+        group2_lan3.value = '<%ejGet(group_2_lan3)%>';
+        group2_lan4.value = '<%ejGet(group_2_lan4)%>';
+        group2_lan5.value = '<%ejGet(group_2_lan5)%>';
+        group2_wan.value  = '<%ejGet(group_2_wan)%>';
+//---------------------------
+        group3_lan1.value = '<%ejGet(group_3_lan1)%>';
+        group3_lan2.value = '<%ejGet(group_3_lan2)%>';
+        group3_lan3.value = '<%ejGet(group_3_lan3)%>';
+        group3_lan4.value = '<%ejGet(group_3_lan4)%>';
+        group3_lan5.value = '<%ejGet(group_3_lan5)%>';
+        group3_wan.value  = '<%ejGet(group_3_wan)%>';
+//---------------------------
+        group4_lan1.value = '<%ejGet(group_4_lan1)%>';
+        group4_lan2.value = '<%ejGet(group_4_lan2)%>';
+        group4_lan3.value = '<%ejGet(group_4_lan3)%>';
+        group4_lan4.value = '<%ejGet(group_4_lan4)%>';
+        group4_lan5.value = '<%ejGet(group_4_lan5)%>';
+        group4_wan.value  = '<%ejGet(group_4_wan)%>';
+//---------------------------
+        group5_lan1.value = '<%ejGet(group_5_lan1)%>';
+        group5_lan2.value = '<%ejGet(group_5_lan2)%>';
+        group5_lan3.value = '<%ejGet(group_5_lan3)%>';
+        group5_lan4.value = '<%ejGet(group_5_lan4)%>';
+        group5_lan5.value = '<%ejGet(group_5_lan5)%>';
+        group5_wan.value  = '<%ejGet(group_5_wan)%>';
+//---------------------------
+        group6_lan1.value = '<%ejGet(group_6_lan1)%>';
+        group6_lan2.value = '<%ejGet(group_6_lan2)%>';
+        group6_lan3.value = '<%ejGet(group_6_lan3)%>';
+        group6_lan4.value = '<%ejGet(group_6_lan4)%>';
+        group6_lan5.value = '<%ejGet(group_6_lan5)%>';
+        group6_wan.value  = '<%ejGet(group_6_wan)%>';
+//---------------------------
+        group7_lan1.value = '<%ejGet(group_7_lan1)%>';
+        group7_lan2.value = '<%ejGet(group_7_lan2)%>';
+        group7_lan3.value = '<%ejGet(group_7_lan3)%>';
+        group7_lan4.value = '<%ejGet(group_7_lan4)%>';
+        group7_lan5.value = '<%ejGet(group_7_lan5)%>';
+        group7_wan.value  = '<%ejGet(group_7_wan)%>';
+//---------------------------
+        group8_lan1.value = '<%ejGet(group_8_lan1)%>';
+        group8_lan2.value = '<%ejGet(group_8_lan2)%>';
+        group8_lan3.value = '<%ejGet(group_8_lan3)%>';
+        group8_lan4.value = '<%ejGet(group_8_lan4)%>';
+        group8_lan5.value = '<%ejGet(group_8_lan5)%>';
+        group8_wan.value  = '<%ejGet(group_8_wan)%>';
+//---------------------------
+        group9_lan1.value = '<%ejGet(group_9_lan1)%>';
+        group9_lan2.value = '<%ejGet(group_9_lan2)%>';
+        group9_lan3.value = '<%ejGet(group_9_lan3)%>';
+        group9_lan4.value = '<%ejGet(group_9_lan4)%>';
+        group9_lan5.value = '<%ejGet(group_9_lan5)%>';
+        group9_wan.value  = '<%ejGet(group_9_wan)%>';
+//---------------------------
+        group10_lan1.value = '<%ejGet(group_10_lan1)%>';
+        group10_lan2.value = '<%ejGet(group_10_lan2)%>';
+        group10_lan3.value = '<%ejGet(group_10_lan3)%>';
+        group10_lan4.value = '<%ejGet(group_10_lan4)%>';
+        group10_lan5.value = '<%ejGet(group_10_lan5)%>';
+        group10_wan.value  = '<%ejGet(group_10_wan)%>';
+//---------------------------
+        group11_lan1.value = '<%ejGet(group_11_lan1)%>';
+        group11_lan2.value = '<%ejGet(group_11_lan2)%>';
+        group11_lan3.value = '<%ejGet(group_11_lan3)%>';
+        group11_lan4.value = '<%ejGet(group_11_lan4)%>';
+        group11_lan5.value = '<%ejGet(group_11_lan5)%>';
+        group11_wan.value  = '<%ejGet(group_11_wan)%>';
+//---------------------------
+        group12_lan1.value = '<%ejGet(group_12_lan1)%>';
+        group12_lan2.value = '<%ejGet(group_12_lan2)%>';
+        group12_lan3.value = '<%ejGet(group_12_lan3)%>';
+        group12_lan4.value = '<%ejGet(group_12_lan4)%>';
+        group12_lan5.value = '<%ejGet(group_12_lan5)%>';
+        group12_wan.value  = '<%ejGet(group_12_wan)%>';
+//---------------------------
+        group13_lan1.value = '<%ejGet(group_13_lan1)%>';
+        group13_lan2.value = '<%ejGet(group_13_lan2)%>';
+        group13_lan3.value = '<%ejGet(group_13_lan3)%>';
+        group13_lan4.value = '<%ejGet(group_13_lan4)%>';
+        group13_lan5.value = '<%ejGet(group_13_lan5)%>';
+        group13_wan.value  = '<%ejGet(group_13_wan)%>';
+//---------------------------
+        group14_lan1.value = '<%ejGet(group_14_lan1)%>';
+        group14_lan2.value = '<%ejGet(group_14_lan2)%>';
+        group14_lan3.value = '<%ejGet(group_14_lan3)%>';
+        group14_lan4.value = '<%ejGet(group_14_lan4)%>';
+        group14_lan5.value = '<%ejGet(group_14_lan5)%>';
+        group14_wan.value  = '<%ejGet(group_14_wan)%>';
+//---------------------------
+        group15_lan1.value = '<%ejGet(group_15_lan1)%>';
+        group15_lan2.value = '<%ejGet(group_15_lan2)%>';
+        group15_lan3.value = '<%ejGet(group_15_lan3)%>';
+        group15_lan4.value = '<%ejGet(group_15_lan4)%>';
+        group15_lan5.value = '<%ejGet(group_15_lan5)%>';
+        group15_wan.value  = '<%ejGet(group_15_wan)%>';
+//---------------------------
+        group16_lan1.value = '<%ejGet(group_16_lan1)%>';
+        group16_lan2.value = '<%ejGet(group_16_lan2)%>';
+        group16_lan3.value = '<%ejGet(group_16_lan3)%>';
+        group16_lan4.value = '<%ejGet(group_16_lan4)%>';
+        group16_lan5.value = '<%ejGet(group_16_lan5)%>';
+        group16_wan.value  = '<%ejGet(group_16_wan)%>';
+   }
+
+   if (is_sfplinked > 0) {
+		document.getElementById("disPlayLan5_1").style.display = "block";
+		document.getElementById("disPlayLan5_2").style.display = "block";
+		document.getElementById("disPlayLan5_3").style.display = "block";
+		document.getElementById("disPlayLan5_4").style.display = "block";
+		document.getElementById("disPlayLan5_5").style.display = "block";
+		document.getElementById("disPlayLan5_6").style.display = "block";
+		document.getElementById("disPlayLan5_7").style.display = "block";
+		document.getElementById("disPlayLan5_8").style.display = "block";
+		document.getElementById("disPlayLan5_9").style.display = "block";
+		document.getElementById("disPlayLan5_10").style.display = "block";
+		document.getElementById("disPlayLan5_11").style.display = "block";
+		document.getElementById("disPlayLan5_12").style.display = "block";
+		document.getElementById("disPlayLan5_13").style.display = "block";
+		document.getElementById("disPlayLan5_14").style.display = "block";
+		document.getElementById("disPlayLan5_15").style.display = "block";
+		document.getElementById("disPlayLan5_16").style.display = "block";
+		document.getElementById("disPlayLan5_17").style.display = "block";
+		document.getElementById("disPlayLan5_18").style.display = "block";
+		document.getElementById("disPlayLan5_19").style.display = "block";
+   } else {
+		document.getElementById("disPlayLan5_1").style.display = "none";
+		document.getElementById("disPlayLan5_2").style.display = "none";
+		document.getElementById("disPlayLan5_3").style.display = "none";
+		document.getElementById("disPlayLan5_4").style.display = "none";
+		document.getElementById("disPlayLan5_5").style.display = "none";
+		document.getElementById("disPlayLan5_6").style.display = "none";
+		document.getElementById("disPlayLan5_7").style.display = "none";
+		document.getElementById("disPlayLan5_8").style.display = "none";
+		document.getElementById("disPlayLan5_9").style.display = "none";
+		document.getElementById("disPlayLan5_10").style.display = "none";
+		document.getElementById("disPlayLan5_11").style.display = "none";
+		document.getElementById("disPlayLan5_12").style.display = "none";
+		document.getElementById("disPlayLan5_13").style.display = "none";
+		document.getElementById("disPlayLan5_14").style.display = "none";
+		document.getElementById("disPlayLan5_15").style.display = "none";
+		document.getElementById("disPlayLan5_16").style.display = "none";
+		document.getElementById("disPlayLan5_17").style.display = "none";
+		document.getElementById("disPlayLan5_18").style.display = "none";
+		document.getElementById("disPlayLan5_19").style.display = "none";
+   }
+}
+
+function btnApply() {
+   var sessionKey='<%ejGetOther(sessionKey)%>';
+   var loc = 'vlancfg.cgi?';
+
+   with ( document.forms[0] ) {
+	 if(vid_7.value !=  vid7)
+		{
+		  if (!(confirm("CPE mgmt vid changed ,the system will reboot.Are you sure you want to change CPE mgmt vid settings?")))
+                  return;
+		}
+	 if(cpu_mode.value != cpumode)
+		{
+		  if (!(confirm("CPE mgmt 802.1Q changed ,the system will reboot.Are you sure you want to change CPE mgmt 802.1Q mode settings?")))
+                  return;
+		}
+
+      loc += 'vid_1=' + vid_1.value;
+	  loc += '&vid_2=' + vid_2.value;
+	  loc += '&vid_3=' + vid_3.value;
+      loc += '&vid_4=' + vid_4.value;
+	  loc += '&vid_5=' + vid_5.value;
+	  loc += '&vid_6=' + vid_6.value;
+	  loc += '&vid_7=' + vid_7.value;
+
+	  if (port_based_vlan.checked == true)
+	      loc += '&port_based_vlan=1';
+	  else
+	      loc += '&port_based_vlan=0';
+
+	  if (enable_igmp_vid.checked == true)
+	      loc += '&enable_igmp_vid=1';
+	  else
+	      loc += '&enable_igmp_vid=0';
+
+	  loc += '&igmp_vid=' + igmp_vid.value;
+
+	  loc += '&def_pri_1=' + defpri_1.value;
+	  loc += '&def_pri_2=' + defpri_2.value;
+	  loc += '&def_pri_3=' + defpri_3.value;
+	  loc += '&def_pri_4=' + defpri_4.value;
+	  loc += '&def_pri_5=' + defpri_5.value;
+	  loc += '&def_pri_6=' + defpri_6.value;
+	  loc += '&def_pri_7=' + defpri_7.value;
+
+	  loc += '&mode_lan1=' + lan1_mode.value;
+	  loc += '&mode_lan2=' + lan2_mode.value;
+	  loc += '&mode_lan3=' + lan3_mode.value;
+	  loc += '&mode_lan4=' + lan4_mode.value;
+	  loc += '&mode_lan5=' + lan5_mode.value;
+	  loc += '&mode_wan=' + wan_mode.value;
+	  loc += '&mode_cpu=' + cpu_mode.value;
+
+	  loc += '&group_id_1=' + groupid_1.value;
+	  loc += '&group_id_2=' + groupid_2.value;
+	  loc += '&group_id_3=' + groupid_3.value;
+	  loc += '&group_id_4=' + groupid_4.value;
+	  loc += '&group_id_5=' + groupid_5.value;
+	  loc += '&group_id_6=' + groupid_6.value;
+	  loc += '&group_id_7=' + groupid_7.value;
+	  loc += '&group_id_8=' + groupid_8.value;
+	  loc += '&group_id_9=' + groupid_9.value;
+	  loc += '&group_id_10=' + groupid_10.value;
+	  loc += '&group_id_11=' + groupid_11.value;
+	  loc += '&group_id_12=' + groupid_12.value;
+	  loc += '&group_id_13=' + groupid_13.value;
+	  loc += '&group_id_14=' + groupid_14.value;
+	  loc += '&group_id_15=' + groupid_15.value;
+	  loc += '&group_id_16=' + groupid_16.value;
+
+	  if (dscp_1.checked == true)
+	      loc += '&dscp_enable_1=1';
+	  else
+	      loc += '&dscp_enable_1=0';
+	  if (dscp_2.checked == true)
+	      loc += '&dscp_enable_2=1';
+	  else
+	      loc += '&dscp_enable_2=0';
+	  if (dscp_3.checked == true)
+	      loc += '&dscp_enable_3=1';
+	  else
+	      loc += '&dscp_enable_3=0';
+	  if (dscp_4.checked == true)
+	      loc += '&dscp_enable_4=1';
+	  else
+	      loc += '&dscp_enable_4=0';
+	  if (dscp_5.checked == true)
+	      loc += '&dscp_enable_5=1';
+	  else
+	      loc += '&dscp_enable_5=0';
+
+//-------------------------------------
+          loc += '&group_1_lan1=' + group1_lan1.value;
+          loc += '&group_1_lan2=' + group1_lan2.value;
+          loc += '&group_1_lan3=' + group1_lan3.value;
+          loc += '&group_1_lan4=' + group1_lan4.value;
+          loc += '&group_1_lan5=' + group1_lan5.value;
+          loc += '&group_1_wan='  + group1_wan.value;
+//-------------------------------------
+          loc += '&group_2_lan1=' + group2_lan1.value;
+          loc += '&group_2_lan2=' + group2_lan2.value;
+          loc += '&group_2_lan3=' + group2_lan3.value;
+          loc += '&group_2_lan4=' + group2_lan4.value;
+          loc += '&group_2_lan5=' + group2_lan5.value;
+          loc += '&group_2_wan='  + group2_wan.value;
+//-------------------------------------
+          loc += '&group_3_lan1=' + group3_lan1.value;
+          loc += '&group_3_lan2=' + group3_lan2.value;
+          loc += '&group_3_lan3=' + group3_lan3.value;
+          loc += '&group_3_lan4=' + group3_lan4.value;
+          loc += '&group_3_lan5=' + group3_lan5.value;
+          loc += '&group_3_wan='  + group3_wan.value;
+//-------------------------------------
+          loc += '&group_4_lan1=' + group4_lan1.value;
+          loc += '&group_4_lan2=' + group4_lan2.value;
+          loc += '&group_4_lan3=' + group4_lan3.value;
+          loc += '&group_4_lan4=' + group4_lan4.value;
+          loc += '&group_4_lan5=' + group4_lan5.value;
+          loc += '&group_4_wan='  + group4_wan.value;
+//-------------------------------------
+          loc += '&group_5_lan1=' + group5_lan1.value;
+          loc += '&group_5_lan2=' + group5_lan2.value;
+          loc += '&group_5_lan3=' + group5_lan3.value;
+          loc += '&group_5_lan4=' + group5_lan4.value;
+          loc += '&group_5_lan5=' + group5_lan5.value;
+          loc += '&group_5_wan='  + group5_wan.value;
+//-------------------------------------
+          loc += '&group_6_lan1=' + group6_lan1.value;
+          loc += '&group_6_lan2=' + group6_lan2.value;
+          loc += '&group_6_lan3=' + group6_lan3.value;
+          loc += '&group_6_lan4=' + group6_lan4.value;
+          loc += '&group_6_lan5=' + group6_lan5.value;
+          loc += '&group_6_wan='  + group6_wan.value;
+//-------------------------------------
+          loc += '&group_7_lan1=' + group7_lan1.value;
+          loc += '&group_7_lan2=' + group7_lan2.value;
+          loc += '&group_7_lan3=' + group7_lan3.value;
+          loc += '&group_7_lan4=' + group7_lan4.value;
+          loc += '&group_7_lan5=' + group7_lan5.value;
+          loc += '&group_7_wan='  + group7_wan.value;
+//-------------------------------------
+          loc += '&group_8_lan1=' + group8_lan1.value;
+          loc += '&group_8_lan2=' + group8_lan2.value;
+          loc += '&group_8_lan3=' + group8_lan3.value;
+          loc += '&group_8_lan4=' + group8_lan4.value;
+          loc += '&group_8_lan5=' + group8_lan5.value;
+          loc += '&group_8_wan='  + group8_wan.value;
+//-------------------------------------
+          loc += '&group_9_lan1=' + group9_lan1.value;
+          loc += '&group_9_lan2=' + group9_lan2.value;
+          loc += '&group_9_lan3=' + group9_lan3.value;
+          loc += '&group_9_lan4=' + group9_lan4.value;
+          loc += '&group_9_lan5=' + group9_lan5.value;
+          loc += '&group_9_wan='  + group9_wan.value;
+//-------------------------------------
+          loc += '&group_10_lan1=' + group10_lan1.value;
+          loc += '&group_10_lan2=' + group10_lan2.value;
+          loc += '&group_10_lan3=' + group10_lan3.value;
+          loc += '&group_10_lan4=' + group10_lan4.value;
+          loc += '&group_10_lan5=' + group10_lan5.value;
+          loc += '&group_10_wan='  + group10_wan.value;
+//-------------------------------------
+          loc += '&group_11_lan1=' + group11_lan1.value;
+          loc += '&group_11_lan2=' + group11_lan2.value;
+          loc += '&group_11_lan3=' + group11_lan3.value;
+          loc += '&group_11_lan4=' + group11_lan4.value;
+          loc += '&group_11_lan5=' + group11_lan5.value;
+          loc += '&group_11_wan='  + group11_wan.value;
+//-------------------------------------
+          loc += '&group_12_lan1=' + group12_lan1.value;
+          loc += '&group_12_lan2=' + group12_lan2.value;
+          loc += '&group_12_lan3=' + group12_lan3.value;
+          loc += '&group_12_lan4=' + group12_lan4.value;
+          loc += '&group_12_lan5=' + group12_lan5.value;
+          loc += '&group_12_wan='  + group12_wan.value;
+//-------------------------------------
+          loc += '&group_13_lan1=' + group13_lan1.value;
+          loc += '&group_13_lan2=' + group13_lan2.value;
+          loc += '&group_13_lan3=' + group13_lan3.value;
+          loc += '&group_13_lan4=' + group13_lan4.value;
+          loc += '&group_13_lan5=' + group13_lan5.value;
+          loc += '&group_13_wan='  + group13_wan.value;
+//-------------------------------------
+          loc += '&group_14_lan1=' + group14_lan1.value;
+          loc += '&group_14_lan2=' + group14_lan2.value;
+          loc += '&group_14_lan3=' + group14_lan3.value;
+          loc += '&group_14_lan4=' + group14_lan4.value;
+          loc += '&group_14_lan5=' + group14_lan5.value;
+          loc += '&group_14_wan='  + group14_wan.value;
+//-------------------------------------
+          loc += '&group_15_lan1=' + group15_lan1.value;
+          loc += '&group_15_lan2=' + group15_lan2.value;
+          loc += '&group_15_lan3=' + group15_lan3.value;
+          loc += '&group_15_lan4=' + group15_lan4.value;
+          loc += '&group_15_lan5=' + group15_lan5.value;
+          loc += '&group_15_wan='  + group15_wan.value;
+//-------------------------------------
+          loc += '&group_16_lan1=' + group16_lan1.value;
+          loc += '&group_16_lan2=' + group16_lan2.value;
+          loc += '&group_16_lan3=' + group16_lan3.value;
+          loc += '&group_16_lan4=' + group16_lan4.value;
+          loc += '&group_16_lan5=' + group16_lan5.value;
+          loc += '&group_16_wan='  + group16_wan.value;
+   }
+
+   loc += '&sessionKey=' + sessionKey;
+   location.assign(loc);
+}
+
+// -->
+</script>
+</head>
+<body onLoad='frmLoad()'>
+<blockquote>
+<form>
+	<b>VLAN<br></b><br>
+<hr align="left" width="400" color="#CCCCCC">
+<br>
+ <TABLE>
+  <tr align="center"></tr>
+  <tr align="center"><td style="width: 90px;"></td><td style="width: 70px;">VLAN ID</td><td style="width: 70px;">Priority</td><td style="width: 100px;">&nbsp;&nbsp;802.1Q Mode</td></tr>
+  <tr align="center">
+    <td>LAN1</td>
+    <td><INPUT class="textarea" type="text" name="vid_1" size="6" maxlength="4"></td>
+    <td><INPUT class="textarea" type="text" name="defpri_1" size="6" maxlength="4"></td>
+    <!--<td><input name="trunk_port" type="radio" ></td>-->
+     <td>&nbsp;&nbsp;<select name='lan1_mode' size="1">
+             <option value="0">Disable
+             <option value="1">Fallback
+             <option value="2">Check
+             <option value="3">Secure
+             </select>
+     </td>
+    <!-- <td><input name="txtag_1" type="checkbox" value="1" ></td>-->
+  </tr>
+  <tr align="center">
+    <td>LAN2</td>
+    <td><INPUT class="textarea" type="text" name="vid_2" size="6" maxlength="4"></td>
+    <td><INPUT class="textarea" type="text" name="defpri_2" size="6" maxlength="4"></td>
+    <!--<td><input name="trunk_port" type="radio" ></td>-->
+    <td>&nbsp;&nbsp;<select name='lan2_mode' size="1">
+             <option value="0">Disable
+             <option value="1">Fallback
+             <option value="2">Check
+             <option value="3">Secure
+             </select>
+     </td>
+    <!-- <td><input name="txtag_2" type="checkbox" value="1" ></td> -->
+  </tr>
+  <tr align="center">
+    <td>LAN3</td>
+    <td><INPUT class="textarea" type="text" name="vid_3" size="6" maxlength="4"></td>
+    <td><INPUT class="textarea" type="text" name="defpri_3" size="6" maxlength="4"></td>
+    <!--<td><input name="trunk_port" type="radio" ></td>-->
+    <td>&nbsp;&nbsp;<select name='lan3_mode' size="1">
+             <option value="0">Disable
+             <option value="1">Fallback
+             <option value="2">Check
+             <option value="3">Secure
+             </select>
+     </td>
+    <!-- <td><input name="txtag_3" type="checkbox" value="1" ></td> -->
+  </tr>
+  <tr align="center">
+    <td>LAN4</td>
+    <td><INPUT class="textarea" type="text" name="vid_4" size="6" maxlength="4"></td>
+    <td><INPUT class="textarea" type="text" name="defpri_4" size="6" maxlength="4"></td>
+    <!--<td><input name="trunk_port" type="radio" ></td>-->
+    <td>&nbsp;&nbsp;<select name='lan4_mode' size="1">
+             <option value="0">Disable
+             <option value="1">Fallback
+             <option value="2">Check
+             <option value="3">Secure
+             </select>
+     </td>
+      <!--<td><input name="txtag_4" type="checkbox" value="1" ></td> -->
+  </tr>
+</TABLE>
+
+<table  id="disPlayLan5_1" style="display:none;">
+	<tr align="center" >
+    <td style="width: 90px;">LAN5</td>
+    <td style="width: 70px;"><INPUT class="textarea" type="text" name="vid_5" size="6" maxlength="4"></td>
+    <td style="width: 70px;"><INPUT class="textarea" type="text" name="defpri_5" size="6" maxlength="4"></td>
+    <!--<td><input name="trunk_port" type="radio" ></td>-->
+    <td style="width: 100px;">&nbsp;&nbsp;<select name='lan5_mode' size="1">
+             <option value="0">Disable
+             <option value="1">Fallback
+             <option value="2">Check
+             <option value="3">Secure
+             </select>
+     </td>
+      <!--<td><input name="txtag_4" type="checkbox" value="1" ></td> -->
+  </tr>
+</TABLE>
+
+<table>
+	<tr align="center">
+    <td style="width: 90px;">WAN</td>
+    <td style="width: 70px;"><INPUT class="textarea" type="text" name="vid_6" size="6" maxlength="4"></td>
+    <td style="width: 70px;"><INPUT class="textarea" type="text" name="defpri_6" size="6" maxlength="4"></td>
+    <td style="width: 100px;">&nbsp;&nbsp;<select name='wan_mode' size="1">
+             <option value="0">Disable
+             <option value="1">Fallback
+             <option value="2">Check
+             <option value="3">Secure
+             </select>
+     </td>
+  </tr>
+  <tr align="center">
+    <td style="width: 90px;">CPE Mgmnt</td>
+    <td style="width: 70px;"><INPUT class="textarea" type="text" name="vid_7" size="6" maxlength="4"></td>
+    <td style="width: 70px;"><INPUT class="textarea" type="text" name="defpri_7" size="6" maxlength="4"></td>
+    <td style="width: 100px;">&nbsp;&nbsp;<select name='cpu_mode' size="1">
+             <option value="0">Disable
+             <option value="1">Fallback
+             <option value="2">Check
+             <option value="3">Secure
+             </select>
+     </td>
+  </tr>
+</TABLE>
+<br>
+<table>
+	<tr>
+		<td><input type="checkbox" name="port_based_vlan">Port based VLAN (Isolate each LAN port to other LAN ports)</td>
+	</tr>
+	<tr>
+		<td><input type="checkbox" name="enable_igmp_vid">Enable IGMP WAN side tagged VLAN ID</td>
+        <td><input class="textarea" type="text" name="igmp_vid" size="6" maxlength="4"></td>		
+	</tr>
+</table>
+<br>
+<hr align="left" width="400" color="#CCCCCC">
+<br>
+ "T" = Egress Frames Tagged, "U" = Egress Frames Untagged, "-" = Not Member<br><br>
+<TABLE>
+  <tr align="center"><td colspan="2"></td><td>LAN1</td><td>LAN2</td><td>LAN3</td><td>LAN4</td><td id="disPlayLan5_2" style="display:none;">LAN5</td><td>WAN</td></tr>
+  <tr align="center">
+    <td>VLAN Group 01 ID</td>
+    <td width="60"><INPUT class="textarea" type="text" name="groupid_1" size="6" maxlength="4"></td>
+    <td>&nbsp;&nbsp;<select name='group1_lan1' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group1_lan2' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group1_lan3' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group1_lan4' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td id="disPlayLan5_3" style="display:none;">&nbsp;&nbsp;<select name='group1_lan5' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group1_wan' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+  </tr>
+  <tr align="center">
+    <td>VLAN Group 02 ID</td>
+    <td width="60"><INPUT class="textarea" type="text" name="groupid_2" size="6" maxlength="4"></td>
+    <td>&nbsp;&nbsp;<select name='group2_lan1' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group2_lan2' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group2_lan3' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group2_lan4' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td id="disPlayLan5_4" style="display:none;">&nbsp;&nbsp;<select name='group2_lan5' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group2_wan' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+  </tr>
+  <tr align="center">
+    <td>VLAN Group 03 ID</td>
+    <td width="60"><INPUT class="textarea" type="text" name="groupid_3" size="6" maxlength="4"></td>
+    <td>&nbsp;&nbsp;<select name='group3_lan1' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group3_lan2' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group3_lan3' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group3_lan4' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td id="disPlayLan5_5" style="display:none;">&nbsp;&nbsp;<select name='group3_lan5' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group3_wan' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+  </tr>
+  <tr align="center">
+    <td>VLAN Group 04 ID</td>
+    <td width="60"><INPUT class="textarea" type="text" name="groupid_4" size="6" maxlength="4"></td>
+    <td>&nbsp;&nbsp;<select name='group4_lan1' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group4_lan2' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group4_lan3' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group4_lan4' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td id="disPlayLan5_6" style="display:none;">&nbsp;&nbsp;<select name='group4_lan5' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group4_wan' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+  </tr>
+  <tr align="center">
+    <td>VLAN Group 05 ID</td>
+    <td width="60"><INPUT class="textarea" type="text" name="groupid_5" size="6" maxlength="4"></td>
+    <td>&nbsp;&nbsp;<select name='group5_lan1' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group5_lan2' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group5_lan3' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group5_lan4' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td id="disPlayLan5_7" style="display:none;">&nbsp;&nbsp;<select name='group5_lan5' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group5_wan' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+  </tr>
+  <tr align="center">
+    <td>VLAN Group 06 ID</td>
+    <td width="60"><INPUT class="textarea" type="text" name="groupid_6" size="6" maxlength="4"></td>
+    <td>&nbsp;&nbsp;<select name='group6_lan1' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group6_lan2' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group6_lan3' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group6_lan4' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td id="disPlayLan5_8" style="display:none;">&nbsp;&nbsp;<select name='group6_lan5' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group6_wan' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+  </tr>
+  <tr align="center">
+    <td>VLAN Group 07 ID</td>
+    <td width="60"><INPUT class="textarea" type="text" name="groupid_7" size="6" maxlength="4"></td>
+    <td>&nbsp;&nbsp;<select name='group7_lan1' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group7_lan2' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group7_lan3' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group7_lan4' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td id="disPlayLan5_9" style="display:none;">&nbsp;&nbsp;<select name='group7_lan5' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group7_wan' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+  </tr>
+  <tr align="center">
+    <td>VLAN Group 08 ID</td>
+    <td width="60"><INPUT class="textarea" type="text" name="groupid_8" size="6" maxlength="4"></td>
+    <td>&nbsp;&nbsp;<select name='group8_lan1' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group8_lan2' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group8_lan3' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group8_lan4' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td id="disPlayLan5_10" style="display:none;">&nbsp;&nbsp;<select name='group8_lan5' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group8_wan' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+  </tr>
+  <tr align="center">
+    <td>VLAN Group 09 ID</td>
+    <td width="60"><INPUT class="textarea" type="text" name="groupid_9" size="6" maxlength="4"></td>
+    <td>&nbsp;&nbsp;<select name='group9_lan1' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group9_lan2' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group9_lan3' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group9_lan4' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td id="disPlayLan5_11" style="display:none;">&nbsp;&nbsp;<select name='group9_lan5' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group9_wan' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+  </tr>
+  <tr align="center">
+    <td>VLAN Group 10 ID</td>
+    <td width="60"><INPUT class="textarea" type="text" name="groupid_10" size="6" maxlength="4"></td>
+    <td>&nbsp;&nbsp;<select name='group10_lan1' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group10_lan2' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group10_lan3' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group10_lan4' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td id="disPlayLan5_12" style="display:none;">&nbsp;&nbsp;<select name='group10_lan5' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group10_wan' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+  </tr>
+  <tr align="center">
+    <td>VLAN Group 11 ID</td>
+    <td width="60"><INPUT class="textarea" type="text" name="groupid_11" size="6" maxlength="4"></td>
+    <td>&nbsp;&nbsp;<select name='group11_lan1' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group11_lan2' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group11_lan3' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group11_lan4' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td id="disPlayLan5_13" style="display:none;">&nbsp;&nbsp;<select name='group11_lan5' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group11_wan' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+  </tr>
+  <tr align="center">
+    <td>VLAN Group 12 ID</td>
+    <td width="60"><INPUT class="textarea" type="text" name="groupid_12" size="6" maxlength="4"></td>
+    <td>&nbsp;&nbsp;<select name='group12_lan1' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group12_lan2' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group12_lan3' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group12_lan4' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td id="disPlayLan5_14" style="display:none;">&nbsp;&nbsp;<select name='group12_lan5' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group12_wan' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+  </tr>
+  <tr align="center">
+    <td>VLAN Group 13 ID</td>
+    <td width="60"><INPUT class="textarea" type="text" name="groupid_13" size="6" maxlength="4"></td>
+    <td>&nbsp;&nbsp;<select name='group13_lan1' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group13_lan2' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group13_lan3' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group13_lan4' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td id="disPlayLan5_15" style="display:none;">&nbsp;&nbsp;<select name='group13_lan5' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group13_wan' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+  </tr>
+  <tr align="center">
+    <td>VLAN Group 14 ID</td>
+    <td width="60"><INPUT class="textarea" type="text" name="groupid_14" size="6" maxlength="4"></td>
+    <td>&nbsp;&nbsp;<select name='group14_lan1' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group14_lan2' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group14_lan3' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group14_lan4' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td id="disPlayLan5_16" style="display:none;">&nbsp;&nbsp;<select name='group14_lan5' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group14_wan' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+  </tr>
+  <tr align="center">
+    <td>VLAN Group 15 ID</td>
+    <td width="60"><INPUT class="textarea" type="text" name="groupid_15" size="6" maxlength="4"></td>
+    <td>&nbsp;&nbsp;<select name='group15_lan1' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group15_lan2' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group15_lan3' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group15_lan4' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td id="disPlayLan5_17" style="display:none;">&nbsp;&nbsp;<select name='group15_lan5' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group15_wan' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+  </tr>
+  <tr align="center">
+    <td>VLAN Group 16 ID</td>
+    <td width="60"><INPUT class="textarea" type="text" name="groupid_16" size="6" maxlength="4"></td>
+    <td>&nbsp;&nbsp;<select name='group16_lan1' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group16_lan2' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group16_lan3' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group16_lan4' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td id="disPlayLan5_18" style="display:none;">&nbsp;&nbsp;<select name='group16_lan5' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+    <td>&nbsp;&nbsp;<select name='group16_wan' size="1">
+        <option value="0">-
+        <option value="1">U
+        <option value="2">T
+        </select>
+    </td>
+  </tr>
+  </TABLE>
+<br>
+<hr align="left" width="400" color="#CCCCCC">
+<br>
+
+<P class=commentfield>LAN1 :<input name="dscp_1" type="checkbox" value="1">Enable DSCP mapping</P>
+<P class=commentfield>LAN2 :<input name="dscp_2" type="checkbox" value="1">Enable DSCP mapping</P>
+<P class=commentfield>LAN3 :<input name="dscp_3" type="checkbox" value="1">Enable DSCP mapping</P>
+<P class=commentfield>LAN4 :<input name="dscp_4" type="checkbox" value="1">Enable DSCP mapping</P>
+<P class=commentfield id="disPlayLan5_19" style="display:none;">LAN5 :<input name="dscp_5" type="checkbox" value="1">Enable DSCP mapping</P>
+
+<br><br>
+
+
+<br>
+            <br>
+
+
+            <p align="center">
+               <input type='button' onClick='btnApply()' value='Apply/Save'>
+            </P>
+         </form>
+      </blockquote>
+   </body>
+</html>

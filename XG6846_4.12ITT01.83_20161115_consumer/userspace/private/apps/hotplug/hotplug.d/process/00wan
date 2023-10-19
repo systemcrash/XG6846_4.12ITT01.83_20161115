@@ -1,0 +1,9 @@
+#!/bin/sh
+
+[ "$NAME" = "wan" ] || exit
+is_ipget="/var/run/ip.get"
+
+if [ "$IPRENEWED" = "1" ]; then
+	echo $WANPROTO > $is_ipget
+fi
+

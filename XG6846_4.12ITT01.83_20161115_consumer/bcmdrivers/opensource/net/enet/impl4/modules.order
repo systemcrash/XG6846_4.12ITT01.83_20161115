@@ -1,0 +1,6 @@
+kernel//home/mike_chen/opt/xg6846_itt82_1102/bcmdrivers/opensource/net/enet/bcm96328/bcm_enet.ko
+kernel//home/mike_chen/opt/xg6846_itt82_1102/bcmdrivers/opensource/net/enet/bcm96328/igmpsnooping_swis.ko
+kernel//home/mike_chen/opt/xg6846_itt82_1102/bcmdrivers/opensource/net/enet/bcm96328/mvsw.ko
+kernel//home/mike_chen/opt/xg6846_itt82_1102/bcmdrivers/opensource/net/enet/bcm96328/xavi_port_limit.ko
+kernel//home/mike_chen/opt/xg6846_itt82_1102/bcmdrivers/opensource/net/enet/bcm96328/xavi_sfp_fiber.ko
+kernel//home/mike_chen/opt/xg6846_itt82_1102/bcmdrivers/opensource/net/enet/bcm96328/xavi_led_mode.ko

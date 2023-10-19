@@ -1,0 +1,10 @@
+#!/bin/bash
+
+MAX=$1
+[ -n "$MAX" ] || MAX=5
+RSTR=$(cat /proc/sys/kernel/random/uuid | awk '{gsub(/[a-z\-]/,""); print $1}')
+RSTR=${RSTR:0:5}
+SUB=$(expr 99999 \/ $MAX)
+RAND=$(expr $RSTR \/ $SUB)
+echo "Random delay $RAND seconds"
+sleep $RAND

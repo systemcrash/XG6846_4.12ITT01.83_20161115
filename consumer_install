@@ -1,0 +1,86 @@
+#! /bin/bash
+
+bi_this_dir=`pwd`
+bi_src_base=$bi_this_dir
+bi_crosstools_dir=/opt/toolchains/uclibc-crosstools-gcc-4.4.2-1
+
+
+clear
+echo ""
+echo "This script installs CPE_src components onto your Linux PC.  The"
+echo "installation will overwrite existing files.  You will be prompted before a"
+echo "component is installed.  You may need to be user 'root' to install."
+echo ""
+echo ""
+read -p "Press 'y' to continue: " -n 1 dr_continue
+echo ""
+if [ "$dr_continue" != "y" ] ; then
+    echo "";
+    echo "exiting script";
+    echo "";
+    exit
+fi
+
+for f in *
+do
+    case $f in
+    *_consumer.tar.gz)
+        bi_src_dir=$bi_src_base/CPE_src
+        echo ""
+        echo "The CPE_src source files are ready to be installed at "
+        echo "$bi_src_dir. Existing source files, if any, will be overwritten. "
+        echo ""
+        read -p "Press 'y' to install the CPE_src source files: " -n 1 dr_continue
+        echo ""
+        echo ""
+        if [ "$dr_continue" == "y" ] ; then
+            echo ""
+            if ! [ -d $bi_src_dir ] ; then
+                echo "Creating directory $bi_src_dir."
+                echo ""
+                mkdir -p $bi_src_dir
+            fi
+            if [ -d $bi_src_dir ] ; then
+                echo "Installing files from $bi_this_dir/$f."
+                echo ""
+                cd $bi_src_dir
+                tar xfz $bi_this_dir/$f
+                chmod -R 777 * .*
+                cd $bi_this_dir
+                echo "$f has been insatlled, please note:"
+                echo "  1. Change owner if not same as yours."
+                echo "  2. If you like, can change directory name 'CPE_src'."
+                echo "  3. To build CPE_src image, at $bi_src_dir, type 'make PROFILE=<target_name>' (ex. XG6846_ITT)."
+                echo "  4. The built image file will be at $bi_src_dir/images."
+            else
+                echo "The directory $bi_src_dir does not exist."
+                echo "The CPE_src source files were not installed."
+            fi
+        else
+            echo "The CPE_src source files were not installed."
+        fi
+        echo ""
+        ;;
+    uclibc-crosstools*.tar.bz2)
+        echo ""
+        echo "The toolchain is ready to be installed at $bi_this_dir/$bi_crosstools_dir."
+        echo "Existing toolchain files, if any, will be overwritten."
+        echo ""
+        read -p "Press 'y' to install the CPE_src toolchain: " -n 1 dr_continue
+        echo ""
+        echo ""
+        if [ "$dr_continue" == "y" ] ; then
+            echo ""
+            echo "Installing files from $bi_this_dir/$f."
+            echo ""
+            tar xPfj $bi_this_dir/$f
+            echo "Toolchain is insatlled at $bi_this_dir/$bi_crosstools_dir, please move to $bi_crosstools_dir."
+        else
+            echo "The CPE_src toolchain was not installed."
+        fi
+        echo ""
+        ;;
+    esac
+done
+
+
